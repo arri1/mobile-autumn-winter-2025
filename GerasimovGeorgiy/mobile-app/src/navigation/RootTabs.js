@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import UseStateLabScreen from '../screens/UseStateLab/UseStateLabScreen';
 import UseEffectLabScreen from '../screens/UseEffectLab/UseEffectLabScreen';
+import UseMemoLabScreen from '../screens/UseMemoLab/UseMemoLabScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +20,7 @@ export default function RootTabs() {
       >
         <Tab.Screen name="useState" component={UseStateLabScreen} />
         <Tab.Screen name="useEffect" component={UseEffectLabScreen} />
+        <Tab.Screen name="useMemo" component={UseMemoLabScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
