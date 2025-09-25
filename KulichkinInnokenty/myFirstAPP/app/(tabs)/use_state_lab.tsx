@@ -1,64 +1,92 @@
-import { Platform, StyleSheet } from 'react-native';
 import { useState } from 'react';
-import { View, Text, Button, Switch, TextInput, ScrollView } from "react-native";
+import { View, Text, Button, Switch, TextInput, ScrollView, StyleSheet } from "react-native";
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+export default function UseStateLab() {
+  const [count, setCount] = useState(0);
+  const [text, setText] = useState('');
+  const [enabled, setEnabled] = useState(false);
 
-export default function useStateLab(){
-    const [count, setCount] = useState(0);
-    const [text, setText] = useState('');
-    const [enabled, setEnabled] = useState(false);
-
-    return(
-    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center", padding: 20, backgroundColor: "white"}}>
-        <View style={{ marginBottom: 40, alignItems: "center" }}>
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>Счётчик</Text>
-            <Text style={{ fontSize: 24, marginBottom: 10 }}>Счёт: {count}</Text>
-            <Button title="Увеличить" onPress={() => setCount(count + 1)} />
-            <Button title='Reset' onPress={() => setCount(0)}/>
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Счётчик</Text>
+        <Text style={styles.counterText}>Счёт: {count}</Text>
+        <View style={styles.buttonGroup}>
+          <Button title="Добавить" onPress={() => setCount(count + 1)} />
+          <Button title="Сброс" onPress={() => setCount(0)} />
         </View>
+      </View>
 
-        <View style={{ marginBottom: 40, alignItems: "center" }}>
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>Переключатель</Text>
-            <Text style={{ marginBottom: 10 }}>{enabled ? "Включено" : "Выключено"}</Text>
-            <Switch value={enabled} onValueChange={setEnabled} />
-        </View>
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Переключатель</Text>
+        <Text style={styles.switchLabel}>{enabled ? "Включено" : "Выключено"}</Text>
+        <Switch value={enabled} onValueChange={setEnabled} />
+      </View>
 
-        <View style={{ marginBottom: 40, alignItems: "center" }}>
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>Текстовое поле</Text>
-            <TextInput
-            style={{
-                borderWidth: 1,
-                borderColor: "gray",
-                padding: 10,
-                width: 200,
-                marginBottom: 10,
-            }}
-            placeholder="Введите текст..."
-            value={text}
-            onChangeText={setText}
-            />
-            <Text>Вы ввели: {text}</Text>
-        </View>
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Текстовое поле</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Введите текст..."
+          value={text}
+          onChangeText={setText}
+        />
+        <Text style={styles.previewText}>Вы ввели: {text || "ничего"}</Text>
+      </View>
     </ScrollView>
-    )
+  );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#f4f6f8",
+    alignItems: "center",
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  card: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 30,
+    width: "90%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 12,
+    color: "#333",
+  },
+  counterText: {
+    fontSize: 18,
+    marginBottom: 12,
+  },
+  buttonGroup: {
+    gap: 10,
+    flexDirection: "row",
+  },
+  switchLabel: {
+    marginBottom: 10,
+    fontSize: 16,
+    color: "#555",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 10,
+    width: "100%",
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  previewText: {
+    fontSize: 16,
+    color: "#444",
   },
 });
