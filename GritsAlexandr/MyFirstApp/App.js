@@ -20,7 +20,7 @@ export default function App() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.innerContainer}>
         <Text style={[styles.title, { color: theme.text }]}>
-          Привет, React Native!
+          Приложение!
         </Text>
         <Text style={[styles.subtitle, { color: theme.text }]}>
           {isDarkMode ? 'Тёмная тема активна' : 'Светлая тема активна'}
@@ -37,7 +37,6 @@ export default function App() {
   );
 }
 
-// Стили и темы
 const lightTheme = {
   background: '#fff',
   text: '#000',
