@@ -1,10 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import UseStateScreen from '../site/usestate/usestatescreen';
-
+import UseEffectScreen from '../site/useeffect/useeffectscreen';
+import UseMemoScreen from '../site/usememo/usememoscreen';
 
 const Tab = createBottomTabNavigator();
-
+ 
 export default function RootTabs() {
   return (
     <NavigationContainer>
@@ -13,11 +14,13 @@ export default function RootTabs() {
           headerStyle: { backgroundColor: '#0D0F14' },
           headerTintColor: '#E6E9EF',
           tabBarStyle: { backgroundColor: '#0D0F14', borderTopColor: '#1C2230' },
-          tabBarActiveTintColor: '#5EEAD4',
+          tabBarActiveTintColor: '#00ff00ff',
           tabBarInactiveTintColor: '#9AA4B2',
         }}
       >
         <Tab.Screen name="useState" component={UseStateScreen} />
+        <Tab.Screen name="useEffect" component={UseEffectScreen} />
+        <Tab.Screen name="useMemo" component={UseMemoScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
