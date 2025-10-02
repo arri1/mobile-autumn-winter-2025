@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, Switch } from 'react-native';
 import styled from 'styled-components/native';
+import { useStore } from '../../store/useStore';
 
 export default function UseStateLabScreen() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('');
-  const [enabled, setEnabled] = useState(false);
+  const { count, name, enabled, inputValue, increment, decrement, reset, setName, setEnabled, setInputValue } = useStore();
 
   return (
     <SafeArea>
@@ -24,14 +22,14 @@ export default function UseStateLabScreen() {
           </CardHeader>
           <Divider />
           <Row space>
-            <CounterButton variant="ghost" onPress={() => setCount(0)}>
+            <CounterButton variant="ghost" onPress={reset}>
               <BtnText>Reset</BtnText>
             </CounterButton>
-            <CounterButton onPress={() => setCount((v) => v - 1)}>
+            <CounterButton onPress={decrement}>
               <BtnText>-1</BtnText>
             </CounterButton>
             <CounterValue>{count}</CounterValue>
-            <CounterButton onPress={() => setCount((v) => v + 1)}>
+            <CounterButton onPress={increment}>
               <BtnText>+1</BtnText>
             </CounterButton>
           </Row>
@@ -55,6 +53,22 @@ export default function UseStateLabScreen() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Дополнительный ввод</CardTitle>
+          </CardHeader>
+          <Divider />
+          <Column>
+            <Input
+              value={inputValue}
+              onChangeText={setInputValue}
+              placeholder="Связанный ввод"
+              placeholderTextColor="#889096"
+            />
+            <Helper>Значение: {inputValue || 'пусто'}</Helper>
+          </Column>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Переключатель</CardTitle>
             <Pill tone={enabled ? 'success' : 'neutral'}>{enabled ? 'включено' : 'выключено'}</Pill>
           </CardHeader>
@@ -63,6 +77,19 @@ export default function UseStateLabScreen() {
             <Switch value={enabled} onValueChange={setEnabled} />
             <Helper ml12>Состояние: {enabled ? 'включено' : 'выключено'}</Helper>
           </Row>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Связанное состояние</CardTitle>
+          </CardHeader>
+          <Divider />
+          <Column>
+            <Helper>• Счетчик синхронизирован с Zustand Lab</Helper>
+            <Helper>• Имя пользователя общее для всех экранов</Helper>
+            <Helper>• Переключатель работает глобально</Helper>
+            <Helper>• Дополнительный ввод связан между экранами</Helper>
+          </Column>
         </Card>
 
         <BottomSpacer />
