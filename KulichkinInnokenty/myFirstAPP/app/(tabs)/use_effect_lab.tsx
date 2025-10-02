@@ -1,43 +1,44 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Button, Switch, TextInput, ScrollView, StyleSheet } from "react-native";
 
-export default function UseStateLab() {
+export default function UseEffectLab() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState('');
   const [enabled, setEnabled] = useState(false);
 
-  // --- useEffect ---
+  // локальный стейт для отображения сообщений из useEffect
+  const [effectMessage, setEffectMessage] = useState("");
+
+  //useEffect
   useEffect(() => {
-    console.log("Счётчик изменился:", count);
+    const msg = `Счётчик изменился: ${count}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [count]);
 
   useEffect(() => {
-    console.log("Переключатель изменился:", enabled ? "Включено" : "Выключено");
+    const msg = `Переключатель: ${enabled ? "Включено" : "Выключено"}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [enabled]);
 
   useEffect(() => {
-    console.log("Текст изменился:", text);
-  }, [text]);
-
-  // --- useMemo ---
-  const isEven = useMemo(() => {
-    console.log("Пересчитываем isEven...");
-    return count % 2 === 0;
-  }, [count]);
-
-  const textLength = useMemo(() => {
-    console.log("Пересчитываем textLength...");
-    return text.length;
+    const msg = `Текст изменился: ${text || "ничего"}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [text]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Отображаем сообщение из useEffect */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Последнее событие (useEffect)</Text>
+        <Text style={{ fontSize: 16, color: "#007AFF" }}>{effectMessage}</Text>
+      </View>
+
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Счётчик</Text>
         <Text style={styles.counterText}>Счёт: {count}</Text>
-        <Text style={{ color: isEven ? "green" : "red" }}>
-          {isEven ? "Чётное" : "Нечётное"}
-        </Text>
         <View style={styles.buttonGroup}>
           <Button title="Добавить" onPress={() => setCount(count + 1)} />
           <Button title="Сброс" onPress={() => setCount(0)} />
@@ -59,7 +60,6 @@ export default function UseStateLab() {
           onChangeText={setText}
         />
         <Text style={styles.previewText}>Вы ввели: {text || "ничего"}</Text>
-        <Text style={{ marginTop: 8 }}>Длина текста: {textLength} символов</Text>
       </View>
     </ScrollView>
   );
