@@ -1,20 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, TouchableOpacity } from 'react-native';
+import { styles } from './styles';
+import Shop from './components/Shop';
+import Stopwatch from './components/Stopwatch';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('shop');
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'shop' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('shop')}
+        >
+          <Text style={[styles.tabText, activeTab === 'shop' && styles.tabTextActive]}>Магазин</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'stopwatch' && styles.tabButtonActive]}
+          onPress={() => setActiveTab('stopwatch')}
+        >
+          <Text style={[styles.tabText, activeTab === 'stopwatch' && styles.tabTextActive]}>Секундомер</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ flex: 1 }}>
+        {activeTab === 'shop' ? <Shop /> : <Stopwatch />}
+      </View>
+
       <StatusBar style="auto" />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

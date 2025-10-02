@@ -1,67 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import React from "react";
+import { Text, View, Button, StyleSheet } from "react-native";
+import { useState, render } from "./myReact";
 
-export default function App() {
+function Counter() {
+  const [count, setCount] = useState(0);
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Добро пожаловать 👋</Text>
-        <Text style={styles.subtitle}>React Native + Expo стартовый проект</Text>
-
-        <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
-          <Text style={styles.primaryButtonText}>Открыть камеру (заглушка)</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.helper}>
-          Измените файл App.tsx, чтобы начать. Запустите: npm run ios / android / web
-        </Text>
-
-        <StatusBar style="auto" />
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text style={styles.text}>Счётчик: {count}</Text>
+      <Button title="Увеличить" onPress={() => setCount(count + 1)} />
+    </View>
   );
 }
 
+export default function App() {
+  const [Component, setComponent] = React.useState(<></>);
+
+  React.useEffect(() => {
+    render(() => setComponent(<Counter />));
+  }, []);
+
+  return Component;
+}
+
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#0B0C10',
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#C5C6C7',
-    marginBottom: 24,
-  },
-  primaryButton: {
-    backgroundColor: '#45A29E',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
-    elevation: 3,
+  text: {
+    fontSize: 24,
     marginBottom: 20,
-  },
-  primaryButtonText: {
-    color: '#0B0C10',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  helper: {
-    color: '#C5C6C7',
   },
 });
