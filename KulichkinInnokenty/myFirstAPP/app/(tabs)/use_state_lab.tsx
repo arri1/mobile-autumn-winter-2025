@@ -32,7 +32,6 @@ export default function UseStateLab() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text>UseEffect</Text>
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Счётчик</Text>
         <Text style={styles.counterText}>Счёт: {count}</Text>
@@ -45,14 +44,12 @@ export default function UseStateLab() {
         </View>
       </View>
 
-      <Text>UseState</Text>
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Переключатель</Text>
         <Text style={styles.switchLabel}>{enabled ? "Включено" : "Выключено"}</Text>
         <Switch value={enabled} onValueChange={setEnabled} />
       </View>
 
-      <Text>UseMemo</Text>
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Текстовое поле</Text>
         <TextInput
