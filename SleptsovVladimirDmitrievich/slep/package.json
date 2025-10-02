@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.4.7",
-    "expo": "~54.0.10",
+    "expo": "54.0.12",
     "expo-camera": "~17.0.8",
     "expo-image-picker": "~17.0.8",
     "expo-media-library": "~18.2.0",
