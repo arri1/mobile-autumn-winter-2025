@@ -1,238 +1,156 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, TextInput, ActivityIndicator,View } from 'react-native';
+import {
+  Text,
+  TextInput,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  Switch,
+} from 'react-native';
 import styled from 'styled-components/native';
 
-// Global calculation counter to track fibonacci calls
-let fibCalculationCount = 0;
-
-function fibonacci(n) {
-  fibCalculationCount++;
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Expensive operation simulation
-function expensiveCalculation(n) {
-  let result = 0;
-  for (let i = 0; i < n * 100000; i++) {
-    result += Math.sqrt(i);
-  }
-  return Math.floor(result);
-}
-
 export default function UseMemoLabScreen() {
-  return <View></View>;
-  const [fibInput, setFibInput] = useState('10');
-  const [query, setQuery] = useState('');
-  const [renderCount, setRenderCount] = useState(0);
-  const [expensiveInput, setExpensiveInput] = useState('5');
-  const [showDemo, setShowDemo] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [useMemoEnabled, setUseMemoEnabled] = useState(false);
+  const [images, setImages] = useState([]);
 
-  const fibNumber = Number.isNaN(Number(fibInput))
-    ? 0
-    : Math.min(30, Math.max(0, Number(fibInput)));
-  const expensiveNumber = Number.isNaN(Number(expensiveInput))
-    ? 0
-    : Math.min(10, Math.max(0, Number(expensiveInput)));
-
-  // Track component renders
   useEffect(() => {
-    setRenderCount((prev) => prev + 1);
-  });
-
-  // Memoized fibonacci calculation with performance tracking
-  const fibResult = useMemo(() => {
-    console.log('🔄 Calculating Fibonacci...');
-    fibCalculationCount = 0;
-    const start = performance.now();
-    const result = fibonacci(fibNumber);
-    const end = performance.now();
-    return { value: result, calls: fibCalculationCount, time: end - start };
-  }, [fibNumber]);
-
-  // Memoized expensive calculation
-  const expensiveResult = useMemo(() => {
-    console.log('💻 Running expensive calculation...');
-    const start = performance.now();
-    const result = expensiveCalculation(expensiveNumber);
-    const end = performance.now();
-    return { value: result, time: end - start };
-  }, [expensiveNumber]);
-
-  // Large dataset with memoization
-  const largeDataset = useMemo(() => {
-    console.log('📊 Generating large dataset...');
-    return Array.from({ length: 1500 }, (_, i) => ({
-      id: i + 1,
-      label: `Элемент ${i + 1}`,
-      category: ['Категория A', 'Категория B', 'Категория C', 'Категория D'][i % 4],
-      value: Math.floor(Math.random() * 1000),
-      isActive: Math.random() > 0.5,
-    }));
+    getLoad();
+    return () => {
+      setImages([]);
+    };
   }, []);
 
-  // Filtered and sorted data with memoization
-  const processedData = useMemo(() => {
-    console.log('🔍 Processing and filtering data...');
-    const start = performance.now();
-
-    let result = largeDataset;
-
-    // Filter by query
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      result = result.filter(
-        (item) => item.label.toLowerCase().includes(q) || item.category.toLowerCase().includes(q),
-      );
+  // Загружаем картинки из API
+  const loadImages = useMemo(async () => {
+    setLoading(true);
+    let result = [];
+    try {
+      const response = await fetch('https://picsum.photos/v2/list?page=1&limit=30');
+      const data = await response.json();
+      const formattedImages = data.map((item, index) => ({
+        id: item.id,
+        title: `Фото ${index + 1}`,
+        url: item.download_url,
+        author: item.author,
+      }));
+      result = formattedImages;
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось загрузить картинки');
+    } finally {
+      setLoading(false);
     }
+    return result;
+  }, []);
+  const loadImagesWithoutMemo = async () => {
+    setLoading(true);
+    let result = [];
+    try {
+      const response = await fetch('https://picsum.photos/v2/list?page=1&limit=30');
+      const data = await response.json();
+      const formattedImages = data.map((item, index) => ({
+        id: item.id,
+        title: `Фото ${index + 1}`,
+        url: item.download_url,
+        author: item.author,
+      }));
+      result = formattedImages;
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось загрузить картинки');
+    } finally {
+      setLoading(false);
+    }
+    return result;
+  };
 
-    // Sort by value (expensive operation)
-    result = result.sort((a, b) => b.value - a.value);
+  const getLoad = async () => {
+    if (useMemoEnabled) setImages(await loadImages);
+    else setImages(await loadImagesWithoutMemo());
+  };
 
-    const end = performance.now();
-    return { data: result, processingTime: end - start };
-  }, [largeDataset, query]);
+  const handleImagePress = useCallback((item) => {
+    Alert.alert('Картинка', `Выбрана: ${item.title}\nАвтор: ${item.author}`);
+  }, []);
+
 
   return (
     <SafeArea>
       <Container>
         <Header>
-          <Emoji>🧮</Emoji>
-          <Title>useMemo Лаборатория</Title>
-          <SubTitle>Демонстрация мемоизации и оптимизации производительности</SubTitle>
+          <Emoji>🖼️</Emoji>
+          <Title>Галерея картинок</Title>
+          <SubTitle>Загрузка из интернета</SubTitle>
         </Header>
-
         <Card>
           <CardHeader>
-            <CardTitle>🧮 Fibonacci с мемоизацией</CardTitle>
-            <StatusBadge>useMemo активен</StatusBadge>
+            <CardTitle>Настройки</CardTitle>
+            <Pill tone={useMemoEnabled ? 'success' : 'neutral'}>
+              {useMemoEnabled ? 'useMemo включен' : 'useMemo выключен'}
+            </Pill>
           </CardHeader>
           <Divider />
-          <Column>
-            <InputRow>
-              <Label>Число (0–30):</Label>
-              <NumberInput
-                value={String(fibInput)}
-                keyboardType="number-pad"
-                onChangeText={setFibInput}
-                placeholder="10"
-                placeholderTextColor="#889096"
-              />
-            </InputRow>
-
-            <ResultDisplay>
-              <ResultLabel>fib({fibNumber}) =</ResultLabel>
-              <ResultValue>{fibResult.value.toLocaleString()}</ResultValue>
-            </ResultDisplay>
-
-            <MetricsGrid>
-              <MetricCard>
-                <MetricTitle>Время расчета</MetricTitle>
-                <MetricValue>{fibResult.time.toFixed(2)}ms</MetricValue>
-              </MetricCard>
-              <MetricCard>
-                <MetricTitle>Вызовов функции</MetricTitle>
-                <MetricValue>{fibResult.calls}</MetricValue>
-              </MetricCard>
-              <MetricCard>
-                <MetricTitle>Рендеров</MetricTitle>
-                <MetricValue>{renderCount}</MetricValue>
-              </MetricCard>
-            </MetricsGrid>
-
-            <InfoText>✅ Пересчитывается только при изменении n</InfoText>
-          </Column>
+          <SwitchRow>
+            <SwitchText>Использовать useMemo</SwitchText>
+            <Switch value={useMemoEnabled} onValueChange={setUseMemoEnabled} />
+          </SwitchRow>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Галерея</CardTitle>
+            <ReloadButton onPress={getLoad} disabled={loading}>
+              <ReloadText>{loading ? '⏳' : '🔄'} Перезагрузить</ReloadText>
+            </ReloadButton>
+          </CardHeader>
+          <Divider />
+          {loading ? (
+            <LoadingContainer>
+              <ActivityIndicator color="#5eead4" size="large" />
+              <Helper>Загружаем картинки из интернета...</Helper>
+            </LoadingContainer>
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <GalleryRow>
+                {images.map((item) => (
+                  <ImageCard key={item.id} onPress={() => handleImagePress(item)}>
+                    <Image
+                      source={{ uri: item.url }}
+                      style={{ width: 120, height: 120, borderRadius: 8 }}
+                    />
+                    <ImageTitle>{item.title}</ImageTitle>
+                    <ImageAuthor>by {item.author}</ImageAuthor>
+                  </ImageCard>
+                ))}
+              </GalleryRow>
+            </ScrollView>
+          )}
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>💻 Тяжелые вычисления</CardTitle>
-            <StatusBadge tone="warning">Демонстрация</StatusBadge>
+            <CardTitle>Информация</CardTitle>
           </CardHeader>
           <Divider />
-          <Column>
-            <InputRow>
-              <Label>Сложность (0–10):</Label>
-              <NumberInput
-                value={String(expensiveInput)}
-                keyboardType="number-pad"
-                onChangeText={setExpensiveInput}
-                placeholder="5"
-                placeholderTextColor="#889096"
-              />
-            </InputRow>
-
-            <ResultDisplay>
-              <ResultLabel>Результат:</ResultLabel>
-              <ResultValue>{expensiveResult.value.toLocaleString()}</ResultValue>
-            </ResultDisplay>
-
-            <PerformanceBar>
-              <PerformanceLabel>Время: {expensiveResult.time.toFixed(1)}ms</PerformanceLabel>
-              <ProgressBar>
-                <ProgressFill style={{ width: `${Math.min(100, expensiveResult.time / 10)}%` }} />
-              </ProgressBar>
-            </PerformanceBar>
-
-            <InfoText>⚡ useMemo предотвращает повторные вычисления</InfoText>
-          </Column>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>📊 Обработка больших данных</CardTitle>
-            <StatusBadge tone="success">{largeDataset.length} элементов</StatusBadge>
-          </CardHeader>
-          <Divider />
-          <Column>
-            <SearchInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="🔍 Поиск по названию или категории..."
-              placeholderTextColor="#889096"
-            />
-
-            <StatsRow>
-              <StatItem>
-                <StatLabel>Найдено</StatLabel>
-                <StatValue>{processedData.data.length}</StatValue>
-              </StatItem>
-              <StatItem>
-                <StatLabel>Всего</StatLabel>
-                <StatValue>{largeDataset.length}</StatValue>
-              </StatItem>
-              <StatItem>
-                <StatLabel>Обработка</StatLabel>
-                <StatValue>{processedData.processingTime.toFixed(1)}ms</StatValue>
-              </StatItem>
-            </StatsRow>
-
-            <PreviewGrid>
-              {processedData.data.slice(0, 6).map((item) => (
-                <DataCard key={item.id} active={item.isActive}>
-                  <ItemLabel>{item.label}</ItemLabel>
-                  <ItemCategory>{item.category}</ItemCategory>
-                  <ItemValue>{item.value}</ItemValue>
-                </DataCard>
-              ))}
-            </PreviewGrid>
-
-            <InfoText>🚀 Фильтрация и сортировка кешируются</InfoText>
-          </Column>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>🎯 Демонстрация оптимизации</CardTitle>
-          </CardHeader>
-          <Divider />
-          <DemoButton onPress={() => setRenderCount((prev) => prev + 1)}>
-            <DemoButtonText>Принудительный ре-рендер ({renderCount})</DemoButtonText>
-          </DemoButton>
-          <InfoText style={{ marginTop: 12 }}>
-            Нажмите кнопку - мемоизированные значения не пересчитываются!
-          </InfoText>
+          <InfoList>
+            <InfoItem>
+              <InfoIcon>🌐</InfoIcon>
+              <InfoText>Картинки загружаются с picsum.photos</InfoText>
+            </InfoItem>
+            <InfoItem>
+              <InfoIcon>🔍</InfoIcon>
+              <InfoText>Поиск работает по названию и автору</InfoText>
+            </InfoItem>
+            <InfoItem>
+              <InfoIcon>📱</InfoIcon>
+              <InfoText>Прокрутите горизонтально для просмотра</InfoText>
+            </InfoItem>
+            <InfoItem>
+              <InfoIcon>🔄</InfoIcon>
+              <InfoText>Нажмите "Перезагрузить" для новых картинок</InfoText>
+            </InfoItem>
+          </InfoList>
         </Card>
 
         <BottomSpacer />
@@ -280,13 +198,23 @@ const Card = styled.View`
 `;
 
 const CardHeader = styled.View`
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const CardTitle = styled(Text)`
   color: #e6e9ef;
   font-weight: 700;
+`;
+
+const Pill = styled(Text)`
+  color: #b3b8c3;
+  background-color: ${(p) => (p.tone === 'success' ? '#0e2f25' : '#151a23')};
+  border: 1px solid ${(p) => (p.tone === 'success' ? '#1f7a4a' : '#252a33')};
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
 `;
 
 const Divider = styled.View`
@@ -295,233 +223,98 @@ const Divider = styled.View`
   margin: 12px 0;
 `;
 
-const Column = styled.View`
-  gap: 8px;
-`;
-
-const Row = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Label = styled(Text)`
-  color: #9aa4b2;
-`;
-
-const SmallInput = styled(TextInput)`
-  background-color: #0f1218;
-  border: 1px solid #1c2230;
-  border-radius: 12px;
-  padding: 8px 12px;
-  color: #e6e9ef;
-  min-width: 80px;
-  text-align: center;
-`;
-
 const Input = styled(TextInput)`
   background-color: #0f1218;
   border: 1px solid #1c2230;
   border-radius: 12px;
   padding: 12px 14px;
   color: #e6e9ef;
-`;
-
-const StatusBadge = styled(Text)`
-  color: ${(props) =>
-    props.tone === 'success' ? '#16a34a' : props.tone === 'warning' ? '#ea580c' : '#5eead4'};
-  background-color: ${(props) =>
-    props.tone === 'success' ? '#0e2f25' : props.tone === 'warning' ? '#2c1810' : '#0d2926'};
-  border: 1px solid
-    ${(props) =>
-      props.tone === 'success' ? '#1f7a4a' : props.tone === 'warning' ? '#c2410c' : '#1f7a4a'};
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  flex: 1;
-`;
-
-const InputRow = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 8px;
 `;
 
-const NumberInput = styled(TextInput)`
-  background-color: #0f1218;
-  border: 1px solid #1c2230;
-  border-radius: 8px;
+const Helper = styled(Text)`
+  color: #9aa4b2;
+  text-align: center;
+`;
+
+const ReloadButton = styled.TouchableOpacity`
+  background-color: ${(p) => (p.disabled ? '#2a2f3a' : '#5eead4')};
   padding: 8px 12px;
-  color: #e6e9ef;
-  min-width: 70px;
-  text-align: center;
-  font-weight: 600;
-`;
-
-const ResultDisplay = styled.View`
-  background-color: #0f1218;
-  border: 1px solid #1c2230;
-  border-radius: 12px;
-  padding: 16px;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 0;
-`;
-
-const ResultLabel = styled(Text)`
-  color: #9aa4b2;
-  font-size: 16px;
-`;
-
-const ResultValue = styled(Text)`
-  color: #5eead4;
-  font-size: 18px;
-  font-weight: 700;
-`;
-
-const MetricsGrid = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 8px 0;
-`;
-
-const MetricCard = styled.View`
-  background-color: #0f1218;
-  border: 1px solid #1c2230;
   border-radius: 8px;
-  padding: 8px;
-  flex: 1;
-  margin: 0 2px;
   align-items: center;
 `;
 
-const MetricTitle = styled(Text)`
-  color: #9aa4b2;
-  font-size: 9px;
-  text-align: center;
-  margin-bottom: 4px;
-`;
-
-const MetricValue = styled(Text)`
-  color: #e6e9ef;
-  font-weight: 600;
+const ReloadText = styled(Text)`
+  color: ${(p) => (p.disabled ? '#6b7280' : '#052925')};
+  font-weight: 700;
   font-size: 12px;
 `;
 
-const PerformanceBar = styled.View`
-  margin: 8px 0;
+const LoadingContainer = styled.View`
+  align-items: center;
+  padding: 20px;
+  gap: 12px;
 `;
 
-const PerformanceLabel = styled(Text)`
-  color: #9aa4b2;
-  font-size: 12px;
-  margin-bottom: 4px;
-`;
-
-const ProgressBar = styled.View`
-  height: 6px;
-  background-color: #1c2230;
-  border-radius: 3px;
-  overflow: hidden;
-`;
-
-const ProgressFill = styled.View`
-  height: 100%;
-  background-color: #5eead4;
-  border-radius: 3px;
-`;
-
-const SearchInput = styled(TextInput)`
-  background-color: #0f1218;
-  border: 1px solid #1c2230;
-  border-radius: 12px;
-  padding: 12px 16px;
-  color: #e6e9ef;
-  margin-bottom: 12px;
-  font-size: 14px;
-`;
-
-const StatsRow = styled.View`
+const GalleryRow = styled.View`
   flex-direction: row;
-  justify-content: space-around;
+  gap: 12px;
+`;
+
+const ImageCard = styled.TouchableOpacity`
   background-color: #0f1218;
   border: 1px solid #1c2230;
   border-radius: 12px;
-  padding: 12px;
-  margin: 8px 0;
-`;
-
-const StatItem = styled.View`
+  padding: 8px;
   align-items: center;
+  min-width: 140px;
 `;
 
-const StatLabel = styled(Text)`
+const ImageTitle = styled(Text)`
+  color: #e6e9ef;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 8px;
+`;
+
+const ImageAuthor = styled(Text)`
   color: #9aa4b2;
   font-size: 10px;
-  margin-bottom: 4px;
+  text-align: center;
+  margin-top: 2px;
 `;
 
-const StatValue = styled(Text)`
-  color: #5eead4;
-  font-weight: 600;
-  font-size: 14px;
+const InfoList = styled.View`
+  gap: 12px;
 `;
 
-const PreviewGrid = styled.View`
+const InfoItem = styled.View`
   flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 8px 0;
+  align-items: flex-start;
+  gap: 12px;
 `;
 
-const DataCard = styled.View`
-  background-color: ${(props) => (props.active ? '#0e2f25' : '#0f1218')};
-  border: 1px solid ${(props) => (props.active ? '#1f7a4a' : '#1c2230')};
-  border-radius: 8px;
-  padding: 8px;
-  margin: 2px;
-  width: 48%;
-  min-height: 60px;
-`;
-
-const ItemLabel = styled(Text)`
-  color: #e6e9ef;
-  font-size: 10px;
-  font-weight: 600;
-`;
-
-const ItemCategory = styled(Text)`
-  color: #9aa4b2;
-  font-size: 8px;
-  margin: 2px 0;
-`;
-
-const ItemValue = styled(Text)`
-  color: #5eead4;
-  font-size: 12px;
-  font-weight: 700;
-`;
-
-const DemoButton = styled.TouchableOpacity`
-  background-color: #5eead4;
-  padding: 12px 16px;
-  border-radius: 12px;
-  align-items: center;
-`;
-
-const DemoButtonText = styled(Text)`
-  color: #052925;
-  font-weight: 600;
-  font-size: 14px;
+const InfoIcon = styled(Text)`
+  font-size: 20px;
 `;
 
 const InfoText = styled(Text)`
   color: #9aa4b2;
-  font-size: 12px;
-  line-height: 16px;
+  flex: 1;
+  line-height: 20px;
+`;
+
+const SwitchRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SwitchText = styled(Text)`
+  color: #e6e9ef;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const BottomSpacer = styled.View`
