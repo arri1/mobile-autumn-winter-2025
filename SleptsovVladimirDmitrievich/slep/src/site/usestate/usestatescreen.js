@@ -5,18 +5,27 @@ import {
   Switch, 
   StyleSheet,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native';
+import { useTodoStore } from '../storline/todoStore';
 
 export default function UseStateScreen() {
 
   const systemColorScheme = useColorScheme();
-
   const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === 'dark');
-  const [count, setCount] = useState(0);
+
+  const { 
+    todos, 
+    getTodosCount, 
+    clearAllTodos,
+    deleteTodo 
+  } = useTodoStore();
+
+  const { total, completed } = getTodosCount();
 
   const theme = {
     light: {
@@ -25,6 +34,9 @@ export default function UseStateScreen() {
       card: '#F5F5F5',
       border: '#E0E0E0',
       button: '#4CAF50',
+      danger: '#F44336',
+      success: '#4CAF50',
+      warning: '#FF9800',
     },
     dark: {
       background: '#121212',
@@ -32,6 +44,9 @@ export default function UseStateScreen() {
       card: '#1E1E1E',
       border: '#333333',
       button: '#2196F3',
+      danger: '#D32F2F',
+      success: '#388E3C',
+      warning: '#F57C00',
     }
   };
 
@@ -73,23 +88,74 @@ export default function UseStateScreen() {
       fontSize: 18,
       color: currentTheme.text,
     },
-    counterText: {
-      fontSize: 20,
-      textAlign: 'center',
+    statsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginVertical: 20,
+    },
+    statItem: {
+      alignItems: 'center',
+    },
+    statNumber: {
+      fontSize: 24,
+      fontWeight: 'bold',
       color: currentTheme.text,
-      marginVertical: 15,
+    },
+    statLabel: {
+      fontSize: 14,
+      color: currentTheme.text,
+      marginTop: 5,
     },
     button: {
-      backgroundColor: currentTheme.button,
       paddingVertical: 12,
       borderRadius: 8,
       alignItems: 'center',
-      backgroundColor: '#00ff00ff',
+      marginVertical: 5,
+    },
+    primaryButton: {
+      backgroundColor: currentTheme.button,
+    },
+    dangerButton: {
+      backgroundColor: currentTheme.danger,
     },
     buttonText: {
-      fontSize: 18,
-      color: '#000',
+      fontSize: 16,
       fontWeight: 'bold',
+      color: '#FFFFFF',
+    },
+    todoItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: currentTheme.border,
+    },
+    todoText: {
+      fontSize: 16,
+      color: currentTheme.text,
+      flex: 1,
+    },
+    completedText: {
+      textDecorationLine: 'line-through',
+      color: currentTheme.danger,
+      opacity: 0.6,
+    },
+    deleteButton: {
+      padding: 8,
+      backgroundColor: currentTheme.danger,
+      borderRadius: 5,
+    },
+    deleteButtonText: {
+      color: '#FFFFFF',
+      fontSize: 12,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: currentTheme.text,
+      marginTop: 20,
+      marginBottom: 10,
     }
   });
 
@@ -100,28 +166,39 @@ export default function UseStateScreen() {
         backgroundColor={currentTheme.background}
       />
       
-      <Text style={styles.header}>Настройки отображения интерфейса</Text>
+      <Text style={styles.header}>Статистика задач</Text>
       
-      <View style={styles.card}>
-        <View style={styles.switchContainer}>
-          <Text style={styles.label}>
-            {isDarkMode ? 'Темная тема' : 'Светлая тема'}
-          </Text>
-          <Switch
-            value={isDarkMode}
-            onValueChange={setIsDarkMode}
-            thumbColor={isDarkMode ? '#00ff00ff' : '#f4f3f4'}
-            trackColor={{ false: '#ff0000ff', true: '#00ff00ff' }}
-          />
-        </View>
-      </View>
+      <Text style={styles.sectionTitle}>
+        Все задачи ({todos.length})
+      </Text>
+      
+      <ScrollView style={{ flex: 1 }}>
+        <View style={styles.card}>
+          {todos.length === 0 ? (
+            <Text style={[styles.text, { textAlign: 'center' }]}>
+              Задачи отсутствуют
+            </Text>
+          ) : (
+            todos.map((todo) => (
+              <View key={todo.id} style={styles.todoItem}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[
+                    styles.todoText,
+                    todo.completed && styles.completedText
+                  ]}>
+                    {todo.text}
+                  </Text>
+                  <Text style={[styles.text, { fontSize: 12, opacity: 0.7 }]}>
+                    Создано: {todo.createdAt}
+                  </Text>
+                </View>
+                
 
-      <View style={styles.card}>
-        <Text style={styles.counterText}>Счётчик: {count}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => setCount(count + 1)}>
-          <Text style={styles.buttonText}>Увеличить</Text>
-        </TouchableOpacity>
-      </View>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
