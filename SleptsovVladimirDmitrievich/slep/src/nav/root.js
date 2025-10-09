@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import UseStateScreen from '../site/usestate/usestatescreen';
 import UseEffectScreen from '../site/useeffect/useeffectscreen';
 import UseMemoScreen from '../site/usememo/usememoscreen';
+import UseEffectNetScreen from '../site/useeffectnet/useeffectnetscreen';
+import StoreLineScreen from '../site/storline/storelinescreen';
 
 const Tab = createBottomTabNavigator();
  
@@ -20,7 +22,9 @@ export default function RootTabs() {
       >
         <Tab.Screen name="useState" component={UseStateScreen} />
         <Tab.Screen name="useEffect" component={UseEffectScreen} />
+        <Tab.Screen name="useEffectNet" component={UseEffectNetScreen} />
         <Tab.Screen name="useMemo" component={UseMemoScreen} />
+        <Tab.Screen name="storeLine" component={StoreLineScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
