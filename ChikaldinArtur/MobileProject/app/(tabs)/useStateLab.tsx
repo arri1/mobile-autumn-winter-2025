@@ -16,7 +16,13 @@ export default function useStateLab(){
     const [enabled, setEnabled] = useState(false);
 
     return(
-    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
+    <ScrollView 
+    contentContainerStyle={{ 
+    flexGrow: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    padding: 20,
+    backgroundColor:'white'}}>
         <View style={{ marginBottom: 40, alignItems: "center" }}>
             <Text style={{ fontSize: 20, marginBottom: 10 }}>Счётчик</Text>
             <Text style={{ fontSize: 24, marginBottom: 10 }}>Счёт: {count}</Text>
