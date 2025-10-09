@@ -1,25 +1,35 @@
 import { useState, useEffect, useMemo } from 'react';
 import { View, Text, Button, Switch, TextInput, ScrollView, StyleSheet } from "react-native";
 
-export default function UseStateLab() {
+export default function UseEffectLab() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState('');
   const [enabled, setEnabled] = useState(false);
 
-  // --- useEffect ---
+  // ===================== useEffect =====================
+  const [effectMessage, setEffectMessage] = useState("");
+
   useEffect(() => {
-    console.log("Счётчик изменился:", count);
+    const msg = `Счётчик изменился: ${count}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [count]);
 
   useEffect(() => {
-    console.log("Переключатель изменился:", enabled ? "Включено" : "Выключено");
+    const msg = `Переключатель: ${enabled ? "Включено" : "Выключено"}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [enabled]);
 
   useEffect(() => {
-    console.log("Текст изменился:", text);
+    const msg = `Текст изменился: ${text || "ничего"}`;
+    console.log(msg);
+    setEffectMessage(msg);
   }, [text]);
+  // =====================================================
 
-  // --- useMemo ---
+
+  // ===================== useMemo =====================
   const isEven = useMemo(() => {
     console.log("Пересчитываем isEven...");
     return count % 2 === 0;
@@ -29,14 +39,24 @@ export default function UseStateLab() {
     console.log("Пересчитываем textLength...");
     return text.length;
   }, [text]);
+  // =====================================================
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* useEffect: показываем последнее событие */}
+      <View style={styles.card}>
+        <Text style={styles.sectionTitle}>Последнее событие (useEffect)</Text>
+        <Text style={{ fontSize: 16, color: "#007AFF" }}>{effectMessage}</Text>
+      </View>
+
+      {/* Счётчик */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Счётчик</Text>
         <Text style={styles.counterText}>Счёт: {count}</Text>
+        {/* useMemo для чётности */}
         <Text style={{ color: isEven ? "green" : "red" }}>
-          {isEven ? "Чётное" : "Нечётное"}
+          {isEven ? "Чётное (useMemo)" : "Нечётное (useMemo)"}
         </Text>
         <View style={styles.buttonGroup}>
           <Button title="Добавить" onPress={() => setCount(count + 1)} />
@@ -44,12 +64,14 @@ export default function UseStateLab() {
         </View>
       </View>
 
+      {/* Переключатель */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Переключатель</Text>
         <Text style={styles.switchLabel}>{enabled ? "Включено" : "Выключено"}</Text>
         <Switch value={enabled} onValueChange={setEnabled} />
       </View>
 
+      {/* Текстовое поле */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Текстовое поле</Text>
         <TextInput
@@ -59,7 +81,10 @@ export default function UseStateLab() {
           onChangeText={setText}
         />
         <Text style={styles.previewText}>Вы ввели: {text || "ничего"}</Text>
-        <Text style={{ marginTop: 8 }}>Длина текста: {textLength} символов</Text>
+        {/* useMemo для длины текста */}
+        <Text style={{ marginTop: 8, color: "#8e44ad" }}>
+          Длина текста (useMemo): {textLength} символов
+        </Text>
       </View>
     </ScrollView>
   );
