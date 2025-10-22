@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { View, Text, StyleSheet, Button, ScrollView } from "react-native"
-import Timer from "../components/Timer";
+import Timer from "../../components/Timer";
 
 
-export default function UseMemo() {
+export default function UseMemoScreen() {
     const [sortingLoading, setSortingLoading] = useState(false);
     const [numbersCount, setNumbersCount] = useState(50);
     const [numbersCounterValue, setNumbersCounterValue] = useState(numbersCount);

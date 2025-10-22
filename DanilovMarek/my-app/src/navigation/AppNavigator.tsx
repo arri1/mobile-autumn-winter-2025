@@ -1,16 +1,18 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import useEffect from "../screens/UseEffect";
-import useState from "../screens/UseState";
-import useMemo from "../screens/UseMemo";
+import UseEffectScreen from "../screens/Main/UseEffectScreen";
+import useStateScreen from "../screens/Main/UseStateScreen";
+import useMemoScreen from "../screens/Main/UseMemoScreen";
+import ProfileScreen from "../screens/Main/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
     return (
         <Tab.Navigator>
-            <Tab.Screen name="UseState" component={useState} />
-            <Tab.Screen name="UseEffect" component={useEffect} />
-            <Tab.Screen name="UseMemo" component={useMemo} />
+            <Tab.Screen name="UseState" component={useStateScreen} />
+            <Tab.Screen name="UseEffect" component={UseEffectScreen} />
+            <Tab.Screen name="UseMemo" component={useMemoScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );
 }

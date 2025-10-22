@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import Timer from "../components/Timer";
+import Timer from "../../components/Timer";
 
-export default function UseState() {
+export default function UseStateScreen() {
     const [str, setStr] = useState('');
     const [strLen, setStrLen] = useState(str.length);
     return (
