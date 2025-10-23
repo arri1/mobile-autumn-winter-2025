@@ -14,7 +14,7 @@ export default function RootTabs() {
           headerStyle: { backgroundColor: '#0D0F14' },
           headerTintColor: '#E6E9EF',
           tabBarStyle: { backgroundColor: '#0D0F14', borderTopColor: '#1C2230' },
-          tabBarActiveTintColor: '#00ff00ff',
+          tabBarActiveTintColor: '#007AFF',
           tabBarInactiveTintColor: '#9AA4B2',
         }}
       >
