@@ -187,7 +187,7 @@ const EmptyStateText = styled.Text`
 `;
 
 const UsersScreen = () => {
-  const { getUsers, logout } = useAuthStore();
+  const { getUsers } = useAuthStore();
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -240,7 +240,7 @@ const UsersScreen = () => {
   const renderUserItem = ({ item }) => (
     <UserCard role={item.role}>
       <UserAvatar>
-        <Ionicons name="person-circle-outline" size={40} colorNumber="#E6E9EF" />
+        <Ionicons name="person-circle-outline" size={40} color="#E6E9EF" />
       </UserAvatar>
       <UserInfo>
         <UserName>{item.name || 'N/A'}</UserName>
@@ -286,9 +286,6 @@ const UsersScreen = () => {
     <Container>
       <Header>
         <Title>Список Пользователей</Title>
-        <LogoutButton onPress={logout}>
-          <Ionicons name="log-out-outline" size={24} color="#E6E9EF" />
-        </LogoutButton>
       </Header>
 
       <SearchFilterContainer>

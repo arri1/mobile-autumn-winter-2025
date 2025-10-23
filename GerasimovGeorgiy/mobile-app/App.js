@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import RootTabs from './src/navigation/RootTabs';
+import AuthNavigator from './src/navigation/AuthNavigator';
 import useAuthStore from './src/store/authStore';
 
 export default function App() {
-  const { initializeAuth } = useAuthStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-
-  return <RootTabs />;
+  return (
+    <NavigationContainer>
+      <StatusBar style="light" backgroundColor="#1a1a1a" />
+      {isAuthenticated ? <RootTabs /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
 }

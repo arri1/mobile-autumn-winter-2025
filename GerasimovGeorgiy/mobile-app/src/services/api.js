@@ -155,7 +155,28 @@ class ApiService {
       return response;
     } catch (error) {
       console.error('API request error:', error);
-      throw error;
+      
+      // More detailed error handling
+      if (error.response) {
+        // Server responded with error status
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+        
+        // Throw a more descriptive error
+        const errorMessage = error.response.data?.message || 
+                            error.response.data?.error || 
+                            `HTTP ${error.response.status}: ${error.response.statusText}`;
+        throw new Error(errorMessage);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('No response received:', error.request);
+        throw new Error('Сервер недоступен. Проверьте подключение к интернету.');
+      } else {
+        // Something else happened
+        console.error('Request setup error:', error.message);
+        throw new Error(error.message);
+      }
     }
   }
 }
