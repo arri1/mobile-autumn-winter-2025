@@ -28,7 +28,7 @@ const UseStateScreen = () => {
           marginBottom: '30px',
           color: isDark ? '#fff' : '#333'
         }}>
-          Панель настроек
+          useState
         </h1>
 
         <div style={{ marginBottom: '40px' }}>
