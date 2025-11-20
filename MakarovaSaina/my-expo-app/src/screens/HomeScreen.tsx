@@ -33,6 +33,11 @@ export default function HomeScreen({ navigation }: Props) {
       screen: 'UseMemo',
       color: '#66FCF1',
     },
+    {
+      title: 'Zustand',
+      screen: 'Zustand',
+      color: '#66FCF1',
+    },
   ];
 
   return (

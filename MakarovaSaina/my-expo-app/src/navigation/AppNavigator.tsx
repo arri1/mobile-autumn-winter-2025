@@ -6,6 +6,7 @@ import UseStateScreen from '../screens/UseStateScreen';
 import UseEffectScreen from '../screens/UseEffectScreen';
 import UseMemoScreen from '../screens/UseMemoScreen';
 import HomeScreen from '../screens/HomeScreen';
+import ZustandScreen from '../screens/ZustandScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -17,6 +18,7 @@ function CustomDrawerContent(props: any) {
     { label: 'useState', screen: 'UseState' },
     { label: 'useEffect', screen: 'UseEffect' },
     { label: 'useMemo', screen: 'UseMemo' },
+    { label: 'Zustand', screen: 'Zustand' },
   ];
 
   return (
@@ -129,6 +131,14 @@ export default function AppNavigator() {
         options={{
           title: 'useMemo Хук',
           drawerLabel: 'useMemo',
+        }}
+      />
+      <Drawer.Screen
+        name="Zustand"
+        component={ZustandScreen}
+        options={{
+          title: 'Zustand Store',
+          drawerLabel: 'Zustand'
         }}
       />
     </Drawer.Navigator>
