@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { View, Text, StyleSheet, Button, ScrollView } from "react-native"
+import Timer from "../../components/Timer";
 
-export default function UseMemo() {
+
+export default function UseMemoScreen() {
     const [sortingLoading, setSortingLoading] = useState(false);
     const [numbersCount, setNumbersCount] = useState(50);
     const [numbersCounterValue, setNumbersCounterValue] = useState(numbersCount);
@@ -43,6 +45,7 @@ export default function UseMemo() {
     
     return (
         <View>
+            <Timer />
             <Text style={styles.numbersCounterName}>Количество чисел:</Text>
             <View style={styles.numbersCounter}>
                 <Button title="-10" onPress={() => {
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         gap: 50,
         margin: 10,
-        paddingBottom: 130,
+        paddingBottom: 160,
         fontSize: 25
     },
     numbersListPlaceHolder: {
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     numbersListName: {
-        alignSelf: "center",
+        alignSelf: 'center',
         fontSize: 30
     }
 });
