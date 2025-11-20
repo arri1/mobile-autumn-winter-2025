@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
 const API_CONFIG = {
-  baseURL: 'http://155.212.245.212',
+  baseURL: 'https://cloud.kit-imi.info',
   endpoints: {
     health: '/api/health',
     register: '/api/auth/register',
