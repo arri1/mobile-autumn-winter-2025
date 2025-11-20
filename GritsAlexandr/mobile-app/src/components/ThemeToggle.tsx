@@ -22,7 +22,7 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
     />
     <div style={{ flex: 1 }}>
       <div style={{ fontWeight: 'bold', fontSize: '16px' }}>
-        {isDark ? '🌙 Тёмная тема' : '☀️ Светлая тема'}
+        {isDark ? 'Тёмная тема' : 'Светлая тема'}
       </div>
       <div style={{ fontSize: '12px', opacity: 0.7 }}>
         {isDark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему'}
