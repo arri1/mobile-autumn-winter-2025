@@ -1,9 +1,13 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Image } from 'react-native';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useTheme } from '@/contexts/theme-context';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function AboutScreen() {
+  const { actualColorScheme, toggleTheme } = useTheme();
+  const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
   return (
     <ScrollView style={styles.scrollView}>
       <ThemedView style={styles.container}>
@@ -13,6 +17,18 @@ export default function AboutScreen() {
             О приложении
           </ThemedText>
           <View style={styles.divider} />
+
+          {/* Theme Toggle Button */}
+          <TouchableOpacity
+            style={[styles.themeButton, { backgroundColor: buttonBg }]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}>
+            <ThemedText style={styles.themeButtonText}>
+              {actualColorScheme === 'dark' ? '☀️' : '🌙'}
+              {' '}
+              {actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
+            </ThemedText>
+          </TouchableOpacity>
         </ThemedView>
 
         {/* Profile Section */}
@@ -163,6 +179,19 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: '#007AFF',
     borderRadius: 2,
+  },
+  themeButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  themeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
   profileSection: {
     alignItems: 'center',

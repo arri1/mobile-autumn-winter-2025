@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView, Image as RNImage, Dimensions } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 type CatImage = {
   id: string;
@@ -15,6 +16,9 @@ export default function UseEffectExample() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fetchCount, setFetchCount] = useState(0);
+
+  // Получаем цвета для текущей темы
+  const imageBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
 
   // Вычисляем размер изображения в формате 16:9
   const screenWidth = Dimensions.get('window').width - 32; // минус padding
@@ -61,7 +65,7 @@ export default function UseEffectExample() {
     <ScrollView style={styles.scrollView}>
       <ThemedView style={styles.container}>
         <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.title}>useEffect Example</ThemedText>
+          <ThemedText type="title" style={styles.title}>Пример useEffect: тапалка котейек</ThemedText>
           <ThemedText style={styles.subtitle}>Загрузка данных из API</ThemedText>
         </ThemedView>
 
@@ -76,7 +80,7 @@ export default function UseEffectExample() {
         </ThemedView>
 
         {/* Контейнер с изображением */}
-        <ThemedView style={[styles.imageContainer, { height: imageHeight }]}>
+        <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
           {loading ? (
             <View style={[styles.loadingContainer, { height: imageHeight }]}>
               <ActivityIndicator size="large" color="#007AFF" />
@@ -107,18 +111,6 @@ export default function UseEffectExample() {
               </View>
             </TouchableOpacity>
           ) : null}
-        </ThemedView>
-
-        {/* Код примера */}
-        <ThemedView style={styles.codeBox}>
-          <ThemedText type="subtitle" style={styles.codeTitle}>Код useEffect:</ThemedText>
-          <View style={styles.codeContent}>
-            <ThemedText style={styles.codeText}>
-              useEffect(() =&gt; {'{'}
-              {'\n'}  fetchCatImage();
-              {'\n'}{'}'}, []); // Загрузка при монтировании
-            </ThemedText>
-          </View>
         </ThemedView>
 
         {/* Статистика */}
@@ -174,7 +166,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: '#f0f0f0',
   },
   loadingContainer: {
     flex: 1,
