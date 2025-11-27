@@ -1,12 +1,12 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { LoginScreen } from './src/screens/UseState_Login';
+import { TodoScreen } from './src/screens/UseEffect_todo';
 
 export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <LoginScreen />
+      <TodoScreen />
     </>
   );
 }
