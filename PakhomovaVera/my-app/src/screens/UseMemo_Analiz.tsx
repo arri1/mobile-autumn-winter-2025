@@ -9,7 +9,11 @@ import {
 import { Task } from '../types';
 import { styles } from '../styles/Analiz'
 
-export const TodoAdvancedScreen: React.FC = () => {
+interface TodoAdvancedScreenProps {
+    navigation?: any;
+}
+
+export const TodoAdvancedScreen: React.FC<TodoAdvancedScreenProps> = ({ navigation }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCompleted, setFilterCompleted] = useState<'all' | 'completed' | 'active'>('all');
@@ -157,6 +161,12 @@ export const TodoAdvancedScreen: React.FC = () => {
           <Text style={styles.emptyText}>Задачи не найдены</Text>
         }
       />
+      <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation?.goBack()}
+      >
+        <Text style={styles.backButtonText}>← Назад к списку лаб</Text>
+      </TouchableOpacity>
     </View>
   );
 };

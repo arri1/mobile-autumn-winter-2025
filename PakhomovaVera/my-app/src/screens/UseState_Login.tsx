@@ -10,7 +10,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-export const LoginScreen: React.FC = () => {
+interface LoginScreenProps {
+    navigation?: any;
+}
+
+export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation })  => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +65,7 @@ export const LoginScreen: React.FC = () => {
           <Text style={styles.buttonText}>Войти (useState)</Text>
         )}
       </TouchableOpacity>
-
+       
     </View>
   );
 };

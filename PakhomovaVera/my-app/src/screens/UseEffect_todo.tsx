@@ -6,10 +6,12 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  TouchableOpacity
 } from 'react-native';
 import { Task } from '../types';
 import { styles } from '../styles/Import'
-const fetchTasksFromAPI = (): Promise<Task[]> => {
+
+export const fetchTasksFromAPI = (): Promise<Task[]> => {
   console.log('🔗 USE EFFECT: Загрузка данных с сервера...');
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -37,12 +39,14 @@ const fetchTasksFromAPI = (): Promise<Task[]> => {
     }, 2000); 
   });
 };
-
-export const TodoScreen: React.FC = () => {
+interface TodoScreenProps {
+    navigation?: any;
+}
+export const TodoScreen: React.FC<TodoScreenProps> = ({ navigation })  => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+ 
  
   useEffect(() => {
     console.log('🔄 USE EFFECT: Компонент смонтирован, начинаю загрузку...');
@@ -123,7 +127,12 @@ export const TodoScreen: React.FC = () => {
         )}
         contentContainerStyle={styles.list}
       />
-
+    <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation?.goBack()}
+      >
+        <Text style={styles.backButtonText}>← Назад к списку лаб</Text>
+      </TouchableOpacity>
     </View>
   );
 };
