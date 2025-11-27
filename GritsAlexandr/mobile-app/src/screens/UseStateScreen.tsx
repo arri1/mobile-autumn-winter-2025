@@ -1,60 +1,101 @@
-import { useState } from "react";
-import ThemeToggle from "../components/ThemeToggle";
-import Counter from "../components/Counter";
+import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 
 const UseStateScreen = () => {
-  const [isDark, setIsDark] = useState<boolean>(false);
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState(0);
+  const [isDark, setIsDark] = useState(false);
 
   return (
-    <div style={{ 
-      background: isDark ? '#1a1a1a' : '#f8f9fa',
-      color: isDark ? '#fff' : '#333',
-      minHeight: '100vh',
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif',
-      transition: 'all 0.3s ease'
-    }}>
-      <div style={{
-        maxWidth: '500px',
-        margin: '0 auto',
-        background: isDark ? '#2d2d2d' : '#fff',
-        padding: '30px',
-        borderRadius: '15px',
-        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h1 style={{ 
-          textAlign: 'center', 
-          marginBottom: '30px',
-          color: isDark ? '#fff' : '#333'
-        }}>
-          useState
-        </h1>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: isDark ? '#1f2937' : '#ffffff' },
+      ]}
+    >
+      <Text style={[styles.title, { color: isDark ? '#fff' : '#0f172a' }]}>
+        useState
+      </Text>
 
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ marginBottom: '15px' }}>Настройка темы</h2>
-          <ThemeToggle 
-            isDark={isDark} 
-            onToggle={() => setIsDark(!isDark)} 
-          />
-        </div>
+      <View style={styles.row}>
+        <Text style={[styles.label, { color: isDark ? '#e2e8f0' : '#0f172a' }]}>
+          Тёмная тема
+        </Text>
+        <Switch value={isDark} onValueChange={setIsDark} />
+      </View>
 
-        {}
-        <div>
-          <h2 style={{
-            marginBottom: '15px',
-            textAlign: 'center'
-          }}>
-            Cчётчик</h2>
-          <Counter
-            count={count}
-            onIncrement={() => setCount(count + 1)}
-            onDecrement={() => setCount(count - 1)}
-            onReset={() => setCount(0)}
-          />
-        </div>
-      </div>
-    </div>
+      <Text style={[styles.counter, { color: isDark ? '#fff' : '#0f172a' }]}>
+        {count}
+      </Text>
+      <View style={styles.buttons}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setCount((prev) => prev - 1)}
+        >
+          <Text style={styles.buttonText}>−</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setCount((prev) => prev + 1)}
+        >
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    padding: 24,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  subtitle: {
+    fontSize: 14,
+    marginBottom: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  counter: {
+    fontSize: 48,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    borderRadius: 12,
+    marginHorizontal: 8,
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 28,
+    fontWeight: '700',
+  },
+});
+
 export default UseStateScreen;
