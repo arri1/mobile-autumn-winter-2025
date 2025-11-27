@@ -19,15 +19,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          href: null, // Скрыть из табов
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          href: null, // Скрыть из табов
         }}
       />
       <Tabs.Screen
@@ -49,6 +47,13 @@ export default function TabLayout() {
         options={{
           title: 'USE MEMO',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="m.square.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="Zustand/index"
+        options={{
+          title: 'ZUSTAND',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="z.square.fill" color={color} />,
         }}
       />
     </Tabs>
