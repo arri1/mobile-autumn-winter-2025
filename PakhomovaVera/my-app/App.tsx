@@ -23,12 +23,19 @@ export default function App() {
       setTodos(updatedTodos);
       setNewTodo('');
       
-      // Вывод в консоль
       console.log('Добавлена задача:', todo);
       console.log('Все задачи:', updatedTodos);
     }
   };
-
+  const toggleTodo = (id: string) => {
+    const updatedTodos = todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
+    
+    const todo = updatedTodos.find(t => t.id === id);
+    console.log('Задача обновлена:', todo);
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Менеджер задач</Text>
@@ -47,13 +54,25 @@ export default function App() {
 
       <ScrollView style={styles.todoList}>
         {todos.map(todo => (
-          <View key={todo.id} style={styles.todoItem}>
-            <Text>{todo.title}</Text>
+          <View key={todo.id} style={[
+            styles.todoItem,
+            todo.completed && styles.completedTodo
+          ]}>
+            <TouchableOpacity onPress={() => toggleTodo(todo.id)}>
+              <Text style={[
+                styles.todoText,
+                todo.completed && styles.completedText
+              ]}>
+                {todo.title}
+                {todo.completed && ' ✓'}
+              </Text>
+            </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -99,4 +118,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
   },
+  completedTodo: {
+  backgroundColor: '#E8F5E8',
+},
+todoText: {
+  fontSize: 16,
+},
+completedText: {
+  textDecorationLine: 'line-through',
+  color: '#666',
+},
 });
