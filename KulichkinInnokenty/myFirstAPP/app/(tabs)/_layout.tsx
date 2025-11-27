@@ -31,24 +31,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="use_state_lab"
+        name="UseState/index"
         options={{
           title: 'USE STATE',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="s.square.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="use_effect_lab"
+        name="UseEffect/index"
         options={{
           title: 'USE EFFECT',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="e.square.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="use_memo_lab"
+        name="UseMemo/index"
         options={{
           title: 'USE MEMO',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="m.square.fill" color={color} />,
         }}
       />
     </Tabs>
