@@ -1,98 +1,143 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Container, Card, Button, H1, H2, Body, Caption } from '../../components/ui';
+import useAuthStore from '../../store/authStore';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const router = useRouter();
+  const { isAuthenticated, user } = useAuthStore();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  return (
+    <Container scrollable padding="md">
+      <View style={styles.header}>
+        <H1>Главная</H1>
+        <Caption color="secondary">
+          Минималистичное React Native приложение
+        </Caption>
+      </View>
+
+      {/* Welcome Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>
+          {isAuthenticated ? `Добро пожаловать, ${user?.name}` : 'Добро пожаловать'}
+        </H2>
+        <Body color="secondary">
+          Это демонстрационное приложение с минималистичным черно-белым дизайном.
+        </Body>
+      </Card>
+
+      {/* Status Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Статус</H2>
+        <View style={styles.statusRow}>
+          <Caption color="secondary">Аутентификация</Caption>
+          <Body weight="semibold">
+            {isAuthenticated ? 'Авторизован' : 'Не авторизован'}
+          </Body>
+        </View>
+        {isAuthenticated && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.statusRow}>
+              <Caption color="secondary">Пользователь</Caption>
+              <Body>{user?.email}</Body>
+            </View>
+          </>
+        )}
+      </Card>
+
+      {/* Navigation Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Быстрые действия</H2>
+        <View style={styles.buttonStack}>
+          {!isAuthenticated ? (
+            <>
+              <Button
+                title="Войти"
+                onPress={() => router.push('/auth/login')}
+                variant="primary"
+                size="lg"
+              />
+              <Button
+                title="Зарегистрироваться"
+                onPress={() => router.push('/auth/register')}
+                variant="outline"
+                size="md"
+              />
+            </>
+          ) : (
+            <Button
+              title="Перейти в профиль"
+              onPress={() => router.push('/auth/profile')}
+              variant="outline"
+              size="lg"
+            />
+          )}
+        </View>
+      </Card>
+
+      {/* Features Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Особенности</H2>
+        <View style={styles.featureList}>
+          <View style={styles.featureItem}>
+            <View style={styles.bullet} />
+            <Body color="secondary">Минималистичный черно-белый дизайн</Body>
+          </View>
+          <View style={styles.featureItem}>
+            <View style={styles.bullet} />
+            <Body color="secondary">Четкая визуальная иерархия</Body>
+          </View>
+          <View style={styles.featureItem}>
+            <View style={styles.bullet} />
+            <Body color="secondary">Оптимизированная читаемость</Body>
+          </View>
+          <View style={styles.featureItem}>
+            <View style={styles.bullet} />
+            <Body color="secondary">Адаптивные компоненты UI</Body>
+          </View>
+        </View>
+      </Card>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  header: {
+    marginTop: 24,
+    marginBottom: 32,
+    gap: 8,
+  },
+  cardTitle: {
+    marginBottom: 16,
+  },
+  statusRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
+    paddingVertical: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E5E5',
+    marginVertical: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  buttonStack: {
+    gap: 12,
+  },
+  featureList: {
+    gap: 12,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  bullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#000000',
+    marginTop: 8,
   },
 });

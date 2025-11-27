@@ -1,112 +1,237 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Container, Card, H1, H2, H3, Body, Caption } from '../../components/ui';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
-
-export default function TabTwoScreen() {
+export default function ExploreScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <Container scrollable padding="md">
+      <View style={styles.header}>
+        <H1>Обзор</H1>
+        <Caption color="secondary">
+          Технологии и компоненты приложения
+        </Caption>
+      </View>
+
+      {/* Tech Stack Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Стек технологий</H2>
+        <View style={styles.techList}>
+          <View style={styles.techItem}>
+            <H3 style={styles.techName}>React Native</H3>
+            <Body color="secondary">Кроссплатформенная разработка</Body>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.techItem}>
+            <H3 style={styles.techName}>Expo Router</H3>
+            <Body color="secondary">Файловая маршрутизация</Body>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.techItem}>
+            <H3 style={styles.techName}>Zustand</H3>
+            <Body color="secondary">Управление состоянием</Body>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.techItem}>
+            <H3 style={styles.techName}>TypeScript</H3>
+            <Body color="secondary">Типизированный JavaScript</Body>
+          </View>
+        </View>
+      </Card>
+
+      {/* UI Components Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>UI Компоненты</H2>
+        <Body color="secondary" style={styles.description}>
+          Минималистичная система компонентов с черно-белой палитрой
+        </Body>
+        <View style={styles.componentList}>
+          <View style={styles.componentItem}>
+            <Caption color="secondary">Typography</Caption>
+            <Body weight="medium">H1, H2, H3, Body, Caption</Body>
+          </View>
+          <View style={styles.componentItem}>
+            <Caption color="secondary">Inputs</Caption>
+            <Body weight="medium">TextInput с валидацией</Body>
+          </View>
+          <View style={styles.componentItem}>
+            <Caption color="secondary">Buttons</Caption>
+            <Body weight="medium">Primary, Outline, Ghost</Body>
+          </View>
+          <View style={styles.componentItem}>
+            <Caption color="secondary">Cards</Caption>
+            <Body weight="medium">Default, Outlined, Elevated</Body>
+          </View>
+        </View>
+      </Card>
+
+      {/* Design Principles Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Принципы дизайна</H2>
+        <View style={styles.principlesList}>
+          <View style={styles.principleItem}>
+            <View style={styles.numberBadge}>
+              <Caption weight="bold">01</Caption>
+            </View>
+            <View style={styles.principleContent}>
+              <H3 style={styles.principleName}>Минимализм</H3>
+              <Body color="secondary">
+                Только необходимые элементы, без лишних украшений
+              </Body>
+            </View>
+          </View>
+
+          <View style={styles.principleItem}>
+            <View style={styles.numberBadge}>
+              <Caption weight="bold">02</Caption>
+            </View>
+            <View style={styles.principleContent}>
+              <H3 style={styles.principleName}>Иерархия</H3>
+              <Body color="secondary">
+                Четкая визуальная структура через размеры и веса шрифтов
+              </Body>
+            </View>
+          </View>
+
+          <View style={styles.principleItem}>
+            <View style={styles.numberBadge}>
+              <Caption weight="bold">03</Caption>
+            </View>
+            <View style={styles.principleContent}>
+              <H3 style={styles.principleName}>Читаемость</H3>
+              <Body color="secondary">
+                Оптимальные размеры шрифтов и межстрочные интервалы
+              </Body>
+            </View>
+          </View>
+
+          <View style={styles.principleItem}>
+            <View style={styles.numberBadge}>
+              <Caption weight="bold">04</Caption>
+            </View>
+            <View style={styles.principleContent}>
+              <H3 style={styles.principleName}>Контраст</H3>
+              <Body color="secondary">
+                Монохромная палитра с акцентом на контрасте
+              </Body>
+            </View>
+          </View>
+        </View>
+      </Card>
+
+      {/* Color Palette Card */}
+      <Card variant="outlined">
+        <H2 style={styles.cardTitle}>Цветовая палитра</H2>
+        <View style={styles.colorGrid}>
+          <View style={styles.colorRow}>
+            <View style={[styles.colorBox, { backgroundColor: '#000000' }]} />
+            <View style={styles.colorInfo}>
+              <Body weight="semibold">#000000</Body>
+              <Caption color="secondary">Primary / Text</Caption>
+            </View>
+          </View>
+          <View style={styles.colorRow}>
+            <View style={[styles.colorBox, { backgroundColor: '#525252', borderWidth: 1, borderColor: '#E5E5E5' }]} />
+            <View style={styles.colorInfo}>
+              <Body weight="semibold">#525252</Body>
+              <Caption color="secondary">Secondary Text</Caption>
+            </View>
+          </View>
+          <View style={styles.colorRow}>
+            <View style={[styles.colorBox, { backgroundColor: '#A3A3A3', borderWidth: 1, borderColor: '#E5E5E5' }]} />
+            <View style={styles.colorInfo}>
+              <Body weight="semibold">#A3A3A3</Body>
+              <Caption color="secondary">Tertiary Text</Caption>
+            </View>
+          </View>
+          <View style={styles.colorRow}>
+            <View style={[styles.colorBox, { backgroundColor: '#E5E5E5', borderWidth: 1, borderColor: '#D4D4D4' }]} />
+            <View style={styles.colorInfo}>
+              <Body weight="semibold">#E5E5E5</Body>
+              <Caption color="secondary">Borders</Caption>
+            </View>
+          </View>
+          <View style={styles.colorRow}>
+            <View style={[styles.colorBox, { backgroundColor: '#FAFAFA', borderWidth: 1, borderColor: '#E5E5E5' }]} />
+            <View style={styles.colorInfo}>
+              <Body weight="semibold">#FAFAFA</Body>
+              <Caption color="secondary">Background</Caption>
+            </View>
+          </View>
+        </View>
+      </Card>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
+  header: {
+    marginTop: 24,
+    marginBottom: 32,
     gap: 8,
+  },
+  cardTitle: {
+    marginBottom: 16,
+  },
+  description: {
+    marginBottom: 16,
+  },
+  techList: {
+    gap: 0,
+  },
+  techItem: {
+    paddingVertical: 12,
+    gap: 4,
+  },
+  techName: {
+    marginBottom: 4,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E5E5',
+  },
+  componentList: {
+    gap: 12,
+    marginTop: 8,
+  },
+  componentItem: {
+    gap: 4,
+  },
+  principlesList: {
+    gap: 20,
+  },
+  principleItem: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  numberBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  principleContent: {
+    flex: 1,
+    gap: 4,
+  },
+  principleName: {
+    marginBottom: 4,
+  },
+  colorGrid: {
+    gap: 12,
+  },
+  colorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  colorBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 4,
+  },
+  colorInfo: {
+    flex: 1,
+    gap: 2,
   },
 });
