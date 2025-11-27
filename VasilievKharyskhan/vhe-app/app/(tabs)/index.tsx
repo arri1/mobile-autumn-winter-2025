@@ -86,6 +86,17 @@ export default function AboutScreen() {
                 </ThemedText>
               </ThemedView>
             </ThemedView>
+
+            <ThemedView style={styles.featureItem}>
+              <ThemedText style={styles.featureIcon}>📊</ThemedText>
+              <ThemedView style={styles.featureTextContainer}>
+                <ThemedText style={styles.featureTitle}>useMemo</ThemedText>
+                <ThemedText style={styles.featureDescription}>
+                  Оптимизация производительности с фильтрацией и сортировкой 500 товаров
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
+            
           </ThemedView>
         </ThemedView>
 
