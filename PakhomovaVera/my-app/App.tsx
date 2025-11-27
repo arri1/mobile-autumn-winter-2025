@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useMemo } from 'react';
 
 interface Todo {
   id: string;
@@ -10,6 +13,45 @@ interface Todo {
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState('');
+
+  const stats = useMemo(() => {
+    const total = todos.length;
+    const completed = todos.filter(todo => todo.completed).length;
+    const pending = total - completed;
+    
+    console.log('Статистика пересчитана');
+    return { total, completed, pending };
+  }, [todos]);
+
+  useEffect(() => {
+    loadTodos();
+  }, []);
+
+  useEffect(() => {
+    saveTodos();
+  }, [todos]);
+
+  const loadTodos = async () => {
+    try {
+      const savedTodos = await AsyncStorage.getItem('todos');
+      if (savedTodos) {
+        const parsedTodos = JSON.parse(savedTodos);
+        setTodos(parsedTodos);
+        console.log('Задачи загружены:', parsedTodos);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки:', error);
+    }
+  };
+
+  const saveTodos = async () => {
+    try {
+      await AsyncStorage.setItem('todos', JSON.stringify(todos));
+      console.log('Задачи сохранены');
+    } catch (error) {
+      console.error('Ошибка сохранения:', error);
+    }
+  };
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -39,7 +81,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Менеджер задач</Text>
-      
+      <View style={styles.stats}>
+        <Text>Всего: {stats.total}</Text>
+        <Text>Выполнено: {stats.completed}</Text>
+        <Text>Осталось: {stats.pending}</Text>
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -119,13 +165,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   completedTodo: {
-  backgroundColor: '#E8F5E8',
-},
-todoText: {
-  fontSize: 16,
-},
-completedText: {
-  textDecorationLine: 'line-through',
-  color: '#666',
-},
+    backgroundColor: '#E8F5E8',
+  },
+  todoText: {
+    fontSize: 16,
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    color: '#666',
+  },
+  stats: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
 });
