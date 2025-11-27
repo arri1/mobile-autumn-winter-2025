@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, Button, Alert, TextInput, ScrollView, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
 import useAuthStore from "../../../store/authStore";
 import { styles } from "./styles";
 
 export default function ZustandLab() {
+	const router = useRouter();
+
 	// Получаем состояние и действия из Zustand store
 	const { user, isAuthenticated, login, logout, isLoading, error, clearError } = useAuthStore();
 
@@ -93,6 +96,21 @@ export default function ZustandLab() {
 					</View>
 				</View>
 			)}
+
+			{/* Карточка с навигацией */}
+			<View style={styles.card}>
+				<Text style={styles.sectionTitle}>Навигация</Text>
+				<View style={styles.buttonGroup}>
+					{!isAuthenticated ? (
+						<>
+							<Button title="Перейти к экрану входа" onPress={() => router.push("/auth/login")} />
+							<Button title="Перейти к регистрации" onPress={() => router.push("/auth/register")} color="#34C759" />
+						</>
+					) : (
+						<Button title="Перейти в профиль" onPress={() => router.push("/auth/profile")} />
+					)}
+				</View>
+			</View>
 
 			{/* Карточка с очисткой ошибки */}
 			{error && (
