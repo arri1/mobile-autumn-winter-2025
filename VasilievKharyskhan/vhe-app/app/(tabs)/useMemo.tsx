@@ -60,10 +60,7 @@ export default function UseMemoExample() {
   const buttonBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
   const secondaryText = useThemeColor({ light: '#666', dark: '#999' }, 'text');
 
-  // Счетчик рендеров (увеличивается при каждом рендере)
-  React.useEffect(() => {
-    setRenderCount(prev => prev + 1);
-  });
+ 
 
   const categories = ['Все', 'Электроника', 'Одежда', 'Книги', 'Продукты', 'Спорт'];
 
@@ -151,7 +148,6 @@ export default function UseMemoExample() {
             • useMemo кэширует результаты фильтрации{'\n'}
             • Пересчет только при изменении зависимостей{'\n'}
             • Всего товаров в базе: {PRODUCTS.length}{'\n'}
-            • Рендеров компонента: {renderCount}
           </ThemedText>
         </ThemedView>
 
