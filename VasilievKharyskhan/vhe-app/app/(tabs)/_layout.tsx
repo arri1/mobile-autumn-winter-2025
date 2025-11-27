@@ -19,7 +19,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'О приложении',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
@@ -28,6 +28,13 @@ export default function TabLayout() {
         options={{
           title: 'useState',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="useEffect"
+        options={{
+          title: 'useEffect',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="photo.fill" color={color} />,
         }}
       />
     </Tabs>
