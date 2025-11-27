@@ -11,30 +11,20 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import useAuthStore from '../../store/authStore';
+import useAuthStore from '../store/authStore';
 
-export default function RegisterScreen({ navigation }: any) {
-  const { register, login, isLoading } = useAuthStore();
-  const [name, setName] = useState('');
+export default function LoginScreen({ navigation }: any) {
+  const { login, isLoading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = async () => {
-    if (!name.trim()) {
-      Alert.alert('Ошибка', 'Введите имя');
-      return;
-    }
+  const handleLogin = async () => {
     if (!email.trim()) {
       Alert.alert('Ошибка', 'Введите email');
       return;
     }
     if (!password.trim()) {
       Alert.alert('Ошибка', 'Введите пароль');
-      return;
-    }
-    if (!confirmPassword.trim()) {
-      Alert.alert('Ошибка', 'Подтвердите пароль');
       return;
     }
     if (!email.includes('@')) {
@@ -45,26 +35,19 @@ export default function RegisterScreen({ navigation }: any) {
       Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
       return;
     }
-    if (password !== confirmPassword) {
-      Alert.alert('Ошибка', 'Пароли не совпадают');
-      return;
-    }
 
     try {
-      // Сначала регистрируем пользователя
-      await register({ name, email, password });
-      Alert.alert('Успех', 'Регистрация прошла успешно!');
+      await login({ email, password });
+      Alert.alert('Успех', 'Вы успешно вошли в систему!');
     } catch (error) {
-      Alert.alert('Ошибка', error instanceof Error ? error.message : 'Не удалось зарегистрироваться');
+      Alert.alert('Ошибка', error instanceof Error ? error.message : 'Не удалось войти');
     }
   };
 
-  const handleDemoFill = () => {
-    setName('Демо Пользователь');
+  const handleDemoLogin = () => {
     setEmail('demo@example.com');
     setPassword('demo123');
-    setConfirmPassword('demo123');
-    Alert.alert('Демо', 'Данные заполнены! Нажмите "Зарегистрироваться"');
+    Alert.alert('Демо', 'Данные заполнены! Нажмите "Войти"');
   };
 
   return (
@@ -74,24 +57,12 @@ export default function RegisterScreen({ navigation }: any) {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Регистрация</Text>
-          <Text style={styles.subtitle}>Создайте новый аккаунт</Text>
+          <Text style={styles.title}>Добро пожаловать</Text>
+          <Text style={styles.subtitle}>Войдите в свой аккаунт</Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Новый пользователь</Text>
-
-          <Text style={styles.label}>Имя</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Введите имя"
-            placeholderTextColor="#999"
-            value={name}
-            onChangeText={setName}
-            autoCapitalize="words"
-            autoCorrect={false}
-            editable={!isLoading}
-          />
+          <Text style={styles.sectionTitle}>Вход в систему</Text>
 
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -117,28 +88,17 @@ export default function RegisterScreen({ navigation }: any) {
             editable={!isLoading}
           />
 
-          <Text style={styles.label}>Подтвердите пароль</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Повторите пароль"
-            placeholderTextColor="#999"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-            editable={!isLoading}
-          />
-
           {isLoading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator color="#007AFF" />
-              <Text style={styles.loadingText}>Регистрация...</Text>
+              <Text style={styles.loadingText}>Вход...</Text>
             </View>
           )}
 
           <View style={styles.buttonGroup}>
             <Button
-              title={isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-              onPress={handleRegister}
+              title={isLoading ? 'Вход...' : 'Войти'}
+              onPress={handleLogin}
               disabled={isLoading}
             />
           </View>
@@ -146,7 +106,7 @@ export default function RegisterScreen({ navigation }: any) {
           <View style={styles.buttonGroup}>
             <Button
               title="Заполнить демо данные"
-              onPress={handleDemoFill}
+              onPress={handleDemoLogin}
               color="#FF9500"
               disabled={isLoading}
             />
@@ -154,10 +114,10 @@ export default function RegisterScreen({ navigation }: any) {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Уже есть аккаунт?</Text>
+          <Text style={styles.footerText}>Нет аккаунта?</Text>
           <Button
-            title="Войти"
-            onPress={() => navigation.goBack()}
+            title="Зарегистрироваться"
+            onPress={() => navigation.navigate('Register')}
             disabled={isLoading}
           />
         </View>

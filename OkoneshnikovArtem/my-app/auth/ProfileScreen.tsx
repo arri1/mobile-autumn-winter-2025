@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import useAuthStore from '../../store/authStore';
+import useAuthStore from '../store/authStore';
 
 export default function ProfileScreen() {
   const { user, logout, isLoading } = useAuthStore();
