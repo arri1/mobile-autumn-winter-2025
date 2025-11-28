@@ -1,65 +1,55 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f4f6f8",
-    alignItems: "center",
-  },
-  card: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
-    width: "90%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#333",
-  },
-  buttonGroup: {
-    gap: 10,
-    flexDirection: "row",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "100%",
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 6,
-    fontWeight: "600",
-    color: "#555",
-    alignSelf: "flex-start",
-  },
-  infoText: {
-    fontSize: 16,
-    color: "#444",
-    marginBottom: 8,
-  },
-  errorText: {
-    fontSize: 16,
-    color: "#EF4444",
-    marginBottom: 8,
-  },
-  successText: {
-    fontSize: 16,
-    color: "#22c55e",
-    marginBottom: 8,
-    fontWeight: "600",
-  },
+	pageTitle: {
+		marginTop: 8,
+		marginBottom: 4,
+	},
+	pageSubtitle: {
+		marginBottom: 24,
+	},
+	cardTitle: {
+		marginBottom: 16,
+	},
+	statusRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8,
+		marginBottom: 16,
+	},
+	statusValue: {
+		marginLeft: 8,
+	},
+	userInfo: {
+		gap: 12,
+		paddingTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: '#E5E5E5',
+	},
+	infoRow: {
+		gap: 4,
+	},
+	loadingRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 12,
+		marginTop: 12,
+		paddingTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: '#E5E5E5',
+	},
+	loadingText: {
+		marginBottom: 0,
+	},
+	errorContainer: {
+		marginTop: 12,
+		padding: 12,
+		backgroundColor: '#FAFAFA',
+		borderRadius: 4,
+		borderLeftWidth: 2,
+		borderLeftColor: '#000000',
+	},
+	buttonStack: {
+		gap: 12,
+	},
 });

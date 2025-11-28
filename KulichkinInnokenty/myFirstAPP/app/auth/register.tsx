@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-import { View, Alert, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
-import { Container, Card, Button, Input, H1, H2, Caption } from "../../components/ui";
+import {
+	Container,
+	Card,
+	Button,
+	Input,
+	H1,
+	H2,
+	Caption,
+} from "../../components/ui";
+import { authStyles as styles } from "./styles";
 
 export default function RegisterScreen() {
 	const router = useRouter();
@@ -40,7 +49,7 @@ export default function RegisterScreen() {
 		setIsLoading(true);
 		try {
 			// Имитация регистрации
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			Alert.alert(
 				"Успех",
 				"Регистрация прошла успешно! Теперь вы можете войти.",
@@ -139,22 +148,3 @@ export default function RegisterScreen() {
 		</KeyboardAvoidingView>
 	);
 }
-
-const styles = StyleSheet.create({
-	header: {
-		marginTop: 24,
-		marginBottom: 32,
-		gap: 8,
-	},
-	cardTitle: {
-		marginBottom: 24,
-	},
-	buttonStack: {
-		gap: 12,
-		marginTop: 8,
-	},
-	footer: {
-		gap: 16,
-		alignItems: 'center',
-	},
-});

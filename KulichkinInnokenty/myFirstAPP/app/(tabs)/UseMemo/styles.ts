@@ -1,55 +1,97 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f4f6f8",
-    alignItems: "center",
-  },
-  card: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
-    width: "90%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#333",
-  },
-  counterText: {
-    fontSize: 18,
-    marginBottom: 12,
-  },
-  buttonGroup: {
-    gap: 10,
-    flexDirection: "row",
-  },
-  switchLabel: {
-    marginBottom: 10,
-    fontSize: 16,
-    color: "#555",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "100%",
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  previewText: {
-    fontSize: 16,
-    color: "#444",
-  },
+	pageTitle: {
+		marginTop: 8,
+		marginBottom: 4,
+	},
+	pageSubtitle: {
+		marginBottom: 24,
+	},
+	cardTitle: {
+		marginBottom: 16,
+	},
+	eventContainer: {
+		padding: 16,
+		borderLeftWidth: 2,
+		gap: 8,
+	},
+	eventHint: {
+		marginTop: 4,
+		marginBottom: 0,
+	},
+	counterDisplay: {
+		alignItems: "center",
+		gap: 8,
+		paddingVertical: 16,
+	},
+	memoResult: {
+		marginTop: 12,
+		paddingTop: 16,
+		borderTopWidth: 1,
+		borderTopColor: "#E5E5E5",
+	},
+	memoRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	oddText: {
+		color: "#525252",
+	},
+	buttonStack: {
+		gap: 12,
+		marginTop: 16,
+	},
+	switchRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	textPreview: {
+		gap: 4,
+		marginTop: 12,
+		marginBottom: 16,
+	},
+	statsContainer: {
+		gap: 12,
+		paddingTop: 16,
+		borderTopWidth: 1,
+		borderTopColor: "#E5E5E5",
+	},
+	statsTitle: {
+		marginBottom: 4,
+	},
+	statsGrid: {
+		flexDirection: "row",
+		gap: 12,
+	},
+	statItem: {
+		flex: 1,
+		padding: 16,
+		borderRadius: 4,
+		alignItems: "center",
+		gap: 8,
+	},
+	statValue: {
+		marginBottom: 0,
+	},
+	statsHint: {
+		marginTop: 4,
+		marginBottom: 0,
+	},
+	infoList: {
+		gap: 12,
+	},
+	infoItem: {
+		flexDirection: "row",
+		alignItems: "flex-start",
+		gap: 12,
+	},
+	infoBullet: {
+		width: 6,
+		height: 6,
+		borderRadius: 3,
+		marginTop: 8,
+	},
 });

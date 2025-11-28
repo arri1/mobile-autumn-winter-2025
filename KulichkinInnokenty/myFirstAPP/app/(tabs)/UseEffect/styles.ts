@@ -1,89 +1,85 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f4f6f8",
-    alignItems: "center",
-  },
-  card: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
-    width: "90%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#333",
-  },
-  counterText: {
-    fontSize: 18,
-    marginBottom: 12,
-  },
-  buttonGroup: {
-    gap: 10,
-    flexDirection: "row",
-  },
-  switchLabel: {
-    marginBottom: 10,
-    fontSize: 16,
-    color: "#555",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "100%",
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  previewText: {
-    fontSize: 16,
-    color: "#444",
-  },
-  infoText: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 8,
-  },
-  statusText: {
-    fontSize: 16,
-    color: "#007AFF",
-    marginBottom: 12,
-    fontWeight: "600",
-  },
-  postContainer: {
-    width: "100%",
-    backgroundColor: "#f9f9f9",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  postTitle: {
-    fontSize: 14,
-    color: "#888",
-    marginBottom: 6,
-  },
-  postContent: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
-  },
-  timerText: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: "#007AFF",
-    marginVertical: 12,
-  },
+	pageTitle: {
+		marginTop: 10,
+		marginBottom: 4,
+	},
+	pageSubtitle: {
+		marginBottom: 24,
+	},
+	cardTitle: {
+		marginBottom: 16,
+	},
+	infoRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingVertical: 8,
+	},
+	loadingContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 12,
+		marginTop: 12,
+		paddingTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: "#E5E5E5",
+	},
+	loadingText: {
+		marginBottom: 0,
+	},
+	postContainer: {
+		gap: 8,
+		marginTop: 12,
+		paddingTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: "#E5E5E5",
+	},
+	postContent: {
+		paddingLeft: 12,
+		borderLeftWidth: 2,
+		borderLeftColor: "#000000",
+	},
+	buttonStack: {
+		gap: 12,
+		marginTop: 16,
+	},
+	buttonRow: {
+		flexDirection: "row",
+		gap: 12,
+	},
+	buttonHalf: {
+		flex: 1,
+	},
+	timerDisplay: {
+		alignItems: "center",
+		gap: 8,
+		paddingVertical: 20,
+	},
+	timerText: {
+		fontSize: 48,
+		fontWeight: "700",
+		marginBottom: 0,
+	},
+	eventContainer: {
+		padding: 16,
+		borderRadius: 4,
+		borderLeftWidth: 2,
+		borderLeftColor: "#000000",
+	},
+	counterDisplay: {
+		alignItems: "center",
+		gap: 8,
+		paddingVertical: 16,
+	},
+	switchRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	textPreview: {
+		gap: 4,
+		marginTop: 12,
+	},
 });

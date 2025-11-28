@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { View, Alert, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import useAuthStore from "../../../store/authStore";
-import { Container, Card, Button, Input, H2, H3, Body, Caption } from "../../../components/ui";
+import {
+	Container,
+	Card,
+	Button,
+	Input,
+	H1,
+	H2,
+	H3,
+	Body,
+	Caption,
+} from "../../../components/ui";
+import { styles } from "./styles";
 
 export default function ZustandLab() {
 	const router = useRouter();
 
 	// Получаем состояние и действия из Zustand store
-	const { user, isAuthenticated, login, logout, isLoading, error, clearError } = useAuthStore();
+	const { user, isAuthenticated, login, logout, isLoading, error, clearError } =
+		useAuthStore();
 
 	// Локальное состояние для формы входа
 	const [email, setEmail] = useState("admin@example.com");
@@ -20,7 +32,10 @@ export default function ZustandLab() {
 			await login({ email, password });
 			Alert.alert("Успех", "Вы успешно вошли в систему!");
 		} catch (error) {
-			Alert.alert("Ошибка", error instanceof Error ? error.message : "Неизвестная ошибка");
+			Alert.alert(
+				"Ошибка",
+				error instanceof Error ? error.message : "Неизвестная ошибка"
+			);
 		}
 	};
 
@@ -32,7 +47,9 @@ export default function ZustandLab() {
 
 	return (
 		<Container scrollable padding="md">
-			<H2 style={styles.pageTitle}>Zustand Authentication</H2>
+			<H1 weight="bold" style={styles.pageTitle}>
+				Zustand Authentication
+			</H1>
 			<Caption color="secondary" style={styles.pageSubtitle}>
 				Управление состоянием с минималистичным дизайном
 			</Caption>
@@ -116,7 +133,6 @@ export default function ZustandLab() {
 				</Card>
 			) : (
 				<Card variant="outlined">
-					<H3 style={styles.cardTitle}>Действия</H3>
 					<Button
 						title="Выйти"
 						onPress={handleLogout}
@@ -170,57 +186,3 @@ export default function ZustandLab() {
 		</Container>
 	);
 }
-
-const styles = StyleSheet.create({
-	pageTitle: {
-		marginTop: 8,
-		marginBottom: 4,
-	},
-	pageSubtitle: {
-		marginBottom: 24,
-	},
-	cardTitle: {
-		marginBottom: 16,
-	},
-	statusRow: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
-		marginBottom: 16,
-	},
-	statusValue: {
-		marginLeft: 8,
-	},
-	userInfo: {
-		gap: 12,
-		paddingTop: 12,
-		borderTopWidth: 1,
-		borderTopColor: '#E5E5E5',
-	},
-	infoRow: {
-		gap: 4,
-	},
-	loadingRow: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 12,
-		marginTop: 12,
-		paddingTop: 12,
-		borderTopWidth: 1,
-		borderTopColor: '#E5E5E5',
-	},
-	loadingText: {
-		marginBottom: 0,
-	},
-	errorContainer: {
-		marginTop: 12,
-		padding: 12,
-		backgroundColor: '#FAFAFA',
-		borderRadius: 4,
-		borderLeftWidth: 2,
-		borderLeftColor: '#000000',
-	},
-	buttonStack: {
-		gap: 12,
-	},
-});

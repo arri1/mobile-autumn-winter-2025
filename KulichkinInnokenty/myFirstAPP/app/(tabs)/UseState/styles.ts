@@ -1,55 +1,109 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f4f6f8",
-    alignItems: "center",
+  pageTitle: {
+    marginTop: 8,
+    marginBottom: 4,
   },
-  card: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
-    width: "90%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+  pageSubtitle: {
+    marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
+  cardTitle: {
+    marginBottom: 16,
+  },
+  counterDisplay: {
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 16,
+  },
+  buttonStack: {
+    gap: 12,
+    marginTop: 16,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  buttonThird: {
+    flex: 1,
+  },
+  switchRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  switchInfo: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+  },
+  textInfo: {
+    gap: 8,
+    marginTop: 12,
     marginBottom: 12,
-    color: "#333",
   },
-  counterText: {
-    fontSize: 18,
-    marginBottom: 12,
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  buttonGroup: {
-    gap: 10,
-    flexDirection: "row",
+  listInput: {
+    gap: 12,
+    marginBottom: 16,
   },
-  switchLabel: {
-    marginBottom: 10,
-    fontSize: 16,
-    color: "#555",
+  inputWrapper: {
+    flex: 1,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    width: "100%",
-    marginBottom: 10,
-    fontSize: 16,
+  inputContainer: {
+    marginBottom: 0,
   },
-  previewText: {
-    fontSize: 16,
-    color: "#444",
+  itemsList: {
+    gap: 8,
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+  },
+  listItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+    backgroundColor: '#FAFAFA',
+    borderRadius: 4,
+    borderLeftWidth: 2,
+    borderLeftColor: '#000000',
+  },
+  itemText: {
+    flex: 1,
+  },
+  listFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+  },
+  emptyState: {
+    alignItems: 'center',
+    padding: 32,
+  },
+  infoList: {
+    gap: 12,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  infoBullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#000000',
+    marginTop: 8,
   },
 });

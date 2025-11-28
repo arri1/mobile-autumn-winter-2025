@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { View, Alert, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import useAuthStore from "../../store/authStore";
-import { Container, Card, Button, Input, H1, H2, Body, Caption } from "../../components/ui";
+import {
+	Container,
+	Card,
+	Button,
+	Input,
+	H1,
+	H2,
+	Caption,
+} from "../../components/ui";
+import { authStyles as styles } from "./styles";
 
 export default function LoginScreen() {
 	const router = useRouter();
@@ -33,7 +42,10 @@ export default function LoginScreen() {
 			Alert.alert("Успех", "Вы успешно вошли в систему!");
 			router.back();
 		} catch (error) {
-			Alert.alert("Ошибка", error instanceof Error ? error.message : "Не удалось войти");
+			Alert.alert(
+				"Ошибка",
+				error instanceof Error ? error.message : "Не удалось войти"
+			);
 		}
 	};
 
@@ -113,22 +125,3 @@ export default function LoginScreen() {
 		</KeyboardAvoidingView>
 	);
 }
-
-const styles = StyleSheet.create({
-	header: {
-		marginTop: 24,
-		marginBottom: 32,
-		gap: 8,
-	},
-	cardTitle: {
-		marginBottom: 24,
-	},
-	buttonStack: {
-		gap: 12,
-		marginTop: 8,
-	},
-	footer: {
-		gap: 16,
-		alignItems: 'center',
-	},
-});

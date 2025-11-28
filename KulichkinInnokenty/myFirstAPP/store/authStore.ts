@@ -1,14 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
-
-// Типы для пользователя
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
+import { User, LoginCredentials, RegisterData } from '../types';
 
 // Интерфейс состояния store
 interface AuthState {
@@ -20,8 +13,8 @@ interface AuthState {
   error: string | null;
 
   // Actions
-  register: (userData: { name: string; email: string; password: string }) => Promise<void>;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
+  register: (userData: RegisterData) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
   clearError: () => void;

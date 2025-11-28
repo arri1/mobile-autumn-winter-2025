@@ -1,8 +1,23 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginCredentials, RegisterData, AuthResponse, User } from '../types';
 
 // API Configuration
-const API_CONFIG = {
+interface ApiConfig {
+  baseURL: string;
+  endpoints: {
+    health: string;
+    register: string;
+    login: string;
+    profile: string;
+    refresh: string;
+    logout: string;
+    users: string;
+  };
+  timeout: number;
+}
+
+const API_CONFIG: ApiConfig = {
   baseURL: 'https://cloud.kit-imi.info',
   endpoints: {
     health: '/api/health',
@@ -16,7 +31,27 @@ const API_CONFIG = {
   timeout: 10000
 };
 
+interface ApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
+interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken?: string;
+}
+
+interface GetUsersParams {
+  page?: number;
+  limit?: number;
+  role?: string;
+  search?: string;
+}
+
 class ApiService {
+  private client: AxiosInstance;
+
   constructor() {
     this.client = axios.create({
       baseURL: API_CONFIG.baseURL,
@@ -28,9 +63,9 @@ class ApiService {
 
     // Request interceptor
     this.client.interceptors.request.use(
-      async (config) => {
+      async (config: InternalAxiosRequestConfig) => {
         const token = await AsyncStorage.getItem('accessToken');
-        if (token) {
+        if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -64,12 +99,12 @@ class ApiService {
   }
 
   // Health check
-  async healthCheck() {
+  async healthCheck(): Promise<any> {
     return this.request(API_CONFIG.endpoints.health, { method: 'GET' });
   }
 
   // Register user
-  async register(userData) {
+  async register(userData: RegisterData): Promise<ApiResponse<AuthResponse>> {
     return this.request(API_CONFIG.endpoints.register, {
       method: 'POST',
       data: userData,
@@ -77,7 +112,7 @@ class ApiService {
   }
 
   // Login user
-  async login(credentials) {
+  async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
     return this.request(API_CONFIG.endpoints.login, {
       method: 'POST',
       data: credentials,
@@ -85,7 +120,7 @@ class ApiService {
   }
 
   // Get user profile
-  async getProfile(token) {
+  async getProfile(token: string): Promise<ApiResponse<User>> {
     return this.request(API_CONFIG.endpoints.profile, {
       method: 'GET',
       headers: {
@@ -95,13 +130,13 @@ class ApiService {
   }
 
   // Refresh token
-  async refreshToken() {
+  async refreshToken(): Promise<ApiResponse<RefreshTokenResponse>> {
     const refreshToken = await AsyncStorage.getItem('refreshToken');
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
 
-    const response = await this.request(API_CONFIG.endpoints.refresh, {
+    const response: ApiResponse<RefreshTokenResponse> = await this.request(API_CONFIG.endpoints.refresh, {
       method: 'POST',
       data: { refreshToken },
     });
@@ -117,7 +152,7 @@ class ApiService {
   }
 
   // Logout user
-  async logout(token) {
+  async logout(token: string): Promise<ApiResponse> {
     return this.request(API_CONFIG.endpoints.logout, {
       method: 'POST',
       headers: {
@@ -127,11 +162,11 @@ class ApiService {
   }
 
   // Get users list (Admin only)
-  async getUsers(token, params = {}) {
+  async getUsers(token: string, params: GetUsersParams = {}): Promise<ApiResponse<User[]>> {
     const queryParams = new URLSearchParams();
 
-    if (params.page) queryParams.append('page', params.page);
-    if (params.limit) queryParams.append('limit', params.limit);
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.limit) queryParams.append('limit', params.limit.toString());
     if (params.role) queryParams.append('role', params.role);
     if (params.search) queryParams.append('search', params.search);
 
@@ -146,14 +181,14 @@ class ApiService {
   }
 
   // Generic request method
-  async request(endpoint, options = {}) {
+  private async request<T = any>(endpoint: string, options: AxiosRequestConfig = {}): Promise<T> {
     try {
-      const response = await this.client.request({
+      const response = await this.client.request<T, T>({
         url: endpoint,
         ...options,
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
       console.error('API request error:', error);
 
       // More detailed error handling

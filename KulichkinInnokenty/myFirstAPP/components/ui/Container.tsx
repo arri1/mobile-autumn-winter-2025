@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, ViewStyle } from 'react-native';
+import { View, ScrollView, ViewStyle } from 'react-native';
+import useThemeStore from '../../store/themeStore';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -16,17 +17,34 @@ export const Container: React.FC<ContainerProps> = ({
   background = 'gray',
   style
 }) => {
-  const containerStyle = [
-    styles.base,
-    styles[`padding_${padding}`],
-    styles[`bg_${background}`],
-    style
-  ];
+  const { colors } = useThemeStore();
+
+  const paddingValue = {
+    none: 0,
+    sm: 16,
+    md: 24,
+    lg: 32,
+  }[padding];
+
+  const backgroundColor = background === 'white'
+    ? colors.backgroundElevated
+    : colors.background;
+
+  const baseStyle: ViewStyle = {
+    flex: 1,
+  };
 
   if (scrollable) {
+    const scrollContentStyle: ViewStyle = {
+      padding: paddingValue,
+      backgroundColor,
+      ...style,
+    };
+
     return (
       <ScrollView
-        contentContainerStyle={containerStyle}
+        style={baseStyle}
+        contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
       >
         {children}
@@ -34,33 +52,13 @@ export const Container: React.FC<ContainerProps> = ({
     );
   }
 
+  const containerStyle: ViewStyle = {
+    ...baseStyle,
+    padding: paddingValue,
+    backgroundColor,
+    ...style,
+  };
+
   return <View style={containerStyle}>{children}</View>;
 };
 
-const styles = StyleSheet.create({
-  base: {
-    flex: 1,
-  },
-
-  // Padding variants
-  padding_none: {
-    padding: 0,
-  },
-  padding_sm: {
-    padding: 16,
-  },
-  padding_md: {
-    padding: 24,
-  },
-  padding_lg: {
-    padding: 32,
-  },
-
-  // Background variants
-  bg_white: {
-    backgroundColor: '#FFFFFF',
-  },
-  bg_gray: {
-    backgroundColor: '#FAFAFA',
-  },
-});
