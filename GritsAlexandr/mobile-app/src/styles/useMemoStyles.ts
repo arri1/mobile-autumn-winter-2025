@@ -11,6 +11,7 @@ export const useMemoStyles = StyleSheet.create({
     color: '#f8fafc',
     fontSize: 24,
     fontWeight: '700',
+    marginBottom: 8,
   },
   subheading: {
     color: '#cbd5f5',
@@ -27,6 +28,7 @@ export const useMemoStyles = StyleSheet.create({
     color: '#e2e8f0',
     fontSize: 16,
     marginBottom: 8,
+    fontWeight: '600',
   },
   input: {
     borderWidth: 1,
@@ -34,24 +36,73 @@ export const useMemoStyles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     color: '#fff',
+    marginBottom: 8,
+    fontSize: 16,
+  },
+  hint: {
+    fontSize: 14,
+    marginBottom: 16,
+    fontStyle: 'italic',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 12,
     marginBottom: 16,
   },
-  stats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  stat: {
-    flex: 1,
+  calculateButton: {
+    backgroundColor: '#2563eb',
+    padding: 16,
+    borderRadius: 12,
     alignItems: 'center',
+    flex: 1,
   },
-  statValue: {
-    color: '#22c55e',
-    fontSize: 22,
+  resetButton: {
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flex: 1,
+  },
+  calculateButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  calculationBox: {
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
+    marginBottom: 16,
+  },
+  calculationTitle: {
+    fontSize: 18,
     fontWeight: '700',
+    marginBottom: 12,
+    color: '#f8fafc',
   },
-  statLabel: {
-    color: '#94a3b8',
-    fontSize: 12,
+  calculationText: {
+    fontSize: 14,
+    marginBottom: 6,
+    color: '#cbd5e1',
+  },
+  calculationResult: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginVertical: 8,
+    color: '#22c55e',
+  },
+  subsetsContainer: {
+    flex: 1,
+  },
+  subsetsTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: '#f8fafc',
+  },
+  subsetsList: {
+    flex: 1,
   },
   listContent: {
     paddingBottom: 40,
@@ -70,6 +121,7 @@ export const useMemoStyles = StyleSheet.create({
     color: '#94a3b8',
     marginRight: 12,
     width: 28,
+    fontSize: 14,
   },
   subsetScroll: {
     flexGrow: 1,
@@ -77,5 +129,15 @@ export const useMemoStyles = StyleSheet.create({
   subsetText: {
     color: '#22c55e',
     fontSize: 16,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });

@@ -5,13 +5,30 @@ import {
   TextInput,
   FlatList,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { useMemoStyles } from '../styles/useMemoStyles';
+import { useAppStore } from '../store/useAppStore';
+import { darkThemeStyles, lightThemeStyles } from '../styles/appStyles';
 
 const UseMemoScreen = () => {
   const [input, setInput] = useState('1,2,3');
+  const [showSubsets, setShowSubsets] = useState(false);
+  const [calculationResult, setCalculationResult] = useState<{
+    elementsCount: number;
+    subsetsCount: number;
+    actualSubsets: number;
+  } | null>(null);
+  
+  // Используем Zustand store
+  const { theme, counters, incrementCounter } = useAppStore();
+  const themeStyles = theme === 'dark' ? darkThemeStyles : lightThemeStyles;
 
   const subsets = useMemo(() => {
+    if (!showSubsets) return [];
+    
+    incrementCounter('useMemo');
+    
     const items = input
       .split(',')
       .map((item) => item.trim())
@@ -37,7 +54,7 @@ const UseMemoScreen = () => {
     };
 
     return buildSubsets(items).sort((a, b) => a.length - b.length);
-  }, [input]);
+  }, [input, showSubsets, incrementCounter]);
 
   const elementsCount = useMemo(
     () =>
@@ -48,15 +65,45 @@ const UseMemoScreen = () => {
     [input],
   );
 
+  // Функция для расчета количества подмножеств по формуле 2^n
+  const calculateSubsetsCount = () => {
+    return Math.pow(2, elementsCount);
+  };
+
+  const handleCalculateSubsets = () => {
+    if (elementsCount === 0) {
+      alert('Введите хотя бы один элемент!');
+      return;
+    }
+
+    if (elementsCount > 8) {
+      alert('Слишком много элементов! Рекомендуется не более 8 для лучшей производительности.');
+      return;
+    }
+
+    setShowSubsets(true);
+    const calculatedCount = calculateSubsetsCount();
+    setCalculationResult({
+      elementsCount,
+      subsetsCount: calculatedCount,
+      actualSubsets: calculatedCount, // Будет обновлено после генерации
+    });
+  };
+
+  const handleReset = () => {
+    setShowSubsets(false);
+    setCalculationResult(null);
+  };
+
   const renderSubset = ({ item, index }: { item: string[]; index: number }) => (
-    <View style={useMemoStyles.subsetItem}>
-      <Text style={useMemoStyles.subsetIndex}>{index + 1}.</Text>
+    <View style={[useMemoStyles.subsetItem, { backgroundColor: themeStyles.card, borderColor: themeStyles.border }]}>
+      <Text style={[useMemoStyles.subsetIndex, { color: themeStyles.secondary }]}>{index + 1}.</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={useMemoStyles.subsetScroll}
       >
-        <Text style={useMemoStyles.subsetText}>
+        <Text style={[useMemoStyles.subsetText, { color: themeStyles.primary }]}>
           {item.length ? `{${item.join(', ')}}` : '∅'}
         </Text>
       </ScrollView>
@@ -64,38 +111,129 @@ const UseMemoScreen = () => {
   );
 
   return (
-    <View style={useMemoStyles.container}>
-      <Text style={useMemoStyles.heading}>UseMemo</Text>
+    <View style={[useMemoStyles.container, { backgroundColor: themeStyles.background }]}>
+      <Text style={[useMemoStyles.heading, { color: themeStyles.text }]}>
+        UseMemo - Генератор подмножеств
+      </Text>
 
-      <View style={useMemoStyles.card}>
-        <Text style={useMemoStyles.label}>Элементы</Text>
-        <TextInput
-          value={input}
-          onChangeText={setInput}
-          placeholder="Например: a, b, c"
-          placeholderTextColor="#94a3b8"
-          style={useMemoStyles.input}
-        />
-
-        <View style={useMemoStyles.stats}>
-          <View style={useMemoStyles.stat}>
-            <Text style={useMemoStyles.statValue}>{elementsCount}</Text>
-            <Text style={useMemoStyles.statLabel}>Элементов</Text>
-          </View>
-          <View style={useMemoStyles.stat}>
-            <Text style={useMemoStyles.statValue}>{subsets.length}</Text>
-            <Text style={useMemoStyles.statLabel}>Подмножеств</Text>
-          </View>
-        </View>
+      {/* Статистика использования */}
+      <View style={{ 
+        backgroundColor: themeStyles.card, 
+        padding: 12, 
+        borderRadius: 8, 
+        marginBottom: 16,
+        borderWidth: 1,
+        borderColor: themeStyles.border
+      }}>
+        <Text style={{ color: themeStyles.text, fontSize: 14, fontWeight: '600' }}>
+          Использований useMemo: {counters.useMemo}
+        </Text>
       </View>
 
-      <FlatList
-        data={subsets}
-        keyExtractor={(_, idx) => idx.toString()}
-        renderItem={renderSubset}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={useMemoStyles.listContent}
-      />
+      <View style={[useMemoStyles.card, { backgroundColor: themeStyles.card }]}>
+        <Text style={[useMemoStyles.label, { color: themeStyles.text }]}>
+          Введите элементы множества (через запятую)
+        </Text>
+        <TextInput
+          value={input}
+          onChangeText={(text) => {
+            setInput(text);
+            setShowSubsets(false);
+            setCalculationResult(null);
+          }}
+          placeholder="Например: 1, 2, 3 или a, b, c"
+          placeholderTextColor={themeStyles.secondary}
+          style={[useMemoStyles.input, { 
+            color: themeStyles.text, 
+            borderColor: themeStyles.border,
+            backgroundColor: theme === 'dark' ? '#374151' : '#f8fafc'
+          }]}
+        />
+
+        <Text style={[useMemoStyles.hint, { color: themeStyles.secondary }]}>
+          Элементов: {elementsCount} {elementsCount > 0 && `(2^${elementsCount} = ${calculateSubsetsCount()} подмножеств)`}
+        </Text>
+
+        {/* Кнопки управления */}
+        <View style={useMemoStyles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              useMemoStyles.calculateButton,
+              { backgroundColor: themeStyles.primary }
+            ]}
+            onPress={handleCalculateSubsets}
+            disabled={elementsCount === 0}
+          >
+            <Text style={useMemoStyles.calculateButtonText}>
+              Сгенерировать подмножества
+            </Text>
+          </TouchableOpacity>
+
+          {showSubsets && (
+            <TouchableOpacity
+              style={[
+                useMemoStyles.resetButton,
+                { backgroundColor: '#dc2626' }
+              ]}
+              onPress={handleReset}
+            >
+              <Text style={useMemoStyles.calculateButtonText}>
+                Сбросить
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Блок с информацией о расчете */}
+        {calculationResult && (
+           <View style={[useMemoStyles.calculationBox, { backgroundColor: themeStyles.card, borderColor: themeStyles.border }]}>
+      <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
+              Информация о множестве
+            </Text>
+            <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
+              Элементы: {input.split(',').map(item => item.trim()).filter(Boolean).join(', ')}
+            </Text>
+            <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
+              Количество элементов: n = {calculationResult.elementsCount}
+            </Text>
+            <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
+              Формула количества подмножеств: 2^n
+            </Text>
+            <Text style={[useMemoStyles.calculationResult, { color: themeStyles.primary }]}>
+              Ожидаемое количество: 2^{calculationResult.elementsCount} = {calculationResult.subsetsCount}
+            </Text>
+            <Text style={[useMemoStyles.calculationText, { color: '#22c55e' }]}>
+             Фактически сгенерировано: {subsets.length} подмножеств
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Список подмножеств */}
+      {showSubsets && subsets.length > 0 && (
+        <View style={useMemoStyles.subsetsContainer}>
+          <Text style={[useMemoStyles.subsetsTitle, { color: themeStyles.text }]}>
+            Список подмножеств ({subsets.length}):
+          </Text>
+          <FlatList
+            data={subsets}
+            keyExtractor={(_, idx) => idx.toString()}
+            renderItem={renderSubset}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={useMemoStyles.listContent}
+            style={useMemoStyles.subsetsList}
+          />
+        </View>
+      )}
+
+      {/* Сообщение при пустом вводе */}
+      {elementsCount === 0 && (
+        <View style={useMemoStyles.emptyState}>
+          <Text style={[useMemoStyles.emptyStateText, { color: themeStyles.secondary }]}>
+            Введите элементы множества через запятую и нажмите кнопку для генерации подмножеств
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

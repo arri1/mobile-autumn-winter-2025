@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useEffectStyles } from '../styles/useEffectStyles';
+import { useAppStore } from '../store/useAppStore';
+import { darkThemeStyles, lightThemeStyles } from '../styles/appStyles';
 
 type Quote = {
   text: string;
@@ -18,6 +20,10 @@ const UseEffectScreen = () => {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isQuoteLoading, setIsQuoteLoading] = useState(false);
   const [refetchToken, setRefetchToken] = useState(0);
+
+  // Используем Zustand store
+  const { theme, counters, incrementCounter } = useAppStore();
+  const themeStyles = theme === 'dark' ? darkThemeStyles : lightThemeStyles;
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -47,6 +53,7 @@ const UseEffectScreen = () => {
             text: data.content,
             author: data.author || 'Неизвестный автор',
           });
+          incrementCounter('useEffect');
         }
       } catch (error) {
         if (isActive) {
@@ -57,6 +64,7 @@ const UseEffectScreen = () => {
           ];
           const randomFallback = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
           setQuote(randomFallback);
+          incrementCounter('useEffect');
         }
       } finally {
         if (isActive) {
@@ -70,7 +78,7 @@ const UseEffectScreen = () => {
     return () => {
       isActive = false;
     };
-  }, [refetchToken]);
+  }, [refetchToken, incrementCounter]);
 
   const formattedTime = useMemo(() => {
     const minutes = Math.floor(elapsed / 60)
@@ -81,11 +89,29 @@ const UseEffectScreen = () => {
   }, [elapsed]);
 
   return (
-    <View style={useEffectStyles.card}>
-      <Text style={useEffectStyles.title}>useEffect</Text>
+    <View style={[useEffectStyles.card, { backgroundColor: themeStyles.background }]}>
+      <Text style={[useEffectStyles.title, { color: themeStyles.text }]}>
+        useEffect + Zustand
+      </Text>
+      
+      {/* Статистика использования */}
+      <View style={{ 
+        backgroundColor: theme === 'dark' ? '#374151' : '#f1f5f9', 
+        padding: 12, 
+        borderRadius: 8, 
+        marginBottom: 16 
+      }}>
+        <Text style={{ 
+          color: theme === 'dark' ? '#e5e7eb' : '#475569', 
+          fontSize: 14, 
+          fontWeight: '600' 
+        }}>
+          📊 Использований useEffect: {counters.useEffect}
+        </Text>
+      </View>
 
       <View style={useEffectStyles.timerBox}>
-        <Text style={useEffectStyles.timerLabel}>Таймер</Text>
+        <Text style={useEffectStyles.timerLabel}>Сессия фокуса</Text>
         <Text style={useEffectStyles.timerValue}>{formattedTime}</Text>
         <View style={useEffectStyles.timerActions}>
           <TouchableOpacity
@@ -111,27 +137,31 @@ const UseEffectScreen = () => {
         </View>
       </View>
 
-      <View style={useEffectStyles.quoteCard}>
-        <Text style={useEffectStyles.quoteTitle}>Цитата для вдохновения</Text>
+      <View style={[useEffectStyles.quoteCard, { backgroundColor: themeStyles.card }]}>
+        <Text style={[useEffectStyles.quoteTitle, { color: themeStyles.text }]}>
+          Цитата для вдохновения
+        </Text>
         {isQuoteLoading ? (
-          <ActivityIndicator color="#2563eb" />
+          <ActivityIndicator color={themeStyles.primary} />
         ) : (
           <>
-            <Text style={useEffectStyles.quoteText}>
+            <Text style={[useEffectStyles.quoteText, { color: themeStyles.text }]}>
               {quote?.text ?? 'Здесь появится цитата после загрузки.'}
             </Text>
             {quote?.author ? (
-              <Text style={useEffectStyles.quoteAuthor}>— {quote.author}</Text>
+              <Text style={[useEffectStyles.quoteAuthor, { color: themeStyles.secondary }]}>
+                — {quote.author}
+              </Text>
             ) : null}
           </>
         )}
 
         <TouchableOpacity
-          style={useEffectStyles.refreshButton}
+          style={[useEffectStyles.refreshButton, { borderColor: themeStyles.primary }]}
           onPress={() => setRefetchToken((prev) => prev + 1)}
           disabled={isQuoteLoading}
         >
-          <Text style={useEffectStyles.refreshText}>
+          <Text style={[useEffectStyles.refreshText, { color: themeStyles.primary }]}>
             {isQuoteLoading ? 'Обновляем...' : 'Новая цитата'}
           </Text>
         </TouchableOpacity>

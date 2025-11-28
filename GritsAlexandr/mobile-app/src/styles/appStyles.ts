@@ -3,15 +3,12 @@ import { StyleSheet } from 'react-native';
 export const appStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   content: {
     flex: 1,
   },
   tabBarContainer: {
-    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#e5e5e5',
   },
   tabBar: {
     flexDirection: 'row',
@@ -34,23 +31,39 @@ export const appStyles = StyleSheet.create({
     marginBottom: 4,
   },
   tabIconFocused: {
-    backgroundColor: '#2563eb',
-    borderRadius: 5
+    
   },
   tabIconText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#64748b',
   },
   tabIconTextFocused: {
-    color: '#fff',
+    
   },
   tabLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748b',
   },
   tabLabelFocused: {
-    color: '#2563eb',
+    
   },
 });
+
+export const darkThemeStyles = {
+  background: '#0f172a',
+  text: '#f8fafc',
+  card: '#1e293b',
+  border: '#334155',
+  primary: '#3b82f6',
+  secondary: '#94a3b8',
+};
+
+// Стили для светлой темы
+export const lightThemeStyles = {
+  background: '#ffffff',
+  text: '#0f172a',
+  card: '#f8fafc',
+  border: '#e5e7eb',
+  primary: '#2563eb',
+  secondary: '#64748b',
+};
