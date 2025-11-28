@@ -8,6 +8,7 @@ import {
 	H1,
 	H2,
 	H3,
+	H4,
 	Body,
 	Caption,
 } from "../../../components/ui";
@@ -97,6 +98,11 @@ export default function UseEffectLab() {
 				Демонстрация побочных эффектов и жизненного цикла
 			</Caption>
 
+			{/* Последнее событие */}
+			<View style={styles.eventContainer}>
+				<Body weight="medium">{effectMessage || "Нет событий"}</Body>
+			</View>
+
 			{/* API Fetch Demo */}
 			<Card variant="outlined">
 				<H3 style={styles.cardTitle}>Загрузка данных (API)</H3>
@@ -158,7 +164,7 @@ export default function UseEffectLab() {
 				<H3 style={styles.cardTitle}>Интервальный таймер</H3>
 
 				<View style={styles.timerDisplay}>
-					<H2 style={styles.timerText}>{seconds}s</H2>
+					<H1 weight="bold">{seconds}s</H1>
 					<Caption color="secondary">
 						{running ? "Запущен" : "Остановлен"}
 					</Caption>
@@ -177,14 +183,6 @@ export default function UseEffectLab() {
 						variant="outline"
 						size="md"
 					/>
-				</View>
-			</Card>
-
-			{/* Последнее событие */}
-			<Card variant="outlined">
-				<H3 style={styles.cardTitle}>Последнее событие</H3>
-				<View style={styles.eventContainer}>
-					<Body weight="medium">{effectMessage || "Нет событий"}</Body>
 				</View>
 			</Card>
 

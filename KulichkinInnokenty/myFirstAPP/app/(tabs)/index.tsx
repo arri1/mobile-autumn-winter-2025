@@ -30,6 +30,22 @@ export default function HomeScreen() {
 				</Caption>
 			</View>
 
+			<View style={styles.statusRow}>
+				<Caption color="secondary">Аутентификация</Caption>
+				<Body weight="semibold">
+					{isAuthenticated ? "Авторизован" : "Не авторизован"}
+				</Body>
+			</View>
+			{isAuthenticated && (
+				<>
+					<View style={styles.divider} />
+					<View style={styles.statusRow}>
+						<Caption color="secondary">Пользователь</Caption>
+						<Body>{user?.email}</Body>
+					</View>
+				</>
+			)}
+
 			{/* Theme Switcher Card */}
 			<Card variant="outlined">
 				<H3 style={styles.cardTitle}>Тема приложения</H3>
@@ -56,26 +72,6 @@ export default function HomeScreen() {
 						}
 					/>
 				</View>
-			</Card>
-
-			{/* Status Card */}
-			<Card variant="outlined">
-				<H2 style={styles.cardTitle}>Статус</H2>
-				<View style={styles.statusRow}>
-					<Caption color="secondary">Аутентификация</Caption>
-					<Body weight="semibold">
-						{isAuthenticated ? "Авторизован" : "Не авторизован"}
-					</Body>
-				</View>
-				{isAuthenticated && (
-					<>
-						<View style={styles.divider} />
-						<View style={styles.statusRow}>
-							<Caption color="secondary">Пользователь</Caption>
-							<Body>{user?.email}</Body>
-						</View>
-					</>
-				)}
 			</Card>
 		</Container>
 	);

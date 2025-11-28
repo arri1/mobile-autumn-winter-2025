@@ -8,6 +8,12 @@ export const styles = StyleSheet.create({
 	pageSubtitle: {
 		marginBottom: 24,
 	},
+	card: {
+		padding: 10,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-end",
+	},
 	cardTitle: {
 		marginBottom: 16,
 	},
@@ -39,7 +45,6 @@ export const styles = StyleSheet.create({
 	postContent: {
 		paddingLeft: 12,
 		borderLeftWidth: 2,
-		borderLeftColor: "#000000",
 	},
 	buttonStack: {
 		gap: 12,
@@ -57,17 +62,7 @@ export const styles = StyleSheet.create({
 		gap: 8,
 		paddingVertical: 20,
 	},
-	timerText: {
-		fontSize: 48,
-		fontWeight: "700",
-		marginBottom: 0,
-	},
-	eventContainer: {
-		padding: 16,
-		borderRadius: 4,
-		borderLeftWidth: 2,
-		borderLeftColor: "#000000",
-	},
+	eventContainer: {},
 	counterDisplay: {
 		alignItems: "center",
 		gap: 8,
