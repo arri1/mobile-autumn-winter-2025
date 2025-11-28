@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -24,16 +24,8 @@ const UseMemoScreen = () => {
   const { theme, counters, incrementCounter } = useAppStore();
   const themeStyles = theme === 'dark' ? darkThemeStyles : lightThemeStyles;
 
-  const subsets = useMemo(() => {
-    if (!showSubsets) return [];
-    
-    incrementCounter('useMemo');
-    
-    const items = input
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean);
-
+  // Выносим логику генерации подмножеств в отдельную функцию
+  const generateSubsets = useCallback((items: string[]) => {
     if (!items.length) {
       return [[]];
     }
@@ -54,16 +46,23 @@ const UseMemoScreen = () => {
     };
 
     return buildSubsets(items).sort((a, b) => a.length - b.length);
-  }, [input, showSubsets, incrementCounter]);
+  }, []);
 
-  const elementsCount = useMemo(
-    () =>
-      input
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean).length,
-    [input],
+  const items = useMemo(() => 
+    input
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean),
+    [input]
   );
+
+  const subsets = useMemo(() => {
+    if (!showSubsets) return [];
+    
+    return generateSubsets(items);
+  }, [items, showSubsets, generateSubsets]);
+
+  const elementsCount = useMemo(() => items.length, [items]);
 
   // Функция для расчета количества подмножеств по формуле 2^n
   const calculateSubsetsCount = () => {
@@ -86,8 +85,11 @@ const UseMemoScreen = () => {
     setCalculationResult({
       elementsCount,
       subsetsCount: calculatedCount,
-      actualSubsets: calculatedCount, // Будет обновлено после генерации
+      actualSubsets: calculatedCount,
     });
+    
+    // Инкрементируем счетчик только при нажатии кнопки
+    incrementCounter('useMemo');
   };
 
   const handleReset = () => {
@@ -186,12 +188,12 @@ const UseMemoScreen = () => {
 
         {/* Блок с информацией о расчете */}
         {calculationResult && (
-           <View style={[useMemoStyles.calculationBox, { backgroundColor: themeStyles.card, borderColor: themeStyles.border }]}>
-      <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
+          <View style={[useMemoStyles.calculationBox, { backgroundColor: themeStyles.card, borderColor: themeStyles.border }]}>
+            <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
               Информация о множестве
             </Text>
             <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
-              Элементы: {input.split(',').map(item => item.trim()).filter(Boolean).join(', ')}
+              Элементы: {items.join(', ')}
             </Text>
             <Text style={[useMemoStyles.calculationText, { color: themeStyles.secondary }]}>
               Количество элементов: n = {calculationResult.elementsCount}
@@ -203,7 +205,7 @@ const UseMemoScreen = () => {
               Ожидаемое количество: 2^{calculationResult.elementsCount} = {calculationResult.subsetsCount}
             </Text>
             <Text style={[useMemoStyles.calculationText, { color: '#22c55e' }]}>
-             Фактически сгенерировано: {subsets.length} подмножеств
+              Фактически сгенерировано: {subsets.length} подмножеств
             </Text>
           </View>
         )}
