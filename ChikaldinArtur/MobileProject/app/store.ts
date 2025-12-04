@@ -1,6 +1,43 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { router } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+type AuthState = {
+  token: string | null;
+  loading: boolean;
+  login: (token: string) => Promise<void>;
+  logout: () => Promise<void>;
+  loadToken: () => Promise<void>;
+};
+
+export const useAuthStore = create<AuthState>((set) => ({
+  token: null,
+  loading: true,
+
+  login: async (token: string) => {
+    if (!token) {
+      console.warn("Login error: token is undefined");
+      return;
+    }
+
+    set({ token });
+    await AsyncStorage.setItem("token", token);
+    router.replace("/(tabs)/profile");
+  },
+
+  logout: async () => {
+    await AsyncStorage.removeItem("token");
+    set({ token: null });
+    router.replace("/login");
+  },
+
+  loadToken: async () => {
+    const saved = await AsyncStorage.getItem("token");
+    set({ token: saved, loading: false });
+  },
+}));
 
 interface Bear {
   id: number;
