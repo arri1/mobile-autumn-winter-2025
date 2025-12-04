@@ -1,0 +1,227 @@
+import { StyleSheet } from 'react-native';
+
+export const ZustandStyles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0B0C10',
+  },
+  container: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  exampleContainer: {
+    backgroundColor: '#1F2833',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#ff859bff',
+  },
+  exampleTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  exampleDescription: {
+    fontSize: 14,
+    color: '#C5C6C7',
+    marginBottom: 16,
+    lineHeight: 18,
+  },
+  counterDisplay: {
+    backgroundColor: '#0B0C10',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  counterValue: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#66FCF1',
+  },
+  counterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 16,
+  },
+  counterButton: {
+    flex: 1,
+    backgroundColor: '#45A29E',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  counterButtonText: {
+    color: '#0B0C10',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  customInputContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  customInput: {
+    flex: 1,
+    backgroundColor: '#0B0C10',
+    borderWidth: 1,
+    borderColor: '#45A29E',
+    borderRadius: 8,
+    padding: 12,
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  setButton: {
+    backgroundColor: '#ff859bff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    justifyContent: 'center',
+  },
+  setButtonText: {
+    color: '#0B0C10',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  currentUserContainer: {
+    backgroundColor: '#0B0C10',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#66FCF1',
+  },
+  currentUserTitle: {
+    fontSize: 14,
+    color: '#C5C6C7',
+    marginBottom: 4,
+  },
+  currentUserText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  addUserForm: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  userInput: {
+    backgroundColor: '#0B0C10',
+    borderWidth: 1,
+    borderColor: '#45A29E',
+    borderRadius: 8,
+    padding: 12,
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  addButton: {
+    backgroundColor: '#45A29E',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addButtonDisabled: {
+    opacity: 0.5,
+  },
+  addButtonText: {
+    color: '#0B0C10',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  usersTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 12,
+  },
+  userItem: {
+    backgroundColor: '#0B0C10',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  userUsername: {
+    fontSize: 14,
+    color: '#C5C6C7',
+  },
+  userActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  userActionButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  selectButton: {
+    backgroundColor: '#45A29E',
+  },
+  deleteButton: {
+    backgroundColor: '#f97a9cff',
+  },
+  userActionText: {
+    color: '#0B0C10',
+    fontWeight: '600',
+    fontSize: 12,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#C5C6C7',
+    fontStyle: 'italic',
+    marginVertical: 20,
+  },
+  navigationButtons: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  navButton: {
+    backgroundColor: '#2D3748',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#45A29E',
+  },
+  navButtonText: {
+    color: '#66FCF1',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  drawerHint: {
+    backgroundColor: '#1F2833',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ff859bff',
+  },
+  drawerHintText: {
+    color: '#ff859bff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+});

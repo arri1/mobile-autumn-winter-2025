@@ -1,33 +1,33 @@
 import React from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { CommonStyles, Colors, HomeStyles } from './styles';
+import { HomeStyles } from './HomeScreenStyle';
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
 };
 
-export default function HomeScreen({ navigation }: Props) {
+export default function HomeLab({ navigation }: Props) {
   const { user } = useAuth();
 
   const features = [
-    { title: 'useState Хук', screen: 'UseState', color: Colors.pink },
-    { title: 'useEffect Хук', screen: 'UseEffect', color: Colors.accent },
-    { title: 'useMemo Хук', screen: 'UseMemo', color: Colors.lightAccent },
-    { title: 'Zustand', screen: 'Zustand', color: Colors.lightAccent },
+    { title: 'useState Хук', screen: 'UseState', color: '#ff859bff' },
+    { title: 'useEffect Хук', screen: 'UseEffect', color: '#45A29E' },
+    { title: 'useMemo Хук', screen: 'UseMemo', color: '#66FCF1' },
+    { title: 'Zustand', screen: 'Zustand', color: '#66FCF1' },
   ];
 
   return (
-    <SafeAreaView style={CommonStyles.safeArea}>
-      <ScrollView style={CommonStyles.container}>
+    <SafeAreaView style={HomeStyles.safeArea}>
+      <ScrollView style={HomeStyles.container}>
         <View style={HomeStyles.header}>
-          <Text style={HomeStyles.welcome}>Добро пожаловать! 👋</Text>
+          <Text style={HomeStyles.welcome}>Добро пожаловать!</Text>
           <Text style={HomeStyles.userName}>{user?.name}</Text>
         </View>
 
         <View style={HomeStyles.featuresContainer}>
-          <Text style={CommonStyles.sectionTitle}>Лабораторные работы</Text>
+          <Text style={HomeStyles.sectionTitle}>Лабораторные работы</Text>
           
           {features.map((feature, index) => (
             <TouchableOpacity

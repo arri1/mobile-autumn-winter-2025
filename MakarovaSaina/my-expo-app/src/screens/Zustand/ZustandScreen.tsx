@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, Alert, ScrollView, FlatList } from 'react-native';
-import { useCounterStore } from '../store/useCounterStore';
-import { useUserStore } from '../store/useUserStore';
-import { ZustandStyles } from './styles';
+import { useCounterStore } from '../../store/useCounterStore';
+import { useUserStore } from '../../store/useUserStore';
+import { ZustandStyles } from './ZustandStyle';
 
-export default function ZustandScreen({ navigation }: any) {
+export default function ZustandLab({ navigation }: any) {
   const openDrawer = () => navigation.openDrawer();
 
   return (

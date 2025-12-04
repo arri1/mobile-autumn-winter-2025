@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../navigation/AuthNavigator';
-import { CommonStyles, AuthStyles } from './styles';
+import { AuthStackParamList } from '../../navigation/AuthNavigator';
+import { RegisterStyles } from './RegisterScreenStyle';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
@@ -11,7 +11,7 @@ type Props = {
   navigation: RegisterScreenNavigationProp;
 };
 
-export default function RegisterScreen({ navigation }: Props) {
+export default function RegisterLab({ navigation }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,19 +43,21 @@ export default function RegisterScreen({ navigation }: Props) {
   const goToLogin = () => navigation.navigate('Login');
 
   return (
-    <SafeAreaView style={CommonStyles.safeArea}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView contentContainerStyle={AuthStyles.scrollContent}>
-          <View style={AuthStyles.header}>
-            <Text style={AuthStyles.welcomeTitle}>Создать аккаунт 🚀</Text>
-            <Text style={CommonStyles.subtitle}>Зарегистрируйтесь для начала работы</Text>
+    <SafeAreaView style={RegisterStyles.safeArea}>
+      <KeyboardAvoidingView
+        style={RegisterStyles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView contentContainerStyle={RegisterStyles.scrollContent}>
+          <View style={RegisterStyles.header}>
+            <Text style={RegisterStyles.title}>Создать аккаунт 🚀</Text>
           </View>
 
-          <View style={AuthStyles.form}>
-            <View style={CommonStyles.inputContainer}>
-              <Text style={CommonStyles.label}>Имя</Text>
+          <View style={RegisterStyles.form}>
+            <View style={RegisterStyles.inputContainer}>
+              <Text style={RegisterStyles.label}>Имя</Text>
               <TextInput
-                style={CommonStyles.input}
+                style={RegisterStyles.input}
                 placeholder="Введите ваше имя"
                 placeholderTextColor="#C5C6C7"
                 value={name}
@@ -64,10 +66,10 @@ export default function RegisterScreen({ navigation }: Props) {
               />
             </View>
 
-            <View style={CommonStyles.inputContainer}>
-              <Text style={CommonStyles.label}>Email</Text>
+            <View style={RegisterStyles.inputContainer}>
+              <Text style={RegisterStyles.label}>Email</Text>
               <TextInput
-                style={CommonStyles.input}
+                style={RegisterStyles.input}
                 placeholder="Введите ваш email"
                 placeholderTextColor="#C5C6C7"
                 value={email}
@@ -78,10 +80,10 @@ export default function RegisterScreen({ navigation }: Props) {
               />
             </View>
 
-            <View style={CommonStyles.inputContainer}>
-              <Text style={CommonStyles.label}>Пароль</Text>
+            <View style={RegisterStyles.inputContainer}>
+              <Text style={RegisterStyles.label}>Пароль</Text>
               <TextInput
-                style={CommonStyles.input}
+                style={RegisterStyles.input}
                 placeholder="Введите ваш пароль"
                 placeholderTextColor="#C5C6C7"
                 value={password}
@@ -91,10 +93,10 @@ export default function RegisterScreen({ navigation }: Props) {
               />
             </View>
 
-            <View style={CommonStyles.inputContainer}>
-              <Text style={CommonStyles.label}>Подтвердите пароль</Text>
+            <View style={RegisterStyles.inputContainer}>
+              <Text style={RegisterStyles.label}>Подтвердите пароль</Text>
               <TextInput
-                style={CommonStyles.input}
+                style={RegisterStyles.input}
                 placeholder="Повторите ваш пароль"
                 placeholderTextColor="#C5C6C7"
                 value={confirmPassword}
@@ -105,17 +107,21 @@ export default function RegisterScreen({ navigation }: Props) {
             </View>
 
             <TouchableOpacity
-              style={[CommonStyles.primaryButton, isLoading && CommonStyles.buttonDisabled]}
+              style={[RegisterStyles.registerButton, isLoading && RegisterStyles.registerButtonDisabled]}
               onPress={handleRegister}
               disabled={isLoading}
             >
-              {isLoading ? <ActivityIndicator color="#0B0C10" /> : <Text style={CommonStyles.primaryButtonText}>Зарегистрироваться</Text>}
+              {isLoading ? (
+                <ActivityIndicator color="#0B0C10" />
+              ) : (
+                <Text style={RegisterStyles.registerButtonText}>Зарегистрироваться</Text>
+              )}
             </TouchableOpacity>
 
-            <View style={AuthStyles.registerContainer}>
-              <Text style={AuthStyles.registerText}>Уже есть аккаунт?</Text>
+            <View style={RegisterStyles.loginContainer}>
+              <Text style={RegisterStyles.loginText}>Уже есть аккаунт?</Text>
               <TouchableOpacity onPress={goToLogin} disabled={isLoading}>
-                <Text style={AuthStyles.registerLink}> Войти</Text>
+                <Text style={RegisterStyles.loginLink}> Войти</Text>
               </TouchableOpacity>
             </View>
           </View>

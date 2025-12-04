@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, FlatList, Alert, Modal, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { HookStyles, UseMemoStyles } from './styles';
+import { UseMemoStyles } from './UseMemoStyle';
 
 type User = {
   id: number;
@@ -9,7 +9,7 @@ type User = {
   department: string;
 };
 
-export default function UseMemoScreen({ navigation }: any) {
+export default function UseMemoLab({ navigation }: any) {
   const [users, setUsers] = useState<User[]>([
     { id: 1, name: 'Алексей', age: 25, department: 'Разработка' },
     { id: 2, name: 'Мария', age: 30, department: 'Дизайн' },
@@ -160,10 +160,11 @@ export default function UseMemoScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={HookStyles.safeArea}>
-      <KeyboardAvoidingView style={HookStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <SafeAreaView style={UseMemoStyles.safeArea}>
+      <KeyboardAvoidingView style={UseMemoStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView>
-          <Text style={HookStyles.title}>useMemo</Text>
+          <Text style={UseMemoStyles.title}>useMemo 🧠</Text>
+          <Text style={UseMemoStyles.subtitle}>Оптимизация производительности</Text>
           
           <View style={UseMemoStyles.controlsContainer}>
             <TextInput
@@ -243,17 +244,17 @@ export default function UseMemoScreen({ navigation }: any) {
             />
           </View>
 
-          <View style={HookStyles.navigationButtons}>
-            <TouchableOpacity style={HookStyles.navButton} onPress={() => navigation.navigate('UseState')}>
-              <Text style={HookStyles.navButtonText}>← К useState</Text>
+          <View style={UseMemoStyles.navigationButtons}>
+            <TouchableOpacity style={UseMemoStyles.navButton} onPress={() => navigation.navigate('UseState')}>
+              <Text style={UseMemoStyles.navButtonText}>← К useState</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={HookStyles.navButton} onPress={() => navigation.navigate('UseEffect')}>
-              <Text style={HookStyles.navButtonText}>← К useEffect</Text>
+            <TouchableOpacity style={UseMemoStyles.navButton} onPress={() => navigation.navigate('UseEffect')}>
+              <Text style={UseMemoStyles.navButtonText}>← К useEffect</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={HookStyles.navButton} onPress={() => navigation.navigate('Home')}>
-              <Text style={HookStyles.navButtonText}>← На главную</Text>
+            <TouchableOpacity style={UseMemoStyles.navButton} onPress={() => navigation.navigate('Home')}>
+              <Text style={UseMemoStyles.navButtonText}>← На главную</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

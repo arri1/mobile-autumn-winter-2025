@@ -2,11 +2,11 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import UseStateScreen from '../screens/UseStateScreen';
-import UseEffectScreen from '../screens/UseEffectScreen';
-import UseMemoScreen from '../screens/UseMemoScreen';
-import HomeScreen from '../screens/HomeScreen';
-import ZustandScreen from '../screens/ZustandScreen';
+import UseStateScreen from '../screens/useState/UseStateScreen';
+import UseEffectScreen from '../screens/useEffect/UseEffectScreen';
+import UseMemoScreen from '../screens/useMemo/UseMemoScreen';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import ZustandScreen from '../screens/Zustand/ZustandScreen';
 
 const Drawer = createDrawerNavigator();
 
