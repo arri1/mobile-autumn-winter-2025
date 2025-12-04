@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import ShopScreen from "./screens/ShopScreen";
-import CartScreen from "./screens/CartScreen";
+import ShopScreen from "./src/screens/ShopScreen";
+import CartScreen from "./src/screens/CartScreen";
 
 export default function App() {
   const [tab, setTab] = useState("shop");
