@@ -23,6 +23,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+    <Tabs.Screen
+        name="ZustandExample2"
+        options={{
+          title: 'Zustand2',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
         <Tabs.Screen
         name="useStateLab"
         options={{
