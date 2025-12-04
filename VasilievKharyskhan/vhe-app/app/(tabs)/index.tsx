@@ -1,98 +1,322 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import React from 'react';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { useTheme } from '@/contexts/theme-context';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
-export default function HomeScreen() {
+export default function AboutScreen() {
+  const { actualColorScheme, toggleTheme } = useTheme();
+  const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.scrollView}>
+      <ThemedView style={styles.container}>
+        {/* Header */}
+        <ThemedView style={styles.header}>
+          <ThemedText type="title" style={styles.mainTitle}>
+            О приложении
+          </ThemedText>
+          <View style={styles.divider} />
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
+          {/* Theme Toggle Button */}
+          <TouchableOpacity
+            style={[styles.themeButton, { backgroundColor: buttonBg }]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}>
+            <ThemedText style={styles.themeButtonText}>
+              {actualColorScheme === 'dark' ? '☀️' : '🌙'}
+              {' '}
+              {actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
+            </ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
+
+        {/* Profile Section */}
+        <ThemedView style={styles.profileSection}>
+          <View style={styles.photoContainer}>
+            <Image
+              source={require('@/assets/images/profile.jpg')}
+              style={styles.profilePhoto}
+            />
+          </View>
+
+          <ThemedText type="subtitle" style={styles.name}>
+            Васильев Харысхан
+          </ThemedText>
+
+          <ThemedText style={styles.info}>
+            ФИИТ-22
+          </ThemedText>
+        </ThemedView>
+
+        {/* Project Info */}
+        <ThemedView style={styles.card}>
+          <ThemedText type="subtitle" style={styles.cardTitle}>
+            О проекте
+          </ThemedText>
+          <ThemedText style={styles.cardText}>
+            Данное приложение разработано в рамках изучения дисциплины
+            "Разработка мобильных приложений" в Северо-Восточном федеральном
+            университете имени М.К. Аммосова.
+          </ThemedText>
+        </ThemedView>
+
+        {/* Features */}
+        <ThemedView style={styles.card}>
+          <ThemedText type="subtitle" style={styles.cardTitle}>
+            Функционал
+          </ThemedText>
+          <ThemedView style={styles.featuresList}>
+            <ThemedView style={styles.featureItem}>
+              <ThemedText style={styles.featureIcon}>🎨</ThemedText>
+              <ThemedView style={styles.featureTextContainer}>
+                <ThemedText style={styles.featureTitle}>useState</ThemedText>
+                <ThemedText style={styles.featureDescription}>
+                  Интерактивное рисование пальцем с выбором цвета и размера кисти
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
+
+            <ThemedView style={styles.featureItem}>
+              <ThemedText style={styles.featureIcon}>🐱</ThemedText>
+              <ThemedView style={styles.featureTextContainer}>
+                <ThemedText style={styles.featureTitle}>useEffect</ThemedText>
+                <ThemedText style={styles.featureDescription}>
+                  Загрузка случайных фотографий кошек из API в формате 16:9
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
+
+            <ThemedView style={styles.featureItem}>
+              <ThemedText style={styles.featureIcon}>📊</ThemedText>
+              <ThemedView style={styles.featureTextContainer}>
+                <ThemedText style={styles.featureTitle}>useMemo</ThemedText>
+                <ThemedText style={styles.featureDescription}>
+                  Оптимизация производительности с фильтрацией и сортировкой 500 товаров
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
+            
+          </ThemedView>
+        </ThemedView>
+
+        {/* Technologies */}
+        <ThemedView style={styles.card}>
+          <ThemedText type="subtitle" style={styles.cardTitle}>
+            Технологии
+          </ThemedText>
+          <ThemedView style={styles.techGrid}>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>React Native</ThemedText>
+            </View>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>TypeScript</ThemedText>
+            </View>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>Expo</ThemedText>
+            </View>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>React Hooks</ThemedText>
+            </View>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>SVG</ThemedText>
+            </View>
+            <View style={styles.techBadge}>
+              <ThemedText style={styles.techText}>Gestures</ThemedText>
+            </View>
+          </ThemedView>
+        </ThemedView>
+
+        {/* Contact */}
+        <ThemedView style={styles.card}>
+          <ThemedText type="subtitle" style={styles.cardTitle}>
+            Контакты
+          </ThemedText>
+          <ThemedView style={styles.contactItem}>
+            <ThemedText style={styles.contactLabel}>Университет:</ThemedText>
+            <ThemedText style={styles.contactValue}>СВФУ им. М.К. Аммосова</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.contactItem}>
+            <ThemedText style={styles.contactLabel}>Факультет:</ThemedText>
+            <ThemedText style={styles.contactValue}>ФИИиТ</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.contactItem}>
+            <ThemedText style={styles.contactLabel}>Группа:</ThemedText>
+            <ThemedText style={styles.contactValue}>ФИИТ-22</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.contactItem}>
+            <ThemedText style={styles.contactLabel}>Телеграм:</ThemedText>
+            <ThemedText style={styles.contactValue}>https://t.me/DartGrid</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.contactItem}>
+            <ThemedText style={styles.contactLabel}>GitHub:</ThemedText>
+            <ThemedText style={styles.contactValue}>Dartgrid</ThemedText>
+          </ThemedView>
+        </ThemedView>
+
+        {/* Footer */}
+        <ThemedView style={styles.footer}>
+          <ThemedText style={styles.footerText}>
+            © 2025 • Разработка мобильных приложений
+          </ThemedText>
+          <ThemedText style={styles.footerSubtext}>
+            Сделано в Якутске
+          </ThemedText>
+        </ThemedView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  scrollView: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
     alignItems: 'center',
+    marginBottom: 24,
+    paddingTop: 20,
+  },
+  mainTitle: {
+    fontSize: 32,
+    marginBottom: 12,
+  },
+  divider: {
+    width: 60,
+    height: 4,
+    backgroundColor: '#007AFF',
+    borderRadius: 2,
+  },
+  themeButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  themeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  profileSection: {
+    alignItems: 'center',
+    marginBottom: 24,
+    padding: 20,
+    borderRadius: 16,
+  },
+  photoContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 4,
+    borderColor: '#E5E5EA',
+  },
+  profilePhoto: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+  },
+  name: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  info: {
+    fontSize: 16,
+    opacity: 0.7,
+  },
+  card: {
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  cardTitle: {
+    fontSize: 20,
+    marginBottom: 12,
+  },
+  cardText: {
+    fontSize: 16,
+    lineHeight: 24,
+    opacity: 0.8,
+  },
+  featuresList: {
+    gap: 16,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  featureIcon: {
+    fontSize: 32,
+  },
+  featureTextContainer: {
+    flex: 1,
+  },
+  featureTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  featureDescription: {
+    fontSize: 14,
+    opacity: 0.7,
+    lineHeight: 20,
+  },
+  techGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  techBadge: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  techText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  contactItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  contactLabel: {
+    fontSize: 16,
+    opacity: 0.6,
+  },
+  contactValue: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footer: {
+    alignItems: 'center',
+    paddingVertical: 32,
+    marginTop: 16,
+  },
+  footerText: {
+    fontSize: 14,
+    opacity: 0.6,
+    marginBottom: 4,
+  },
+  footerSubtext: {
+    fontSize: 14,
+    opacity: 0.6,
   },
 });
