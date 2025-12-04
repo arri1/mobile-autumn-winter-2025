@@ -5,7 +5,6 @@ const API_HEADERS = {
   "X-API-KEY": "ZB1SM9H-9R6M5DG-HXG2FJV-GSSZN52"
 };
 
-
 const useMoviesSearch = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,8 +54,7 @@ const MoviesSearchComponent = () => {
   const { movies, loading, error, getMoviesByName } = useMoviesSearch();
 
   useEffect(() => {
-    // Поиск с лимитом 10 фильмов
-    getMoviesByName("гарри", 1, 50);
+    getMoviesByName("дневник", 1, 10);
   }, []);
 
   if (loading) {
