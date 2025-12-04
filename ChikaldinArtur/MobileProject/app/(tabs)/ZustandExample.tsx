@@ -18,10 +18,6 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>
-        Всего медведей: {count}
-      </Text>
-
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 }}>
         <TextInput
           placeholder="Имя медведя"
