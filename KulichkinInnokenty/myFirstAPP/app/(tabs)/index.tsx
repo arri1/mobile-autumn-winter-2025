@@ -1,98 +1,78 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { View, Switch } from "react-native";
+import { useRouter } from "expo-router";
+import {
+	Container,
+	Card,
+	Button,
+	H1,
+	H2,
+	H3,
+	Body,
+	Caption,
+} from "../../components/ui";
+import useAuthStore from "../../store/authStore";
+import useThemeStore from "../../store/themeStore";
+import { homeStyles as styles } from "./styles";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+	const router = useRouter();
+	const { isAuthenticated, user } = useAuthStore();
+	const { theme, colors, toggleTheme } = useThemeStore();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+	return (
+		<Container scrollable padding="md">
+			<View style={styles.header}>
+				<H1 weight="bold" style={styles.pageTitle}>
+					Главная
+				</H1>
+				<Caption color="secondary">
+					Минималистичное React Native приложение
+				</Caption>
+			</View>
+
+			<View style={styles.statusRow}>
+				<Caption color="secondary">Аутентификация</Caption>
+				<Body weight="semibold">
+					{isAuthenticated ? "Авторизован" : "Не авторизован"}
+				</Body>
+			</View>
+			{isAuthenticated && (
+				<>
+					<View style={styles.divider} />
+					<View style={styles.statusRow}>
+						<Caption color="secondary">Пользователь</Caption>
+						<Body>{user?.email}</Body>
+					</View>
+				</>
+			)}
+
+			{/* Theme Switcher Card */}
+			<Card variant="outlined">
+				<H3 style={styles.cardTitle}>Тема приложения</H3>
+				<View style={styles.statusRow}>
+					<View>
+						<Body weight="semibold">
+							{theme === "dark" ? "Темная" : "Светлая"}
+						</Body>
+						<Caption color="secondary">
+							Переключить на {theme === "dark" ? "светлую" : "темную"}
+						</Caption>
+					</View>
+					<Switch
+						value={theme === "light"}
+						onValueChange={toggleTheme}
+						trackColor={{
+							false: colors.switchTrackFalse,
+							true: colors.switchTrackTrue,
+						}}
+						thumbColor={
+							theme === "light"
+								? colors.switchThumbTrue
+								: colors.switchThumbFalse
+						}
+					/>
+				</View>
+			</Card>
+		</Container>
+	);
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

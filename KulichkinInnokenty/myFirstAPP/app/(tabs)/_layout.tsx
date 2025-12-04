@@ -1,56 +1,103 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from "@/components/haptic-tab";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import useThemeStore from "../../store/themeStore";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+	const { colors } = useThemeStore();
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="use_state_lab"
-        options={{
-          title: 'USE STATE',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="use_effect_lab"
-        options={{
-          title: 'USE EFFECT',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="use_memo_lab"
-        options={{
-          title: 'USE MEMO',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: colors.textPrimary,
+				tabBarInactiveTintColor: colors.textTertiary,
+				tabBarStyle: {
+					backgroundColor: colors.backgroundElevated,
+					borderTopColor: colors.border,
+				},
+				headerShown: false,
+				tabBarButton: HapticTab,
+			}}
+		>
+			<Tabs.Screen
+				name="index"
+				options={{
+					title: "HOME",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="h.square.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="explore"
+				options={{
+					href: null, // Скрыть из табов
+				}}
+			/>
+			<Tabs.Screen
+				name="UseState/index"
+				options={{
+					title: "USE STATE",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="s.square.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="UseEffect/index"
+				options={{
+					title: "USE EFFECT",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="e.square.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="UseMemo/index"
+				options={{
+					title: "USE MEMO",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="m.square.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="Zustand/index"
+				options={{
+					title: "ZUSTAND",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="z.square.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="Auth/LoginScreen"
+				options={{
+					title: "LOGIN",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol
+							size={28}
+							name="person.crop.circle.fill.badge.checkmark"
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="Auth/RegisterScreen"
+				options={{
+					title: "REGISTER",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol
+							size={28}
+							name="person.crop.circle.fill.badge.plus"
+							color={color}
+						/>
+					),
+				}}
+			/>
+		</Tabs>
+	);
 }

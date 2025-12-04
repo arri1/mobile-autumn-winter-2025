@@ -1,50 +1,211 @@
-# Welcome to your Expo app 👋
+# Минималистичное React Native приложение
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Демонстрационное приложение с **черно-белым минималистичным дизайном**, акцентом на иерархию и читаемость.
 
-## Get started
+## Особенности
 
-1. Install dependencies
+- Минималистичный черно-белый UI Kit
+- Zustand для управления состоянием
+- Аутентификация с JWT токенами
+- TypeScript
+- Expo Router (файловая маршрутизация)
+- Адаптивные компоненты
 
-   ```bash
-   npm install
-   ```
+## Быстрый старт
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Установка зависимостей
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Запуск приложения
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Выберите платформу:
+- **a** - Android эмулятор
+- **i** - iOS симулятор
+- **w** - веб-версия
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Структура проекта
 
-## Join the community
+```
+app/
+├── (tabs)/           # Основные табы
+│   ├── index.tsx     # Главная страница
+│   ├── explore.tsx   # Обзор технологий
+│   └── Zustand/      # Zustand демо
+├── auth/             # Экраны авторизации
+│   ├── login.tsx
+│   ├── register.tsx
+│   └── profile.tsx
+└── _layout.tsx       # Корневой layout
 
-Join our community of developers creating universal apps.
+components/
+└── ui/               # UI Kit компоненты
+    ├── Card.tsx
+    ├── Button.tsx
+    ├── Input.tsx
+    ├── Typography.tsx
+    └── Container.tsx
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+store/
+└── authStore.ts      # Zustand store
+
+gluestack-ui.config.ts # Конфигурация темы
+```
+
+## UI Kit
+
+### Компоненты
+
+#### Typography
+```tsx
+import { H1, H2, H3, Body, Caption, Label } from '@/components/ui';
+
+<H1>Заголовок</H1>
+<Body color="secondary">Текст</Body>
+<Caption color="tertiary">Подпись</Caption>
+```
+
+#### Button
+```tsx
+import { Button } from '@/components/ui';
+
+<Button
+  title="Действие"
+  variant="primary"    // primary, outline, ghost, destructive
+  size="lg"            // sm, md, lg
+  onPress={() => {}}
+/>
+```
+
+#### Card
+```tsx
+import { Card } from '@/components/ui';
+
+<Card variant="outlined">
+  <H2>Заголовок</H2>
+  <Body>Содержимое карточки</Body>
+</Card>
+```
+
+#### Input
+```tsx
+import { Input } from '@/components/ui';
+
+<Input
+  label="Email"
+  placeholder="Введите email"
+  value={email}
+  onChangeText={setEmail}
+/>
+```
+
+### Цветовая палитра
+
+```
+#000000 - Primary (текст, акценты)
+#525252 - Secondary text
+#A3A3A3 - Tertiary text
+#E5E5E5 - Borders
+#FAFAFA - Background
+#FFFFFF - Surface
+```
+
+## Технологии
+
+- **React Native** - кроссплатформенная разработка
+- **Expo** - инструменты и сервисы
+- **TypeScript** - типизация
+- **Zustand** - управление состоянием
+- **Axios** - HTTP клиент
+- **AsyncStorage** - локальное хранилище
+- **Expo Router** - навигация
+
+## Авторизация
+
+Приложение использует JWT токены для аутентификации:
+
+### Demo credentials
+```
+Email: demo@example.com
+Password: demo123
+```
+
+### API Endpoints
+- `POST /auth/login` - вход
+- `POST /auth/register` - регистрация
+- `GET /auth/profile` - профиль пользователя
+
+## Дизайн система
+
+Подробная документация по дизайну в [DESIGN.md](./DESIGN.md)
+
+### Принципы
+
+1. **Минимализм** - только необходимые элементы
+2. **Иерархия** - четкая визуальная структура
+3. **Читаемость** - оптимальные размеры и интервалы
+4. **Контраст** - монохромная палитра
+
+## Разработка
+
+### Добавление нового экрана
+
+1. Создайте файл в `app/`
+2. Используйте компоненты из `components/ui`
+3. Следуйте дизайн-системе
+
+Пример:
+```tsx
+import { Container, Card, H1, Body } from '@/components/ui';
+
+export default function NewScreen() {
+  return (
+    <Container scrollable padding="md">
+      <H1>Новый экран</H1>
+      <Card variant="outlined">
+        <Body>Содержимое</Body>
+      </Card>
+    </Container>
+  );
+}
+```
+
+### Добавление нового компонента UI
+
+Все компоненты должны:
+- Использовать черно-белую палитру
+- Поддерживать варианты (variants)
+- Иметь TypeScript типы
+- Следовать spacing системе
+
+## Полезные команды
+
+```bash
+# Запуск
+npm start
+
+# Линтинг
+npm run lint
+
+# Сброс проекта
+npm run reset-project
+
+# Сборка для Android
+npm run android
+
+# Сборка для iOS
+npm run ios
+
+# Веб-версия
+npm run web
+```
+
+## Лицензия
+
+MIT
