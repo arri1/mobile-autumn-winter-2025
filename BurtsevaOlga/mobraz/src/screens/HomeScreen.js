@@ -31,9 +31,23 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.arrow}>→</Text>
             </View>
           </TouchableOpacity>
-          
-          
-          
+
+          {/* Кнопка для useEffect */}
+          <TouchableOpacity 
+            style={styles.menuButton}
+            onPress={() => navigation.navigate('UseEffect')}
+          >
+            <View style={styles.buttonContent}>
+              <View style={[styles.icon, { backgroundColor: '#34C759' }]}>
+                <Text style={styles.iconText}>2</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.buttonTitle}>useEffect</Text>
+              </View>
+              <Text style={styles.arrow}>→</Text>
+            </View>
+          </TouchableOpacity>
+
           {/* Разделитель */}
           <View style={styles.divider} />
           

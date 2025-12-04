@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './screens/HomeScreen';      
 import UseStateScreen from './screens/UseState';
+import UseEffectScreen from './screens/UseEffect';
 
 
 const Stack = createStackNavigator();
@@ -45,7 +46,15 @@ const Navigation = () => {
           }}
         />
         
-        
+        {/* Экран с useEffect */}
+        <Stack.Screen 
+          name="UseEffect" 
+          component={UseEffectScreen}
+          options={{ 
+            title: 'useEffect Примеры',
+            headerShown: true,
+          }}
+        />
        
       </Stack.Navigator>
     </NavigationContainer>
