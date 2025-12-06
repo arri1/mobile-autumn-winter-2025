@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
           {/* Кнопка для useEffect */}
           <TouchableOpacity 
             style={styles.menuButton}
-           // onPress={() => navigation.navigate('UseEffect')}
+            onPress={() => navigation.navigate('UseEffect')}
           >
             <View style={styles.buttonContent}>
               <View style={[styles.icon, { backgroundColor: '#34C759' }]}>
