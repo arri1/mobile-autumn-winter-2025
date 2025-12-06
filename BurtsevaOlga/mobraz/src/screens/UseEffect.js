@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ActivityIndicator, FlatList, SafeAreaView,TouchableOpacity} from 'react-native';
+import { View, Text, ActivityIndicator, FlatList, SafeAreaView,TouchableOpacity, Button} from 'react-native';
 
 import { styles } from '../styles/UseEffectScreen.styles.js';
 
-const UseEffectScreen = () => {
+const UseEffectScreen = ( {navigation} ) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -162,6 +162,13 @@ const UseEffectScreen = () => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
+      <View style={styles.backButtonContainer}>
+        <Button
+          title="← Вернуться в меню"
+          onPress={() => navigation.navigate('Home')}
+          color="#8E8E93"
+        />
+      </View>
     </SafeAreaView>
   );
 };

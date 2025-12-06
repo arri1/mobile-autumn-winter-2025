@@ -226,7 +226,7 @@ const UseMemoScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('Home')}
           >
             <Text style={styles.backButtonText}>← В меню</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> 
         </View>
 
       </View>

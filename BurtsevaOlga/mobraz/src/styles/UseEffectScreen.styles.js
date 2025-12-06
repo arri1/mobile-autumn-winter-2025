@@ -131,6 +131,10 @@ export const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 4,
   },
+  backButtonContainer: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
   userCompany: {
     fontSize: 14,
     color: '#666',

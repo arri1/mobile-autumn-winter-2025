@@ -8,6 +8,13 @@ export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  welcomeText: {
+    fontSize: 18,
+    color: '#007AFF',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     padding: 20,

@@ -1,13 +1,38 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView } from 'react-native';
 import { styles } from '../styles/HomeScreen.styles.js';
+import { useAuthStore } from '../store/authStore.js';
 
 const HomeScreen = ({ navigation }) => {
+  const { user, logout } = useAuthStore();
   return (
+    
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <Text style={styles.title}>React Hooks</Text>
+
+          <Text style={styles.welcomeText}>
+            Привет, {user?.name || 'Гость'}!
+          </Text>
+
+          <TouchableOpacity 
+            style={styles.menuButton}
+            onPress={() => navigation.navigate('Profile')}
+          >
+            <View style={styles.buttonContent}>
+              <View style={[styles.icon, { backgroundColor: '#AF52DE' }]}>
+                <Text style={styles.iconText}>👤</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.buttonTitle}>Профиль</Text>
+                <Text style={styles.buttonDescription}>
+                  Просмотр и управление аккаунтом
+                </Text>
+              </View>
+              <Text style={styles.arrow}>→</Text>
+            </View>
+          </TouchableOpacity>
           
           {/* Карточка с информацией */}
           <View style={styles.infoCard}>
@@ -64,6 +89,9 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
+
+          
+
           {/* Разделитель */}
           <View style={styles.divider} />
           
@@ -80,6 +108,6 @@ const HomeScreen = ({ navigation }) => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 export default HomeScreen;
