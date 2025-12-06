@@ -1,20 +1,20 @@
-//
 import { useEffect, useRef, useState } from 'react';
 import { 
-  StatusBar, 
-  SafeAreaView, 
-  ScrollView, 
-  StyleSheet, 
+  View, 
   Text, 
   TextInput, 
   ActivityIndicator, 
   Switch,
   TouchableOpacity,
-  View 
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  StatusBar
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function UseEffectScreen({ goBack }) {  // Добавлен параметр goBack
-  // Fetch demo - загрузка случайного пользователя
+export default function UseEffectScreen({ goBack }) {
   const [userId, setUserId] = useState(1);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,6 @@ export default function UseEffectScreen({ goBack }) {  // Добавлен па�
     };
   }, [userId]);
 
-  // Interval demo
   const [seconds, setSeconds] = useState(0);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -75,7 +74,6 @@ export default function UseEffectScreen({ goBack }) {  // Добавлен па�
     return () => clearInterval(id);
   }, [autoRefresh]);
 
-  // Dependent effect
   const [name, setName] = useState('');
   const [greeting, setGreeting] = useState('Привет, гость!');
   
@@ -83,7 +81,6 @@ export default function UseEffectScreen({ goBack }) {  // Добавлен па�
     setGreeting(`Привет, ${name || 'гость'}!`);
   }, [name]);
 
-  // Клик-счетчик эффект
   const [clickCount, setClickCount] = useState(0);
   const [usersList, setUsersList] = useState([]);
 
@@ -103,427 +100,596 @@ export default function UseEffectScreen({ goBack }) {  // Добавлен па�
   }, [clickCount]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
-        {/* Добавлен заголовок с кнопкой возврата */}
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <Text style={styles.title}>useEffect с Random Data API</Text>
-            <TouchableOpacity style={styles.backButton} onPress={goBack}>
-              <Text style={styles.backButtonText}>← Назад</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.subTitle}>
-            Используем API как у учителя: fetch('https://jsonplaceholder.typicode.com/users/')
-          </Text>
-          <View style={styles.emojiContainer}>
-            <Text style={styles.emoji}>⚛️</Text>
-          </View>
-        </View>
-
-        {/* Блок ошибки */}
-        {fetchError && (
-          <View style={[styles.card, styles.errorCard]}>
-            <View style={styles.cardHeader}>
-              <Text style={[styles.cardTitle, styles.errorText]}>Ошибка загрузки</Text>
-              <View style={[styles.pill, styles.errorPill]}>
-                <Text style={styles.pillText}>
-                  {fetchError.includes('Network') ? 'network' : 'error'}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.column}>
-              <Text style={[styles.helper, styles.errorHelper]}>{fetchError}</Text>
-              <View style={[styles.row, styles.spaceBetween]}>
-                <TouchableOpacity 
-                  style={[styles.counterButton, styles.ghostButton]}
-                  onPress={() => fetchUser()}
-                >
-                  <Text style={styles.btnText}>Повторить</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={[styles.counterButton, styles.ghostButton]}
-                  onPress={() => abortRef.current?.abort()}
-                >
-                  <Text style={styles.btnText}>Отменить</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Случайный пользователь */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Случайный пользователь (useEffect при монтировании)</Text>
-            <View style={[styles.pill, loading ? styles.neutralPill : styles.successPill]}>
-              <Text style={styles.pillText}>{loading ? 'loading' : 'loaded'}</Text>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.column}>
-            {loading ? (
-              <View style={styles.row}>
-                <ActivityIndicator color="#5EEAD4" />
-                <Text style={[styles.helper, styles.ml12]}>Загружаем пользователя...</Text>
-              </View>
-            ) : (
-              <>
-                <Text style={styles.helper}>Новый пользователь</Text>
-                {user ? (
-                  <>
-                    <Text style={styles.cardTitle}>{user.name}</Text>
-                    <Text style={styles.helper}>Email: {user.email}</Text>
-                    <Text style={styles.helper}>Город: {user.address?.city || 'Не указан'}</Text>
-                    <Text style={styles.helper}>Компания: {user.company?.name || 'Не указана'}</Text>
-                  </>
-                ) : (
-                  <Text style={styles.cardTitle}>—</Text>
-                )}
-              </>
-            )}
-            <View style={[styles.row, styles.spaceBetween]}>
-              <TouchableOpacity 
-                style={[styles.counterButton, styles.ghostButton]}
-                onPress={() => {
-                  const randomId = 1 + Math.floor(Math.random() * 10);
-                  setUserId(randomId);
-                }}
-              >
-                <Text style={styles.btnText}>Случайный ID</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.counterButton, styles.ghostButton]}
-                onPress={() => fetchUser()}
-              >
-                <Text style={styles.btnText}>Обновить</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <View style={[styles.row, styles.spaceBetween]}>
-            <Text style={styles.helper}>Автообновление (каждые 10 секунд)</Text>
-            <View style={styles.switchContainer}>
-              <Text style={styles.switchText}>{autoRefresh ? 'Включено' : 'Выключено'}</Text>
-              <Switch
-                value={autoRefresh}
-                onValueChange={setAutoRefresh}
-                trackColor={{ false: '#2a2f3a', true: '#5eead4' }}
-                thumbColor={autoRefresh ? '#052925' : '#9aa4b2'}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Таймер */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Таймер автообновления</Text>
-            <View style={[styles.pill, autoRefresh ? styles.successPill : styles.neutralPill]}>
-              <Text style={styles.pillText}>{autoRefresh ? 'running' : 'paused'}</Text>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <View style={[styles.row, styles.spaceBetween]}>
-            <Text style={styles.counterValue}>{seconds}s</Text>
+    <LinearGradient
+      colors={['#0A0A0A', '#1A1A2E']}
+      style={styles.container}
+    >
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
             <TouchableOpacity 
-              style={styles.counterButton}
-              onPress={() => setAutoRefresh((v) => !v)}
+              style={styles.backButton} 
+              onPress={goBack}
+              activeOpacity={0.7}
             >
-              <Text style={styles.btnText}>{autoRefresh ? 'Пауза' : 'Старт'}</Text>
+              <Ionicons name="chevron-back" size={28} color="white" />
+              <Text style={styles.backButtonText}>Назад</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.counterButton, styles.ghostButton]}
-              onPress={() => setSeconds(0)}
-            >
-              <Text style={styles.btnText}>Сброс</Text>
-            </TouchableOpacity>
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>useEffect</Text>
+              <Text style={styles.headerSubtitle}>Побочные эффекты</Text>
+            </View>
+            <View style={styles.headerPlaceholder} />
           </View>
-        </View>
 
-        {/* Зависимость от состояния */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Зависимость от состояния (useEffect с параметром)</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.column}>
-            <Text style={styles.helper}>Счетчик кликов:</Text>
-            <Text style={[styles.counterValue, styles.bigCounter]}>{clickCount}</Text>
-            
-            {clickCount >= 5 && usersList.length > 0 && (
-              <View style={styles.successBox}>
-                <Text style={styles.successText}>
-                  ✓ Достигнуто 5 кликов! Список пользователей загружен.
-                </Text>
-                {usersList.map((u, index) => (
-                  <View key={index} style={styles.userItem}>
-                    <Text style={styles.userText}>{u.name} - {u.email}</Text>
+          {/* Error Card */}
+          {fetchError && (
+            <View style={styles.cardWrapper}>
+              <LinearGradient
+                colors={['rgba(255, 107, 107, 0.1)', 'rgba(255, 82, 82, 0.1)']}
+                style={styles.card}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <View style={styles.cardHeader}>
+                  <Ionicons name="warning" size={24} color="#FF6B6B" />
+                  <Text style={[styles.cardTitle, styles.errorText]}>Ошибка загрузки</Text>
+                  <View style={styles.pill}>
+                    <Text style={styles.pillText}>
+                      {fetchError.includes('Network') ? 'network' : 'error'}
+                    </Text>
                   </View>
-                ))}
-              </View>
-            )}
-            
-            <View style={[styles.row, styles.spaceBetween]}>
-              <TouchableOpacity 
-                style={styles.counterButton}
-                onPress={() => setClickCount(c => c + 1)}
-              >
-                <Text style={styles.btnText}>+1 Клик</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.counterButton, styles.ghostButton]}
-                onPress={() => setClickCount(0)}
-              >
-                <Text style={styles.btnText}>Сбросить</Text>
-              </TouchableOpacity>
+                </View>
+                <Text style={styles.errorMessage}>{fetchError}</Text>
+                <View style={styles.buttonRow}>
+                  <TouchableOpacity 
+                    style={styles.ghostButton}
+                    onPress={() => fetchUser()}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.ghostButtonText}>Повторить</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.ghostButton}
+                    onPress={() => abortRef.current?.abort()}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.ghostButtonText}>Отменить</Text>
+                  </TouchableOpacity>
+                </View>
+              </LinearGradient>
             </View>
-            
-            {fetchError && clickCount === 3 && (
-              <Text style={styles.smallError}>[Ошибка: TypeError: Network request failed]</Text>
-            )}
-          </View>
-        </View>
+          )}
 
-        {/* Приветствие */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Приветствие (зависимый эффект)</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.column}>
-            <TextInput
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-              placeholder="Введите ваше имя"
-              placeholderTextColor="#889096"
-            />
-            <Text style={styles.helper}>{greeting}</Text>
-          </View>
-        </View>
+          {/* Random User Card */}
+          <View style={styles.cardWrapper}>
+            <LinearGradient
+              colors={['rgba(102, 126, 234, 0.1)', 'rgba(118, 75, 162, 0.1)']}
+              style={styles.card}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.cardHeader}>
+                <Ionicons name="person" size={24} color="#667EEA" />
+                <Text style={styles.cardTitle}>Случайный пользователь</Text>
+                <View style={[styles.pill, loading ? styles.loadingPill : styles.successPill]}>
+                  <Text style={styles.pillText}>{loading ? 'loading' : 'loaded'}</Text>
+                </View>
+              </View>
+              
+              {loading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#667EEA" />
+                  <Text style={styles.loadingText}>Загружаем пользователя...</Text>
+                </View>
+              ) : (
+                <>
+                  <Text style={styles.cardSubtitle}>Новый пользователь</Text>
+                  {user ? (
+                    <>
+                      <Text style={styles.userName}>{user.name}</Text>
+                      <View style={styles.userDetails}>
+                        <View style={styles.userDetailItem}>
+                          <Ionicons name="mail" size={16} color="#8A8D93" />
+                          <Text style={styles.userDetailText}>Email: {user.email}</Text>
+                        </View>
+                        <View style={styles.userDetailItem}>
+                          <Ionicons name="location" size={16} color="#8A8D93" />
+                          <Text style={styles.userDetailText}>Город: {user.address?.city || 'Не указан'}</Text>
+                        </View>
+                        <View style={styles.userDetailItem}>
+                          <Ionicons name="business" size={16} color="#8A8D93" />
+                          <Text style={styles.userDetailText}>Компания: {user.company?.name || 'Не указана'}</Text>
+                        </View>
+                      </View>
+                    </>
+                  ) : (
+                    <Text style={styles.noDataText}>—</Text>
+                  )}
+                </>
+              )}
+              
+              <View style={styles.buttonRow}>
+                <TouchableOpacity 
+                  style={styles.actionButton}
+                  onPress={() => {
+                    const randomId = 1 + Math.floor(Math.random() * 10);
+                    setUserId(randomId);
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <LinearGradient
+                    colors={['#667EEA', '#764BA2']}
+                    style={styles.actionButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name="shuffle" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>Случайный ID</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.ghostButton}
+                  onPress={() => fetchUser()}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.ghostButtonText}>Обновить</Text>
+                </TouchableOpacity>
+              </View>
 
-        {/* Добавлена кнопка возврата внизу */}
-        <TouchableOpacity style={styles.bottomBackButton} onPress={goBack}>
-          <Text style={styles.bottomBackButtonText}>← Вернуться на главную страницу</Text>
-        </TouchableOpacity>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchLabelContainer}>
+                  <Ionicons name="refresh" size={20} color="#8A8D93" />
+                  <Text style={styles.switchLabel}>Автообновление (каждые 10 секунд)</Text>
+                </View>
+                <Switch
+                  value={autoRefresh}
+                  onValueChange={setAutoRefresh}
+                  trackColor={{ false: '#2A2F3A', true: '#667EEA' }}
+                  thumbColor={autoRefresh ? '#FFFFFF' : '#9AA4B2'}
+                />
+              </View>
+            </LinearGradient>
+          </View>
 
-        <View style={styles.bottomSpacer} />
-        <StatusBar style="auto" />
-      </ScrollView>
-    </SafeAreaView>
+          {/* Timer Card */}
+          <View style={styles.cardWrapper}>
+            <LinearGradient
+              colors={['rgba(240, 147, 251, 0.1)', 'rgba(245, 87, 108, 0.1)']}
+              style={styles.card}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.cardHeader}>
+                <Ionicons name="timer" size={24} color="#F093FB" />
+                <Text style={styles.cardTitle}>Таймер автообновления</Text>
+                <View style={[styles.pill, autoRefresh ? styles.successPill : styles.neutralPill]}>
+                  <Text style={styles.pillText}>{autoRefresh ? 'running' : 'paused'}</Text>
+                </View>
+              </View>
+              
+              <View style={styles.timerContainer}>
+                <Text style={styles.timerValue}>{seconds}s</Text>
+                <Text style={styles.timerLabel}>Прошло времени</Text>
+              </View>
+              
+              <View style={styles.buttonRow}>
+                <TouchableOpacity 
+                  style={styles.actionButton}
+                  onPress={() => setAutoRefresh((v) => !v)}
+                  activeOpacity={0.8}
+                >
+                  <LinearGradient
+                    colors={autoRefresh ? ['#F093FB', '#F5576C'] : ['#4ECDC4', '#26A69A']}
+                    style={styles.actionButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name={autoRefresh ? "pause" : "play"} size={20} color="white" />
+                    <Text style={styles.actionButtonText}>{autoRefresh ? 'Пауза' : 'Старт'}</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.ghostButton}
+                  onPress={() => setSeconds(0)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.ghostButtonText}>Сброс</Text>
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+
+          {/* Click Counter Card */}
+          <View style={styles.cardWrapper}>
+            <LinearGradient
+              colors={['rgba(79, 172, 254, 0.1)', 'rgba(0, 242, 254, 0.1)']}
+              style={styles.card}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.cardHeader}>
+                <Ionicons name="hand-left" size={24} color="#4FACFE" />
+                <Text style={styles.cardTitle}>Зависимость от состояния</Text>
+              </View>
+              
+              <View style={styles.counterContainer}>
+                <Text style={styles.counterValue}>{clickCount}</Text>
+                <Text style={styles.counterLabel}>Счетчик кликов</Text>
+              </View>
+              
+              {clickCount >= 5 && usersList.length > 0 && (
+                <View style={styles.successContainer}>
+                  <View style={styles.successHeader}>
+                    <Ionicons name="checkmark-circle" size={24} color="#4FACFE" />
+                    <Text style={styles.successTitle}>✓ Достигнуто 5 кликов!</Text>
+                  </View>
+                  <Text style={styles.successSubtitle}>Список пользователей загружен:</Text>
+                  {usersList.map((u, index) => (
+                    <View key={index} style={styles.userListItem}>
+                      <Text style={styles.userListName}>{u.name}</Text>
+                      <Text style={styles.userListEmail}>{u.email}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              <View style={styles.buttonRow}>
+                <TouchableOpacity 
+                  style={styles.actionButton}
+                  onPress={() => setClickCount(c => c + 1)}
+                  activeOpacity={0.8}
+                >
+                  <LinearGradient
+                    colors={['#4FACFE', '#00F2FE']}
+                    style={styles.actionButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name="add" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>+1 Клик</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.ghostButton}
+                  onPress={() => setClickCount(0)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.ghostButtonText}>Сбросить</Text>
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+
+          {/* Greeting Card */}
+          <View style={styles.cardWrapper}>
+            <LinearGradient
+              colors={['rgba(94, 234, 212, 0.1)', 'rgba(5, 41, 37, 0.1)']}
+              style={styles.card}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.cardHeader}>
+                <Ionicons name="chatbubble" size={24} color="#5EEAD4" />
+                <Text style={styles.cardTitle}>Приветствие</Text>
+              </View>
+              
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Введите ваше имя"
+                placeholderTextColor="#8A8D93"
+              />
+              
+              <View style={styles.greetingContainer}>
+                <Ionicons name="sparkles" size={24} color="#5EEAD4" />
+                <Text style={styles.greetingText}>{greeting}</Text>
+              </View>
+            </LinearGradient>
+          </View>
+
+          <View style={styles.spacer} />
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#0a0c10',
-  },
   container: {
     flex: 1,
-    padding: 24,
   },
-  header: {
-    marginBottom: 16,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  emojiContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  emoji: {
-    fontSize: 28,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#e6e9ef',
+  safeArea: {
     flex: 1,
   },
-  subTitle: {
-    color: '#9aa4b2',
-    fontSize: 14,
-    fontStyle: 'italic',
-    textAlign: 'center',
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   backButton: {
-    backgroundColor: '#34495e',
-    paddingVertical: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     paddingHorizontal: 12,
-    borderRadius: 8,
-    marginLeft: 10,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   backButtonText: {
     color: 'white',
     fontSize: 14,
     fontWeight: '600',
+    marginLeft: 4,
+  },
+  headerCenter: {
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#8A8D93',
+    marginTop: 2,
+  },
+  headerPlaceholder: {
+    width: 80,
+  },
+  cardWrapper: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   card: {
-    backgroundColor: '#0c0f14',
+    borderRadius: 24,
+    padding: 24,
     borderWidth: 1,
-    borderColor: '#1c2230',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-  },
-  errorCard: {
-    backgroundColor: '#2c1a1a',
-    borderColor: '#5c2b2b',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 20,
   },
   cardTitle: {
-    color: '#e6e9ef',
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white',
     flex: 1,
-    fontSize: 15,
+    marginLeft: 12,
   },
   errorText: {
-    color: '#ff6b6b',
+    color: '#FF6B6B',
   },
   pill: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
     borderWidth: 1,
   },
   pillText: {
     fontSize: 12,
-    color: '#b3b8c3',
+    fontWeight: '600',
+  },
+  loadingPill: {
+    backgroundColor: 'rgba(138, 141, 147, 0.2)',
+    borderColor: '#8A8D93',
   },
   successPill: {
-    backgroundColor: '#0e2f25',
-    borderColor: '#1f7a4a',
+    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+    borderColor: '#667EEA',
   },
   neutralPill: {
-    backgroundColor: '#151a23',
-    borderColor: '#252a33',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  errorPill: {
-    backgroundColor: '#2c1a1a',
-    borderColor: '#5c2b2b',
+  errorMessage: {
+    color: '#FF9999',
+    fontSize: 14,
+    marginBottom: 20,
+    lineHeight: 20,
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#1c2230',
-    marginVertical: 12,
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#8A8D93',
+    marginBottom: 12,
   },
-  row: {
+  userName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 16,
+  },
+  userDetails: {
+    marginBottom: 24,
+  },
+  userDetailItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 8,
   },
-  spaceBetween: {
+  userDetailText: {
+    fontSize: 14,
+    color: '#8A8D93',
+    marginLeft: 8,
+  },
+  noDataText: {
+    fontSize: 18,
+    color: '#8A8D93',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    color: '#8A8D93',
+    fontSize: 14,
+    marginTop: 12,
+  },
+  buttonRow: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
-  column: {
+  actionButton: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginHorizontal: 4,
+  },
+  actionButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
     gap: 8,
   },
-  counterButton: {
-    backgroundColor: '#5eead4',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    minWidth: 100,
-    alignItems: 'center',
+  actionButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   ghostButton: {
-    backgroundColor: 'transparent',
+    flex: 1,
     borderWidth: 1,
-    borderColor: '#2a2f3a',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginHorizontal: 4,
   },
-  btnText: {
-    color: '#052925',
-    fontWeight: '700',
-  },
-  counterValue: {
-    color: '#e6e9ef',
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  bigCounter: {
-    textAlign: 'center',
-    fontSize: 48,
-    marginVertical: 16,
-  },
-  input: {
-    backgroundColor: '#0f1218',
-    borderWidth: 1,
-    borderColor: '#1c2230',
-    borderRadius: 12,
-    padding: 12,
-    color: '#e6e9ef',
-  },
-  helper: {
-    color: '#9aa4b2',
-  },
-  ml12: {
-    marginLeft: 12,
-  },
-  errorHelper: {
-    color: '#ff9999',
-  },
-  bottomSpacer: {
-    height: 24,
+  ghostButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
-  switchText: {
-    color: '#9aa4b2',
+  switchLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  switchLabel: {
+    color: '#8A8D93',
     fontSize: 14,
+    marginLeft: 8,
   },
-  successBox: {
-    backgroundColor: '#0e2f25',
-    borderWidth: 1,
-    borderColor: '#1f7a4a',
-    borderRadius: 8,
-    padding: 12,
-    marginVertical: 8,
+  timerContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  successText: {
-    color: '#5eead4',
-    fontWeight: '600',
-    marginBottom: 8,
+  timerValue: {
+    fontSize: 64,
+    fontWeight: 'bold',
+    color: '#F093FB',
+    textShadowColor: 'rgba(240, 147, 251, 0.3)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
-  userItem: {
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1c2f2a',
-  },
-  userText: {
-    color: '#b3b8c3',
+  timerLabel: {
     fontSize: 14,
-  },
-  smallError: {
-    color: '#ff6b6b',
-    fontSize: 12,
-    fontStyle: 'italic',
+    color: '#8A8D93',
     marginTop: 8,
   },
-  bottomBackButton: {
-    backgroundColor: '#34495e',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
+  counterContainer: {
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 24,
   },
-  bottomBackButtonText: {
-    color: 'white',
+  counterValue: {
+    fontSize: 64,
+    fontWeight: 'bold',
+    color: '#4FACFE',
+    textShadowColor: 'rgba(79, 172, 254, 0.3)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  counterLabel: {
+    fontSize: 14,
+    color: '#8A8D93',
+    marginTop: 8,
+  },
+  successContainer: {
+    backgroundColor: 'rgba(79, 172, 254, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(79, 172, 254, 0.2)',
+  },
+  successHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  successTitle: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#4FACFE',
+    marginLeft: 8,
+  },
+  successSubtitle: {
+    fontSize: 14,
+    color: '#8A8D93',
+    marginBottom: 12,
+  },
+  userListItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  userListName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'white',
+    marginBottom: 2,
+  },
+  userListEmail: {
+    fontSize: 12,
+    color: '#8A8D93',
+  },
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  greetingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(94, 234, 212, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(94, 234, 212, 0.2)',
+  },
+  greetingText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#5EEAD4',
+    marginLeft: 12,
+    flex: 1,
+  },
+  spacer: {
+    height: 40,
   },
 });
