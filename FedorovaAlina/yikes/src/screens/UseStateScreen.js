@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { UseStateStyles } from '../styles/UseStateStyles';
 
 export default function UseStateScreen({ goBack }) {
   const [count, setCount] = useState(0);
@@ -47,158 +48,180 @@ export default function UseStateScreen({ goBack }) {
 
   return (
     <LinearGradient
-      colors={['#0A0A0A', '#1A1A2E']}
-      style={styles.container}
+      colors={['#0D1B2A', '#1B263B', '#2C3E50']}
+      style={UseStateStyles.container}
     >
       <StatusBar barStyle="light-content" />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={UseStateStyles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <View style={UseStateStyles.header}>
             <TouchableOpacity 
-              style={styles.backButton} 
+              style={UseStateStyles.backButton} 
               onPress={goBack}
               activeOpacity={0.7}
             >
-              <Ionicons name="chevron-back" size={28} color="white" />
-              <Text style={styles.backButtonText}>Назад</Text>
+              <Ionicons name="chevron-back" size={24} color="white" />
+              <Text style={UseStateStyles.backButtonText}>Назад</Text>
             </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerTitle}>useState</Text>
-              <Text style={styles.headerSubtitle}>Управление состоянием</Text>
+            <View style={UseStateStyles.headerCenter}>
+              <View style={UseStateStyles.titleBadge}>
+                <Text style={UseStateStyles.titleBadgeText}>🎁 useState</Text>
+              </View>
+              <Text style={UseStateStyles.headerSubtitle}>Управление состоянием</Text>
             </View>
-            <View style={styles.headerPlaceholder} />
+            <View style={UseStateStyles.headerPlaceholder} />
+          </View>
+
+          {/* Декоративные снежинки */}
+          <View style={UseStateStyles.snowflakeContainer}>
+            <Text style={UseStateStyles.snowflake}>❄️</Text>
+            <Text style={[UseStateStyles.snowflake, UseStateStyles.snowflake2]}>❄️</Text>
+            <Text style={[UseStateStyles.snowflake, UseStateStyles.snowflake3]}>❄️</Text>
           </View>
 
           {/* Counter Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseStateStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(102, 126, 234, 0.1)', 'rgba(118, 75, 162, 0.1)']}
-              style={styles.card}
+              colors={['#800707ff', '#D32F2F', '#B30000']}
+              style={UseStateStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <View style={styles.cardIcon}>
-                  <Ionicons name="add-circle" size={24} color="#667EEA" />
+              <View style={UseStateStyles.cardHeader}>
+                <View style={UseStateStyles.cardIcon}>
+                  <Ionicons name="gift" size={28} color="white" />
                 </View>
-                <Text style={styles.cardTitle}>Счетчик</Text>
+                <View style={UseStateStyles.cardTitleContainer}>
+                  <Text style={UseStateStyles.cardTitle}>Счетчик подарков</Text>
+                  <Text style={UseStateStyles.cardDescription}>Управление числовым состоянием</Text>
+                </View>
               </View>
               
-              <View style={styles.counterDisplay}>
-                <Text style={styles.counterValue}>{count}</Text>
-                <Text style={styles.counterLabel}>текущее значение</Text>
+              <View style={UseStateStyles.counterDisplay}>
+                <Text style={UseStateStyles.counterValue}>{count}</Text>
+                <Text style={UseStateStyles.counterLabel}>Количество подарков</Text>
               </View>
 
-              <View style={styles.buttonGroup}>
+              <View style={UseStateStyles.buttonGroup}>
                 <TouchableOpacity 
-                  style={[styles.actionButton, styles.decrementButton]}
+                  style={[UseStateStyles.actionButton, UseStateStyles.decrementButton]}
                   onPress={handleDecrement}
                   activeOpacity={0.8}
                 >
-                  <Ionicons name="remove" size={24} color="white" />
-                  <Text style={styles.actionButtonText}>-1</Text>
+                  <Ionicons name="remove" size={22} color="white" />
+                  <Text style={UseStateStyles.actionButtonText}>Забрать подарок</Text>
                 </TouchableOpacity>
                 
                 <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                   <TouchableOpacity 
-                    style={[styles.actionButton, styles.incrementButton]}
+                    style={[UseStateStyles.actionButton, UseStateStyles.incrementButton]}
                     onPress={handleIncrement}
                     activeOpacity={0.8}
                   >
-                    <Ionicons name="add" size={24} color="white" />
-                    <Text style={styles.actionButtonText}>+1</Text>
+                    <Ionicons name="add" size={22} color="white" />
+                    <Text style={UseStateStyles.actionButtonText}>Добавить подарок</Text>
                   </TouchableOpacity>
                 </Animated.View>
 
                 <TouchableOpacity 
-                  style={[styles.actionButton, styles.resetButton]}
+                  style={[UseStateStyles.actionButton, UseStateStyles.resetButton]}
                   onPress={() => setCount(0)}
                   activeOpacity={0.8}
                 >
-                  <Ionicons name="refresh" size={24} color="white" />
-                  <Text style={styles.actionButtonText}>Сброс</Text>
+                  <Ionicons name="refresh" size={22} color="white" />
+                  <Text style={UseStateStyles.actionButtonText}>Раздать всё</Text>
                 </TouchableOpacity>
               </View>
             </LinearGradient>
           </View>
 
           {/* Text Toggle Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseStateStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(240, 147, 251, 0.1)', 'rgba(245, 87, 108, 0.1)']}
-              style={styles.card}
+              colors={['#0b490fff','#35aa3dff', '#2E8B57']}
+              style={UseStateStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <View style={styles.cardIcon}>
-                  <Ionicons name="text" size={24} color="#F093FB" />
+              <View style={UseStateStyles.cardHeader}>
+                <View style={UseStateStyles.cardIcon}>
+                  <Ionicons name="chatbubble" size={28} color="white" />
                 </View>
-                <Text style={styles.cardTitle}>Переключение текста</Text>
+                <View style={UseStateStyles.cardTitleContainer}>
+                  <Text style={UseStateStyles.cardTitle}>Праздничные поздравления</Text>
+                  <Text style={UseStateStyles.cardDescription}>Управление текстовым состоянием</Text>
+                </View>
               </View>
               
-              <View style={styles.textDisplay}>
-                <Text style={styles.textValue}>{text}</Text>
+              <View style={UseStateStyles.textDisplay}>
+                <Text style={UseStateStyles.textValue}>{text}</Text>
+                <Text style={UseStateStyles.textEmoji}>{text === 'Привет!' ? '🎅' : '🎄'}</Text>
               </View>
 
               <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => setText(text === 'Привет!' ? 'Пока!' : 'Привет!')}
+                style={UseStateStyles.toggleButton}
+                onPress={() => setText(text === 'Привет!' ? 'С Новым Годом!' : 'Привет!')}
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={['#F093FB', '#F5576C']}
-                  style={styles.toggleButtonGradient}
+                  colors={['#0b490fff','#35aa3dff']}
+                  style={UseStateStyles.toggleButtonGradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                 >
                   <Ionicons name="swap-horizontal" size={20} color="white" />
-                  <Text style={styles.toggleButtonText}>Сменить текст</Text>
+                  <Text style={UseStateStyles.toggleButtonText}>Сменить поздравление</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </LinearGradient>
           </View>
 
           {/* Boolean Toggle Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseStateStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(79, 172, 254, 0.1)', 'rgba(0, 242, 254, 0.1)']}
-              style={styles.card}
+              colors={['#2166ceff', '#0d335eff', '#1E3A8A']}
+              style={UseStateStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <View style={styles.cardIcon}>
-                  <Ionicons name="power" size={24} color="#4FACFE" />
+              <View style={UseStateStyles.cardHeader}>
+                <View style={UseStateStyles.cardIcon}>
+                  <Ionicons name="snow" size={28} color="white" />
                 </View>
-                <Text style={styles.cardTitle}>Булевый переключатель</Text>
+                <View style={UseStateStyles.cardTitleContainer}>
+                  <Text style={UseStateStyles.cardTitle}>Праздничное настроение</Text>
+                  <Text style={UseStateStyles.cardDescription}>Управление булевым состоянием</Text>
+                </View>
               </View>
               
-              <View style={styles.statusContainer}>
+              <View style={UseStateStyles.statusContainer}>
                 <View style={[
-                  styles.statusIndicator,
-                  isActive ? styles.activeIndicator : styles.inactiveIndicator
+                  UseStateStyles.statusIndicator,
+                  isActive ? UseStateStyles.activeIndicator : UseStateStyles.inactiveIndicator
                 ]}>
                   <Ionicons 
                     name={isActive ? "happy" : "sad"} 
-                    size={48} 
-                    color={isActive ? "#4FACFE" : "#8A8D93"} 
+                    size={52} 
+                    color="white" 
                   />
+                  <Text style={UseStateStyles.statusEmoji}>
+                    {isActive ? '🎉✨' : '❄️☃️'}
+                  </Text>
                 </View>
-                <Text style={styles.statusText}>
-                  Статус: {isActive ? 'Активен 😄' : 'Неактивен 😭'}
+                <Text style={UseStateStyles.statusText}>
+                  {isActive ? 'Праздник в самом разгаре! 🎄' : 'Готовимся к празднику ⛄'}
                 </Text>
               </View>
 
               <TouchableOpacity
-                style={styles.switchButton}
+                style={UseStateStyles.switchButton}
                 onPress={() => setIsActive(!isActive)}
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={isActive ? ['#4FACFE', '#00F2FE'] : ['#8A8D93', '#6C757D']}
-                  style={styles.switchButtonGradient}
+                  colors={isActive ? ['#2166ceff', '#0d335eff'] : ['#8A8D93', '#6C757D']}
+                  style={UseStateStyles.switchButtonGradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                 >
@@ -207,216 +230,22 @@ export default function UseStateScreen({ goBack }) {
                     size={20} 
                     color="white" 
                   />
-                  <Text style={styles.switchButtonText}>
-                    {isActive ? 'Выключить' : 'Включить'}
+                  <Text style={UseStateStyles.switchButtonText}>
+                    {isActive ? 'Выключить праздник' : 'Включить праздник'}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
             </LinearGradient>
           </View>
 
-          <View style={styles.spacer} />
+       
+
+          
+            
+            
+          
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 4,
-  },
-  headerCenter: {
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginTop: 2,
-  },
-  headerPlaceholder: {
-    width: 80,
-  },
-  cardWrapper: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  card: {
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  cardIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-  },
-  counterDisplay: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  counterValue: {
-    fontSize: 64,
-    fontWeight: 'bold',
-    color: '#667EEA',
-    textShadowColor: 'rgba(102, 126, 234, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
-  counterLabel: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginTop: 8,
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  actionButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 16,
-    gap: 8,
-  },
-  incrementButton: {
-    backgroundColor: '#667EEA',
-  },
-  decrementButton: {
-    backgroundColor: '#F5576C',
-  },
-  resetButton: {
-    backgroundColor: '#8A8D93',
-  },
-  actionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  textDisplay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    padding: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  textValue: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#F093FB',
-  },
-  toggleButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  toggleButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 8,
-  },
-  toggleButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  statusContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  statusIndicator: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  activeIndicator: {
-    backgroundColor: 'rgba(79, 172, 254, 0.1)',
-    borderWidth: 2,
-    borderColor: '#4FACFE',
-  },
-  inactiveIndicator: {
-    backgroundColor: 'rgba(138, 141, 147, 0.1)',
-    borderWidth: 2,
-    borderColor: '#8A8D93',
-  },
-  statusText: {
-    fontSize: 18,
-    color: 'white',
-    fontWeight: '500',
-  },
-  switchButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  switchButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 8,
-  },
-  switchButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  spacer: {
-    height: 40,
-  },
-});

@@ -7,13 +7,15 @@ import {
   Dimensions, 
   StatusBar, 
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  Animated
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import UseStateScreen from './src/screens/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectScreen';
 import UseMemoScreen from './src/screens/UseMemoScreen';
+import { AppStyles } from './src/styles/AppStyles';
 
 const { width } = Dimensions.get('window');
 
@@ -35,108 +37,138 @@ export default function App() {
 
   const renderHome = () => (
     <LinearGradient
-      colors={['#0A0A0A', '#1A1A2E', '#16213E']}
-      style={styles.container}
+      colors={['#0D1B2A', '#1B263B', '#2C3E50']}
+      style={AppStyles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={AppStyles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.header}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.subtitle}>React Native</Text>
-              <Text style={styles.title}>Hooks Demo</Text>
+          <View style={AppStyles.header}>
+            <View style={AppStyles.titleContainer}>
+              <View style={AppStyles.newYearBadge}>
+                <Text style={AppStyles.newYearText}>🎄 2025</Text>
+              </View>
+            
+            
             </View>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>Modern UI</Text>
+            <View style={AppStyles.badge}>
+              <Text style={AppStyles.badgeText}>✨ Праздничная версия</Text>
             </View>
           </View>
 
-          <View style={styles.cardsContainer}>
+          {/* Снежинки декоративные */}
+          <View style={AppStyles.snowflakeContainer}>
+            <Text style={AppStyles.snowflake}>❄️</Text>
+            <Text style={[AppStyles.snowflake, AppStyles.snowflake2]}>❄️</Text>
+            <Text style={[AppStyles.snowflake, AppStyles.snowflake3]}>❄️</Text>
+          </View>
+
+          <View style={AppStyles.cardsContainer}>
             {/* UseState Card */}
             <TouchableOpacity
-              style={styles.card}
+              style={AppStyles.card}
               onPress={() => setScreen('usestate')}
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={['#667EEA', '#764BA2']}
-                style={styles.cardGradient}
+                colors={['#800707ff', '#D32F2F', '#B30000']}
+                style={AppStyles.cardGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <View style={styles.cardIcon}>
-                  <Ionicons name="stats-chart" size={32} color="white" />
-                </View>
-                <Text style={styles.cardTitle}>useState</Text>
-                <Text style={styles.cardDescription}>
-                  Управление состоянием компонента
-                </Text>
-                <View style={styles.cardFooter}>
-                  <Text style={styles.cardHint}>Нажмите для демонстрации →</Text>
+                <View style={AppStyles.cardContent}>
+                  <View style={AppStyles.iconContainer}>
+                    <View style={AppStyles.cardIcon}>
+                      <Ionicons name="snow" size={28} color="white" />
+                    </View>
+                    <View style={AppStyles.cardDecor}>
+                      <Text style={AppStyles.decorText}>🎁</Text>
+                    </View>
+                  </View>
+                  <View style={AppStyles.textContainer}>
+                    <Text style={AppStyles.cardTitle}>useState</Text>
+                    <Text style={AppStyles.cardDescription}>
+                      Управление состоянием компонентов
+                    </Text>
+                    <Text style={AppStyles.cardHint}>Нажмите для демо →</Text>
+                  </View>
                 </View>
               </LinearGradient>
             </TouchableOpacity>
 
             {/* UseEffect Card */}
             <TouchableOpacity
-              style={styles.card}
+              style={AppStyles.card}
               onPress={() => setScreen('useeffect')}
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={['#F093FB', '#F5576C']}
-                style={styles.cardGradient}
+                colors={['#0b490fff','#35aa3dff', '#2E8B57']}
+                style={AppStyles.cardGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <View style={styles.cardIcon}>
-                  <Ionicons name="sync" size={32} color="white" />
-                </View>
-                <Text style={styles.cardTitle}>useEffect</Text>
-                <Text style={styles.cardDescription}>
-                  Побочные эффекты и жизненный цикл
-                </Text>
-                <View style={styles.cardFooter}>
-                  <Text style={styles.cardHint}>Нажмите для демонстрации →</Text>
+                <View style={AppStyles.cardContent}>
+                  <View style={AppStyles.iconContainer}>
+                    <View style={AppStyles.cardIcon}>
+                      <Ionicons name="sparkles" size={28} color="white" />
+                    </View>
+                    <View style={AppStyles.cardDecor}>
+                      <Text style={AppStyles.decorText}>✨</Text>
+                    </View>
+                  </View>
+                  <View style={AppStyles.textContainer}>
+                    <Text style={AppStyles.cardTitle}>useEffect</Text>
+                    <Text style={AppStyles.cardDescription}>
+                      Побочные эффекты и жизненный цикл
+                    </Text>
+                    <Text style={AppStyles.cardHint}>Нажмите для демо →</Text>
+                  </View>
                 </View>
               </LinearGradient>
             </TouchableOpacity>
 
             {/* UseMemo Card */}
             <TouchableOpacity
-              style={styles.card}
+              style={AppStyles.card}
               onPress={() => setScreen('usememo')}
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={['#4FACFE', '#00F2FE']}
-                style={styles.cardGradient}
+                colors={['#2166ceff', '#0d335eff', '#1E3A8A']}
+                style={AppStyles.cardGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <View style={styles.cardIcon}>
-                  <Ionicons name="speedometer" size={32} color="white" />
-                </View>
-                <Text style={styles.cardTitle}>useMemo</Text>
-                <Text style={styles.cardDescription}>
-                  Оптимизация вычислений
-                </Text>
-                <View style={styles.cardFooter}>
-                  <Text style={styles.cardHint}>Нажмите для демонстрации →</Text>
+                <View style={AppStyles.cardContent}>
+                  <View style={AppStyles.iconContainer}>
+                    <View style={AppStyles.cardIcon}>
+                      <Ionicons name="gift" size={28} color="white" />
+                    </View>
+                    <View style={AppStyles.cardDecor}>
+                      <Text style={AppStyles.decorText}>🎄</Text>
+                    </View>
+                  </View>
+                  <View style={AppStyles.textContainer}>
+                    <Text style={AppStyles.cardTitle}>useMemo</Text>
+                    <Text style={AppStyles.cardDescription}>
+                      Оптимизация вычислений и производительности
+                    </Text>
+                    <Text style={AppStyles.cardHint}>Нажмите для демо →</Text>
+                  </View>
                 </View>
               </LinearGradient>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Выберите хук для демонстрации</Text>
-            <View style={styles.dotsContainer}>
-              <View style={[styles.dot, styles.activeDot]} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-            </View>
+          {/* Новогоднее сообщение */}
+          <View style={AppStyles.newYearMessage}>
+            <Text style={AppStyles.messageTitle}>С Новым Годом!</Text>
+           
           </View>
+
+          
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
@@ -144,123 +176,3 @@ export default function App() {
 
   return renderScreen();
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight || 40,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-  },
-  titleContainer: {
-    flex: 1,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#8A8D93',
-    fontWeight: '500',
-    letterSpacing: 1,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: 'white',
-    marginTop: 4,
-  },
-  badge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  badgeText: {
-    color: '#8A8D93',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  cardsContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  card: {
-    height: 160,
-    borderRadius: 24,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  cardGradient: {
-    flex: 1,
-    borderRadius: 24,
-    padding: 24,
-    justifyContent: 'space-between',
-  },
-  cardIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    lineHeight: 20,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 12,
-  },
-  cardHint: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontStyle: 'italic',
-  },
-  footer: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  footerText: {
-    color: '#8A8D93',
-    fontSize: 14,
-    marginBottom: 12,
-  },
-  dotsContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  activeDot: {
-    backgroundColor: '#667EEA',
-  },
-});

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { UseEffectStyles } from '../styles/UseEffectStyles';
 
 export default function UseEffectScreen({ goBack }) {
   const [userId, setUserId] = useState(1);
@@ -28,7 +29,7 @@ export default function UseEffectScreen({ goBack }) {
       const controller = new AbortController();
       abortRef.current = controller;
       
-      const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+       const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
         signal: controller.signal,
       });
       
@@ -101,62 +102,64 @@ export default function UseEffectScreen({ goBack }) {
 
   return (
     <LinearGradient
-      colors={['#0A0A0A', '#1A1A2E']}
-      style={styles.container}
+      colors={['#0D1B2A', '#1B263B', '#2C3E50']}
+      style={UseEffectStyles.container}
     >
       <StatusBar barStyle="light-content" />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={UseEffectStyles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <View style={UseEffectStyles.header}>
             <TouchableOpacity 
-              style={styles.backButton} 
+              style={UseEffectStyles.backButton} 
               onPress={goBack}
               activeOpacity={0.7}
             >
-              <Ionicons name="chevron-back" size={28} color="white" />
-              <Text style={styles.backButtonText}>Назад</Text>
+              <Ionicons name="chevron-back" size={24} color="white" />
+              <Text style={UseEffectStyles.backButtonText}>Назад</Text>
             </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerTitle}>useEffect</Text>
-              <Text style={styles.headerSubtitle}>Побочные эффекты</Text>
+            <View style={UseEffectStyles.headerCenter}>
+              <View style={UseEffectStyles.titleBadge}>
+                <Text style={UseEffectStyles.titleBadgeText}>✨ useEffect</Text>
+              </View>
+              <Text style={UseEffectStyles.headerSubtitle}>Побочные эффекты</Text>
             </View>
-            <View style={styles.headerPlaceholder} />
+            <View style={UseEffectStyles.headerPlaceholder} />
+          </View>
+
+          {/* Декоративные снежинки */}
+          <View style={UseEffectStyles.snowflakeContainer}>
+            <Text style={UseEffectStyles.snowflake}>❄️</Text>
+            <Text style={[UseEffectStyles.snowflake, UseEffectStyles.snowflake2]}>❄️</Text>
+            <Text style={[UseEffectStyles.snowflake, UseEffectStyles.snowflake3]}>❄️</Text>
           </View>
 
           {/* Error Card */}
           {fetchError && (
-            <View style={styles.cardWrapper}>
+            <View style={UseEffectStyles.cardWrapper}>
               <LinearGradient
-                colors={['rgba(255, 107, 107, 0.1)', 'rgba(255, 82, 82, 0.1)']}
-                style={styles.card}
+                colors={['#800707ff', '#D32F2F', '#B30000']}
+                style={UseEffectStyles.card}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <View style={styles.cardHeader}>
-                  <Ionicons name="warning" size={24} color="#FF6B6B" />
-                  <Text style={[styles.cardTitle, styles.errorText]}>Ошибка загрузки</Text>
-                  <View style={styles.pill}>
-                    <Text style={styles.pillText}>
-                      {fetchError.includes('Network') ? 'network' : 'error'}
-                    </Text>
+                <View style={UseEffectStyles.cardHeader}>
+                  <View style={UseEffectStyles.cardIcon}>
+                    <Ionicons name="warning" size={28} color="white" />
+                  </View>
+                  <View style={UseEffectStyles.cardTitleContainer}>
+                    <Text style={UseEffectStyles.cardTitle}>Ошибка загрузки</Text>
+                    <Text style={UseEffectStyles.cardDescription}>Санта не смог доставить подарок</Text>
                   </View>
                 </View>
-                <Text style={styles.errorMessage}>{fetchError}</Text>
-                <View style={styles.buttonRow}>
+                <Text style={UseEffectStyles.errorMessage}>{fetchError}</Text>
+                <View style={UseEffectStyles.buttonRow}>
                   <TouchableOpacity 
-                    style={styles.ghostButton}
+                    style={UseEffectStyles.ghostButton}
                     onPress={() => fetchUser()}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.ghostButtonText}>Повторить</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={styles.ghostButton}
-                    onPress={() => abortRef.current?.abort()}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.ghostButtonText}>Отменить</Text>
+                    <Text style={UseEffectStyles.ghostButtonText}>Повторить попытку</Text>
                   </TouchableOpacity>
                 </View>
               </LinearGradient>
@@ -164,56 +167,55 @@ export default function UseEffectScreen({ goBack }) {
           )}
 
           {/* Random User Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseEffectStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(102, 126, 234, 0.1)', 'rgba(118, 75, 162, 0.1)']}
-              style={styles.card}
+              colors={['#0b490fff','#35aa3dff', '#2E8B57']}
+              style={UseEffectStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <Ionicons name="person" size={24} color="#667EEA" />
-                <Text style={styles.cardTitle}>Случайный пользователь</Text>
-                <View style={[styles.pill, loading ? styles.loadingPill : styles.successPill]}>
-                  <Text style={styles.pillText}>{loading ? 'loading' : 'loaded'}</Text>
+              <View style={UseEffectStyles.cardHeader}>
+                <View style={UseEffectStyles.cardIcon}>
+                  <Ionicons name="person" size={28} color="white" />
+                </View>
+                <View style={UseEffectStyles.cardTitleContainer}>
+                  <Text style={UseEffectStyles.cardTitle}>Праздничные гости</Text>
+                  <Text style={UseEffectStyles.cardDescription}>Загрузка данных при изменении ID</Text>
                 </View>
               </View>
               
               {loading ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color="#667EEA" />
-                  <Text style={styles.loadingText}>Загружаем пользователя...</Text>
+                <View style={UseEffectStyles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#FFD700" />
+                  <Text style={UseEffectStyles.loadingText}>Ищем гостя в списке Санты...</Text>
                 </View>
               ) : (
                 <>
-                  <Text style={styles.cardSubtitle}>Новый пользователь</Text>
-                  {user ? (
-                    <>
-                      <Text style={styles.userName}>{user.name}</Text>
-                      <View style={styles.userDetails}>
-                        <View style={styles.userDetailItem}>
-                          <Ionicons name="mail" size={16} color="#8A8D93" />
-                          <Text style={styles.userDetailText}>Email: {user.email}</Text>
+                  <View style={UseEffectStyles.userInfoContainer}>
+                    {user ? (
+                      <>
+                        <Text style={UseEffectStyles.userName}>{user.name}</Text>
+                        <View style={UseEffectStyles.userDetails}>
+                          <View style={UseEffectStyles.userDetailItem}>
+                            <Ionicons name="mail" size={18} color="#FFD700" />
+                            <Text style={UseEffectStyles.userDetailText}>Email: {user.email}</Text>
+                          </View>
+                          <View style={UseEffectStyles.userDetailItem}>
+                            <Ionicons name="location" size={18} color="#FFD700" />
+                            <Text style={UseEffectStyles.userDetailText}>Город: {user.address?.city || 'Северный полюс'}</Text>
+                          </View>
                         </View>
-                        <View style={styles.userDetailItem}>
-                          <Ionicons name="location" size={16} color="#8A8D93" />
-                          <Text style={styles.userDetailText}>Город: {user.address?.city || 'Не указан'}</Text>
-                        </View>
-                        <View style={styles.userDetailItem}>
-                          <Ionicons name="business" size={16} color="#8A8D93" />
-                          <Text style={styles.userDetailText}>Компания: {user.company?.name || 'Не указана'}</Text>
-                        </View>
-                      </View>
-                    </>
-                  ) : (
-                    <Text style={styles.noDataText}>—</Text>
-                  )}
+                      </>
+                    ) : (
+                      <Text style={UseEffectStyles.noDataText}>🎁 Гость ещё не найден</Text>
+                    )}
+                  </View>
                 </>
               )}
               
-              <View style={styles.buttonRow}>
+              <View style={UseEffectStyles.buttonRow}>
                 <TouchableOpacity 
-                  style={styles.actionButton}
+                  style={UseEffectStyles.actionButton}
                   onPress={() => {
                     const randomId = 1 + Math.floor(Math.random() * 10);
                     setUserId(randomId);
@@ -221,33 +223,33 @@ export default function UseEffectScreen({ goBack }) {
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={['#667EEA', '#764BA2']}
-                    style={styles.actionButtonGradient}
+                    colors={['#0b490fff','#35aa3dff']}
+                    style={UseEffectStyles.actionButtonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                   >
                     <Ionicons name="shuffle" size={20} color="white" />
-                    <Text style={styles.actionButtonText}>Случайный ID</Text>
+                    <Text style={UseEffectStyles.actionButtonText}>Случайный гость</Text>
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  style={styles.ghostButton}
+                  style={UseEffectStyles.ghostButton}
                   onPress={() => fetchUser()}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.ghostButtonText}>Обновить</Text>
+                  <Text style={UseEffectStyles.ghostButtonText}>Обновить</Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.switchContainer}>
-                <View style={styles.switchLabelContainer}>
-                  <Ionicons name="refresh" size={20} color="#8A8D93" />
-                  <Text style={styles.switchLabel}>Автообновление (каждые 10 секунд)</Text>
+              <View style={UseEffectStyles.switchContainer}>
+                <View style={UseEffectStyles.switchLabelContainer}>
+                  <Ionicons name="refresh" size={22} color="#FFD700" />
+                  <Text style={UseEffectStyles.switchLabel}>Автообновление каждые 10 секунд</Text>
                 </View>
                 <Switch
                   value={autoRefresh}
                   onValueChange={setAutoRefresh}
-                  trackColor={{ false: '#2A2F3A', true: '#667EEA' }}
+                  trackColor={{ false: '#2A2F3A', true: '#35aa3dff' }}
                   thumbColor={autoRefresh ? '#FFFFFF' : '#9AA4B2'}
                 />
               </View>
@@ -255,441 +257,159 @@ export default function UseEffectScreen({ goBack }) {
           </View>
 
           {/* Timer Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseEffectStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(240, 147, 251, 0.1)', 'rgba(245, 87, 108, 0.1)']}
-              style={styles.card}
+              colors={['#2166ceff', '#0d335eff', '#1E3A8A']}
+              style={UseEffectStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <Ionicons name="timer" size={24} color="#F093FB" />
-                <Text style={styles.cardTitle}>Таймер автообновления</Text>
-                <View style={[styles.pill, autoRefresh ? styles.successPill : styles.neutralPill]}>
-                  <Text style={styles.pillText}>{autoRefresh ? 'running' : 'paused'}</Text>
+              <View style={UseEffectStyles.cardHeader}>
+                <View style={UseEffectStyles.cardIcon}>
+                  <Ionicons name="timer" size={28} color="white" />
+                </View>
+                <View style={UseEffectStyles.cardTitleContainer}>
+                  <Text style={UseEffectStyles.cardTitle}>Обратный отсчёт до НГ</Text>
+                  <Text style={UseEffectStyles.cardDescription}>setInterval и очистка эффекта</Text>
                 </View>
               </View>
               
-              <View style={styles.timerContainer}>
-                <Text style={styles.timerValue}>{seconds}s</Text>
-                <Text style={styles.timerLabel}>Прошло времени</Text>
+              <View style={UseEffectStyles.timerContainer}>
+                <Text style={UseEffectStyles.timerValue}>{seconds}s</Text>
+                <Text style={UseEffectStyles.timerLabel}>До смены гостя: {10 - (seconds % 10)}s</Text>
               </View>
               
-              <View style={styles.buttonRow}>
+              <View style={UseEffectStyles.buttonRow}>
                 <TouchableOpacity 
-                  style={styles.actionButton}
+                  style={UseEffectStyles.actionButton}
                   onPress={() => setAutoRefresh((v) => !v)}
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={autoRefresh ? ['#F093FB', '#F5576C'] : ['#4ECDC4', '#26A69A']}
-                    style={styles.actionButtonGradient}
+                    colors={autoRefresh ? ['#2166ceff', '#0d335eff'] : ['#FF6B6B', '#FF5252']}
+                    style={UseEffectStyles.actionButtonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                   >
                     <Ionicons name={autoRefresh ? "pause" : "play"} size={20} color="white" />
-                    <Text style={styles.actionButtonText}>{autoRefresh ? 'Пауза' : 'Старт'}</Text>
+                    <Text style={UseEffectStyles.actionButtonText}>{autoRefresh ? 'Пауза' : 'Старт'}</Text>
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  style={styles.ghostButton}
+                  style={UseEffectStyles.ghostButton}
                   onPress={() => setSeconds(0)}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.ghostButtonText}>Сброс</Text>
+                  <Text style={UseEffectStyles.ghostButtonText}>Сброс</Text>
                 </TouchableOpacity>
               </View>
             </LinearGradient>
           </View>
 
           {/* Click Counter Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseEffectStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(79, 172, 254, 0.1)', 'rgba(0, 242, 254, 0.1)']}
-              style={styles.card}
+              colors={['#800707ff', '#D32F2F', '#B30000']}
+              style={UseEffectStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <Ionicons name="hand-left" size={24} color="#4FACFE" />
-                <Text style={styles.cardTitle}>Зависимость от состояния</Text>
+              <View style={UseEffectStyles.cardHeader}>
+                <View style={UseEffectStyles.cardIcon}>
+                  <Ionicons name="gift" size={28} color="white" />
+                </View>
+                <View style={UseEffectStyles.cardTitleContainer}>
+                  <Text style={UseEffectStyles.cardTitle}>Праздничные сюрпризы</Text>
+                  <Text style={UseEffectStyles.cardDescription}>Загрузка при достижении условия</Text>
+                </View>
               </View>
               
-              <View style={styles.counterContainer}>
-                <Text style={styles.counterValue}>{clickCount}</Text>
-                <Text style={styles.counterLabel}>Счетчик кликов</Text>
+              <View style={UseEffectStyles.counterContainer}>
+                <Text style={UseEffectStyles.counterValue}>{clickCount}</Text>
+                <Text style={UseEffectStyles.counterLabel}>Нажатий на подарок</Text>
               </View>
               
               {clickCount >= 5 && usersList.length > 0 && (
-                <View style={styles.successContainer}>
-                  <View style={styles.successHeader}>
-                    <Ionicons name="checkmark-circle" size={24} color="#4FACFE" />
-                    <Text style={styles.successTitle}>✓ Достигнуто 5 кликов!</Text>
+                <View style={UseEffectStyles.successContainer}>
+                  <View style={UseEffectStyles.successHeader}>
+                    <Ionicons name="sparkles" size={28} color="#FFD700" />
+                    <Text style={UseEffectStyles.successTitle}>🎉 Сюрприз открыт!</Text>
                   </View>
-                  <Text style={styles.successSubtitle}>Список пользователей загружен:</Text>
+                  <Text style={UseEffectStyles.successSubtitle}>Список гостей Санты:</Text>
                   {usersList.map((u, index) => (
-                    <View key={index} style={styles.userListItem}>
-                      <Text style={styles.userListName}>{u.name}</Text>
-                      <Text style={styles.userListEmail}>{u.email}</Text>
+                    <View key={index} style={UseEffectStyles.userListItem}>
+                      <Text style={UseEffectStyles.userListName}>{u.name}</Text>
+                      <Text style={UseEffectStyles.userListEmail}>{u.email}</Text>
                     </View>
                   ))}
                 </View>
               )}
               
-              <View style={styles.buttonRow}>
+              <View style={UseEffectStyles.buttonRow}>
                 <TouchableOpacity 
-                  style={styles.actionButton}
+                  style={UseEffectStyles.actionButton}
                   onPress={() => setClickCount(c => c + 1)}
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={['#4FACFE', '#00F2FE']}
-                    style={styles.actionButtonGradient}
+                    colors={['#800707ff', '#D32F2F']}
+                    style={UseEffectStyles.actionButtonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                   >
-                    <Ionicons name="add" size={20} color="white" />
-                    <Text style={styles.actionButtonText}>+1 Клик</Text>
+                    <Ionicons name="gift" size={20} color="white" />
+                    <Text style={UseEffectStyles.actionButtonText}>Открыть подарок</Text>
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  style={styles.ghostButton}
+                  style={UseEffectStyles.ghostButton}
                   onPress={() => setClickCount(0)}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.ghostButtonText}>Сбросить</Text>
+                  <Text style={UseEffectStyles.ghostButtonText}>Закрыть все</Text>
                 </TouchableOpacity>
               </View>
             </LinearGradient>
           </View>
 
           {/* Greeting Card */}
-          <View style={styles.cardWrapper}>
+          <View style={UseEffectStyles.cardWrapper}>
             <LinearGradient
-              colors={['rgba(94, 234, 212, 0.1)', 'rgba(5, 41, 37, 0.1)']}
-              style={styles.card}
+              colors={['#0b490fff','#35aa3dff', '#2E8B57']}
+              style={UseEffectStyles.card}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.cardHeader}>
-                <Ionicons name="chatbubble" size={24} color="#5EEAD4" />
-                <Text style={styles.cardTitle}>Приветствие</Text>
+              <View style={UseEffectStyles.cardHeader}>
+                <View style={UseEffectStyles.cardIcon}>
+                  <Ionicons name="chatbubble" size={28} color="white" />
+                </View>
+                <View style={UseEffectStyles.cardTitleContainer}>
+                  <Text style={UseEffectStyles.cardTitle}>Праздничное приветствие</Text>
+                  <Text style={UseEffectStyles.cardDescription}>Эффект при изменении текста</Text>
+                </View>
               </View>
               
               <TextInput
-                style={styles.input}
+                style={UseEffectStyles.input}
                 value={name}
                 onChangeText={setName}
-                placeholder="Введите ваше имя"
-                placeholderTextColor="#8A8D93"
+                placeholder="Введите ваше имя для поздравления"
+                placeholderTextColor="rgba(255, 255, 255, 0.5)"
               />
               
-              <View style={styles.greetingContainer}>
-                <Ionicons name="sparkles" size={24} color="#5EEAD4" />
-                <Text style={styles.greetingText}>{greeting}</Text>
+              <View style={UseEffectStyles.greetingContainer}>
+                <Ionicons name="sparkles" size={28} color="#FFD700" />
+                <Text style={UseEffectStyles.greetingText}>{greeting} 🎄</Text>
               </View>
             </LinearGradient>
           </View>
 
-          <View style={styles.spacer} />
+       
+
+        
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 4,
-  },
-  headerCenter: {
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginTop: 2,
-  },
-  headerPlaceholder: {
-    width: 80,
-  },
-  cardWrapper: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  card: {
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-    flex: 1,
-    marginLeft: 12,
-  },
-  errorText: {
-    color: '#FF6B6B',
-  },
-  pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  loadingPill: {
-    backgroundColor: 'rgba(138, 141, 147, 0.2)',
-    borderColor: '#8A8D93',
-  },
-  successPill: {
-    backgroundColor: 'rgba(102, 126, 234, 0.2)',
-    borderColor: '#667EEA',
-  },
-  neutralPill: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  errorMessage: {
-    color: '#FF9999',
-    fontSize: 14,
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginBottom: 12,
-  },
-  userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 16,
-  },
-  userDetails: {
-    marginBottom: 24,
-  },
-  userDetailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  userDetailText: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginLeft: 8,
-  },
-  noDataText: {
-    fontSize: 18,
-    color: '#8A8D93',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  loadingText: {
-    color: '#8A8D93',
-    fontSize: 14,
-    marginTop: 12,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 16,
-    overflow: 'hidden',
-    marginHorizontal: 4,
-  },
-  actionButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 8,
-  },
-  actionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  ghostButton: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginHorizontal: 4,
-  },
-  ghostButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  switchLabelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  switchLabel: {
-    color: '#8A8D93',
-    fontSize: 14,
-    marginLeft: 8,
-  },
-  timerContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  timerValue: {
-    fontSize: 64,
-    fontWeight: 'bold',
-    color: '#F093FB',
-    textShadowColor: 'rgba(240, 147, 251, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
-  timerLabel: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginTop: 8,
-  },
-  counterContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  counterValue: {
-    fontSize: 64,
-    fontWeight: 'bold',
-    color: '#4FACFE',
-    textShadowColor: 'rgba(79, 172, 254, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
-  counterLabel: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginTop: 8,
-  },
-  successContainer: {
-    backgroundColor: 'rgba(79, 172, 254, 0.1)',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(79, 172, 254, 0.2)',
-  },
-  successHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  successTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4FACFE',
-    marginLeft: 8,
-  },
-  successSubtitle: {
-    fontSize: 14,
-    color: '#8A8D93',
-    marginBottom: 12,
-  },
-  userListItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  userListName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: 2,
-  },
-  userListEmail: {
-    fontSize: 12,
-    color: '#8A8D93',
-  },
-  input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    padding: 16,
-    color: 'white',
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  greetingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(94, 234, 212, 0.1)',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(94, 234, 212, 0.2)',
-  },
-  greetingText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#5EEAD4',
-    marginLeft: 12,
-    flex: 1,
-  },
-  spacer: {
-    height: 40,
-  },
-});
