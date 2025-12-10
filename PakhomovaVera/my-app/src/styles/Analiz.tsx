@@ -161,4 +161,18 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     fontStyle: 'italic',
   },
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    padding: 10,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 8,
+    zIndex: 1,
+  },
+  backButtonText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: '600',
+  }
 });
