@@ -236,14 +236,7 @@ export default function UseStateScreen({ goBack }) {
                 </LinearGradient>
               </TouchableOpacity>
             </LinearGradient>
-          </View>
-
-       
-
-          
-            
-            
-          
+          </View>          
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

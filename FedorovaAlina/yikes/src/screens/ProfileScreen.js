@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -12,6 +12,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../store/authStore';
+import { ProfileScreenStyles } from '../styles/ProfileScreenStyles';
 
 export default function ProfileScreen({ goBack }) {
   const { user, logout, updateProfile, isAdmin } = useAuthStore();
@@ -55,59 +56,59 @@ export default function ProfileScreen({ goBack }) {
   return (
     <LinearGradient
       colors={['#0D1B2A', '#1B263B', '#2C3E50']}
-      style={styles.container}
+      style={ProfileScreenStyles.container}
     >
       <StatusBar barStyle="light-content" />
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={ProfileScreenStyles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
+          <View style={ProfileScreenStyles.header}>
             <TouchableOpacity 
-              style={styles.backButton} 
+              style={ProfileScreenStyles.backButton} 
               onPress={goBack}
               activeOpacity={0.7}
             >
               <Ionicons name="chevron-back" size={24} color="white" />
-              <Text style={styles.backButtonText}>Назад</Text>
+              <Text style={ProfileScreenStyles.backButtonText}>Назад</Text>
             </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <View style={styles.titleBadge}>
-                <Text style={styles.titleBadgeText}>👤 Профиль</Text>
+            <View style={ProfileScreenStyles.headerCenter}>
+              <View style={ProfileScreenStyles.titleBadge}>
+                <Text style={ProfileScreenStyles.titleBadgeText}>👤 Профиль</Text>
               </View>
-              <Text style={styles.headerSubtitle}>Личный кабинет</Text>
+              <Text style={ProfileScreenStyles.headerSubtitle}>Личный кабинет</Text>
             </View>
-            <View style={styles.headerPlaceholder} />
+            <View style={ProfileScreenStyles.headerPlaceholder} />
           </View>
 
           {/* Декоративные снежинки */}
-          <View style={styles.snowflakeContainer}>
-            <Text style={styles.snowflake}>❄️</Text>
-            <Text style={[styles.snowflake, styles.snowflake2]}>❄️</Text>
-            <Text style={[styles.snowflake, styles.snowflake3]}>❄️</Text>
+          <View style={ProfileScreenStyles.snowflakeContainer}>
+            <Text style={ProfileScreenStyles.snowflake}>❄️</Text>
+            <Text style={[ProfileScreenStyles.snowflake, ProfileScreenStyles.snowflake2]}>❄️</Text>
+            <Text style={[ProfileScreenStyles.snowflake, ProfileScreenStyles.snowflake3]}>❄️</Text>
           </View>
 
           {/* Профиль пользователя */}
-          <View style={styles.profileCard}>
+          <View style={ProfileScreenStyles.profileCard}>
             <LinearGradient
               colors={['#2166ceff', '#0d335eff', '#1E3A8A']}
-              style={styles.profileGradient}
+              style={ProfileScreenStyles.profileGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.profileHeader}>
-                <View style={styles.avatarContainer}>
-                  <Text style={styles.avatar}>{user?.avatar || '👤'}</Text>
+              <View style={ProfileScreenStyles.profileHeader}>
+                <View style={ProfileScreenStyles.avatarContainer}>
+                  <Text style={ProfileScreenStyles.avatar}>{user?.avatar || '👤'}</Text>
                   {isAdmin() && (
-                    <View style={styles.adminBadge}>
+                    <View style={ProfileScreenStyles.adminBadge}>
                       <Ionicons name="shield" size={16} color="white" />
                     </View>
                   )}
                 </View>
-                <View style={styles.profileInfo}>
+                <View style={ProfileScreenStyles.profileInfo}>
                   {isEditing ? (
-                    <View style={styles.editContainer}>
+                    <View style={ProfileScreenStyles.editContainer}>
                       <TextInput
-                        style={styles.editInput}
+                        style={ProfileScreenStyles.editInput}
                         value={editedName}
                         onChangeText={setEditedName}
                         placeholder="Введите имя"
@@ -115,53 +116,53 @@ export default function ProfileScreen({ goBack }) {
                       />
                     </View>
                   ) : (
-                    <Text style={styles.profileName}>{user?.name || 'Пользователь'}</Text>
+                    <Text style={ProfileScreenStyles.profileName}>{user?.name || 'Пользователь'}</Text>
                   )}
-                  <Text style={styles.profileRole}>
+                  <Text style={ProfileScreenStyles.profileRole}>
                     {getRoleText(user?.role)}
                   </Text>
-                  <Text style={styles.profileEmail}>{user?.email || 'email@example.com'}</Text>
+                  <Text style={ProfileScreenStyles.profileEmail}>{user?.email || 'email@example.com'}</Text>
                 </View>
               </View>
 
-              <View style={styles.profileStats}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statValue}>🎄</Text>
-                  <Text style={styles.statLabel}>Уровень</Text>
-                  <Text style={styles.statNumber}>1</Text>
+              <View style={ProfileScreenStyles.profileStats}>
+                <View style={ProfileScreenStyles.statItem}>
+                  <Text style={ProfileScreenStyles.statValue}>🎄</Text>
+                  <Text style={ProfileScreenStyles.statLabel}>Уровень</Text>
+                  <Text style={ProfileScreenStyles.statNumber}>1</Text>
                 </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statValue}>⭐</Text>
-                  <Text style={styles.statLabel}>Опыт</Text>
-                  <Text style={styles.statNumber}>100</Text>
+                <View style={ProfileScreenStyles.statItem}>
+                  <Text style={ProfileScreenStyles.statValue}>⭐</Text>
+                  <Text style={ProfileScreenStyles.statLabel}>Опыт</Text>
+                  <Text style={ProfileScreenStyles.statNumber}>100</Text>
                 </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statValue}>🏆</Text>
-                  <Text style={styles.statLabel}>Достижения</Text>
-                  <Text style={styles.statNumber}>3</Text>
+                <View style={ProfileScreenStyles.statItem}>
+                  <Text style={ProfileScreenStyles.statValue}>🏆</Text>
+                  <Text style={ProfileScreenStyles.statLabel}>Достижения</Text>
+                  <Text style={ProfileScreenStyles.statNumber}>3</Text>
                 </View>
               </View>
             </LinearGradient>
           </View>
 
           {/* Действия профиля */}
-          <View style={styles.actionsCard}>
+          <View style={ProfileScreenStyles.actionsCard}>
             <LinearGradient
               colors={['#0b490fff','#35aa3dff', '#2E8B57']}
-              style={styles.actionsGradient}
+              style={ProfileScreenStyles.actionsGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <Text style={styles.sectionTitle}>Действия</Text>
+              <Text style={ProfileScreenStyles.sectionTitle}>Действия</Text>
               
               <TouchableOpacity
-                style={styles.actionButton}
+                style={ProfileScreenStyles.actionButton}
                 onPress={() => setIsEditing(!isEditing)}
                 activeOpacity={0.7}
               >
-                <View style={styles.actionContent}>
+                <View style={ProfileScreenStyles.actionContent}>
                   <Ionicons name="create" size={22} color="#FFD700" />
-                  <Text style={styles.actionText}>
+                  <Text style={ProfileScreenStyles.actionText}>
                     {isEditing ? 'Отменить редактирование' : 'Редактировать профиль'}
                   </Text>
                 </View>
@@ -170,37 +171,37 @@ export default function ProfileScreen({ goBack }) {
 
               {isEditing && (
                 <TouchableOpacity
-                  style={[styles.actionButton, styles.saveButton]}
+                  style={[ProfileScreenStyles.actionButton, ProfileScreenStyles.saveButton]}
                   onPress={handleSaveProfile}
                   activeOpacity={0.7}
                 >
-                  <View style={styles.actionContent}>
+                  <View style={ProfileScreenStyles.actionContent}>
                     <Ionicons name="save" size={22} color="#FFD700" />
-                    <Text style={styles.actionText}>Сохранить изменения</Text>
+                    <Text style={ProfileScreenStyles.actionText}>Сохранить изменения</Text>
                   </View>
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity
-                style={styles.actionButton}
+                style={ProfileScreenStyles.actionButton}
                 onPress={() => Alert.alert('Настройки', 'Раздел в разработке')}
                 activeOpacity={0.7}
               >
-                <View style={styles.actionContent}>
+                <View style={ProfileScreenStyles.actionContent}>
                   <Ionicons name="settings" size={22} color="#FFD700" />
-                  <Text style={styles.actionText}>Настройки</Text>
+                  <Text style={ProfileScreenStyles.actionText}>Настройки</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color="rgba(255, 255, 255, 0.5)" />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.actionButton}
+                style={ProfileScreenStyles.actionButton}
                 onPress={() => Alert.alert('Статистика', 'Раздел в разработке')}
                 activeOpacity={0.7}
               >
-                <View style={styles.actionContent}>
+                <View style={ProfileScreenStyles.actionContent}>
                   <Ionicons name="stats-chart" size={22} color="#FFD700" />
-                  <Text style={styles.actionText}>Статистика</Text>
+                  <Text style={ProfileScreenStyles.actionText}>Статистика</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color="rgba(255, 255, 255, 0.5)" />
               </TouchableOpacity>
@@ -209,44 +210,44 @@ export default function ProfileScreen({ goBack }) {
 
           {/* Админ панель (только для админов) */}
           {isAdmin() && (
-            <View style={styles.adminCard}>
+            <View style={ProfileScreenStyles.adminCard}>
               <LinearGradient
                 colors={['#800707ff', '#D32F2F', '#B30000']}
-                style={styles.adminGradient}
+                style={ProfileScreenStyles.adminGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <View style={styles.adminHeader}>
+                <View style={ProfileScreenStyles.adminHeader}>
                   <Ionicons name="shield" size={28} color="#FFD700" />
-                  <Text style={styles.adminTitle}>Панель администратора</Text>
+                  <Text style={ProfileScreenStyles.adminTitle}>Панель администратора</Text>
                 </View>
                 
-                <View style={styles.adminActions}>
+                <View style={ProfileScreenStyles.adminActions}>
                   <TouchableOpacity
-                    style={styles.adminButton}
+                    style={ProfileScreenStyles.adminButton}
                     onPress={() => Alert.alert('Пользователи', 'Управление пользователями')}
                     activeOpacity={0.7}
                   >
                     <Ionicons name="people" size={20} color="white" />
-                    <Text style={styles.adminButtonText}>Пользователи</Text>
+                    <Text style={ProfileScreenStyles.adminButtonText}>Пользователи</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity
-                    style={styles.adminButton}
+                    style={ProfileScreenStyles.adminButton}
                     onPress={() => Alert.alert('Статистика', 'Статистика приложения')}
                     activeOpacity={0.7}
                   >
                     <Ionicons name="analytics" size={20} color="white" />
-                    <Text style={styles.adminButtonText}>Аналитика</Text>
+                    <Text style={ProfileScreenStyles.adminButtonText}>Аналитика</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity
-                    style={styles.adminButton}
+                    style={ProfileScreenStyles.adminButton}
                     onPress={() => Alert.alert('Настройки', 'Настройки системы')}
                     activeOpacity={0.7}
                   >
                     <Ionicons name="cog" size={20} color="white" />
-                    <Text style={styles.adminButtonText}>Система</Text>
+                    <Text style={ProfileScreenStyles.adminButtonText}>Система</Text>
                   </TouchableOpacity>
                 </View>
               </LinearGradient>
@@ -254,37 +255,37 @@ export default function ProfileScreen({ goBack }) {
           )}
 
           {/* Кнопка выхода */}
-          <View style={styles.logoutCard}>
+          <View style={ProfileScreenStyles.logoutCard}>
             <TouchableOpacity
-              style={styles.logoutButton}
+              style={ProfileScreenStyles.logoutButton}
               onPress={handleLogout}
               activeOpacity={0.8}
             >
               <LinearGradient
                 colors={['#800707ff', '#D32F2F', '#B30000']}
-                style={styles.logoutGradient}
+                style={ProfileScreenStyles.logoutGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
                 <Ionicons name="log-out" size={22} color="white" />
-                <Text style={styles.logoutText}>Выйти из аккаунта</Text>
+                <Text style={ProfileScreenStyles.logoutText}>Выйти из аккаунта</Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
 
           {/* Информация о приложении */}
-          <View style={styles.infoCard}>
+          <View style={ProfileScreenStyles.infoCard}>
             <LinearGradient
               colors={['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)']}
-              style={styles.infoGradient}
+              style={ProfileScreenStyles.infoGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <Text style={styles.infoTitle}>Информация о приложении</Text>
-              <Text style={styles.infoText}>
+              <Text style={ProfileScreenStyles.infoTitle}>Информация о приложении</Text>
+              <Text style={ProfileScreenStyles.infoText}>
                 Приложение "React Hooks Demo" - учебный проект для изучения хуков React
               </Text>
-              <Text style={styles.versionText}>Версия 1.0.0</Text>
+              <Text style={ProfileScreenStyles.versionText}>Версия 1.0.0</Text>
             </LinearGradient>
           </View>
         </ScrollView>
@@ -292,289 +293,3 @@ export default function ProfileScreen({ goBack }) {
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight || 40,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 6,
-  },
-  headerCenter: {
-    alignItems: 'center',
-  },
-  titleBadge: {
-    backgroundColor: '#FF6B6B',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginBottom: 6,
-  },
-  titleBadgeText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#81D4FA',
-    marginTop: 2,
-  },
-  headerPlaceholder: {
-    width: 70,
-  },
-  snowflakeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 40,
-    marginVertical: 10,
-    opacity: 0.6,
-  },
-  snowflake: {
-    fontSize: 22,
-  },
-  snowflake2: {
-    fontSize: 18,
-  },
-  snowflake3: {
-    fontSize: 26,
-  },
-  profileCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  profileGradient: {
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  avatarContainer: {
-    position: 'relative',
-    marginRight: 20,
-  },
-  avatar: {
-    fontSize: 64,
-  },
-  adminBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#FF6B6B',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#0D1B2A',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 4,
-  },
-  profileRole: {
-    fontSize: 14,
-    color: '#FFD700',
-    marginBottom: 4,
-  },
-  profileEmail: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.6)',
-  },
-  editContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  editInput: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  profileStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-    paddingTop: 20,
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: 4,
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFD700',
-  },
-  actionsCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  actionsGradient: {
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 20,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  saveButton: {
-    backgroundColor: 'rgba(255, 215, 0, 0.1)',
-    borderColor: 'rgba(255, 215, 0, 0.3)',
-  },
-  actionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  actionText: {
-    color: 'white',
-    fontSize: 16,
-    marginLeft: 12,
-    flex: 1,
-  },
-  adminCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  adminGradient: {
-    borderRadius: 24,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  adminHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  adminTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    marginLeft: 12,
-  },
-  adminActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  adminButton: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 12,
-    padding: 16,
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  adminButtonText: {
-    color: 'white',
-    fontSize: 12,
-    marginTop: 8,
-  },
-  logoutCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  logoutButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  logoutGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    gap: 12,
-  },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  infoCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  infoGradient: {
-    borderRadius: 24,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  infoTitle: {
-    fontSize: 14,
-    color: '#FFD700',
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: 8,
-    lineHeight: 16,
-  },
-  versionText: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontStyle: 'italic',
-  },
-});

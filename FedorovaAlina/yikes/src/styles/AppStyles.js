@@ -217,4 +217,103 @@ export const AppStyles = StyleSheet.create({
   santaHatText: {
     fontSize: 32,
   },
+  // ДОБАВЛЕННЫЕ СТИЛИ ИЗ App.js
+  userBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginTop: 8,
+    alignSelf: 'flex-start',
+  },
+  userAvatar: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  userName: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  authSection: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  profileButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  profileButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 12,
+  },
+  profileButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  authButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  authButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 12,
+  },
+  authButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  statusCard: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  statusGradient: {
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  statusContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  statusTextContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  statusTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 4,
+  },
+  statusDescription: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  logoutButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });

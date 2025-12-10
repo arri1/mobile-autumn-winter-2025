@@ -3,12 +3,10 @@ import {
   View, 
   Text, 
   TouchableOpacity, 
-  StyleSheet, 
   Dimensions, 
   StatusBar, 
   SafeAreaView,
   ScrollView,
-  Animated,
   Alert
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -65,9 +63,9 @@ export default function App() {
               </View>
               
               {isAuthenticated && user && (
-                <View style={styles.userBadge}>
-                  <Text style={styles.userAvatar}>{user.avatar || '👤'}</Text>
-                  <Text style={styles.userName}>{user.name}</Text>
+                <View style={AppStyles.userBadge}>
+                  <Text style={AppStyles.userAvatar}>{user.avatar || '👤'}</Text>
+                  <Text style={AppStyles.userName}>{user.name}</Text>
                 </View>
               )}
             </View>
@@ -75,8 +73,6 @@ export default function App() {
               <Text style={AppStyles.badgeText}>✨ Праздничная версия</Text>
             </View>
           </View>
-
-          
 
           {/* Декоративные снежинки */}
           <View style={AppStyles.snowflakeContainer}>
@@ -95,27 +91,27 @@ export default function App() {
           </View>
 
           {/* Статус авторизации */}
-          <View style={styles.statusCard}>
+          <View style={AppStyles.statusCard}>
             <LinearGradient
               colors={isAuthenticated 
                 ? ['#0b490fff','#35aa3dff', '#2E8B57']
                 : ['#800707ff', '#D32F2F', '#B30000']
               }
-              style={styles.statusGradient}
+              style={AppStyles.statusGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <View style={styles.statusContent}>
+              <View style={AppStyles.statusContent}>
                 <Ionicons 
                   name={isAuthenticated ? "checkmark-circle" : "lock-closed"} 
                   size={28} 
                   color="#FFD700" 
                 />
-                <View style={styles.statusTextContainer}>
-                  <Text style={styles.statusTitle}>
+                <View style={AppStyles.statusTextContainer}>
+                  <Text style={AppStyles.statusTitle}>
                     {isAuthenticated ? 'Вы авторизованы' : 'Требуется авторизация'}
                   </Text>
-                  <Text style={styles.statusDescription}>
+                  <Text style={AppStyles.statusDescription}>
                     {isAuthenticated 
                       ? 'Доступ ко всем функциям открыт!'
                       : 'Войдите для сохранения прогресса'
@@ -125,20 +121,20 @@ export default function App() {
               </View>
               {isAuthenticated && (
                 <TouchableOpacity
-                  style={styles.logoutButton}
+                  style={AppStyles.logoutButton}
                   onPress={() => {
                     logout();
                     Alert.alert('Выход', 'Вы успешно вышли из системы');
                   }}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.logoutButtonText}>Выйти</Text>
+                  <Text style={AppStyles.logoutButtonText}>Выйти</Text>
                 </TouchableOpacity>
               )}
             </LinearGradient>
           </View>
 
-         {/* Декоративные снежинки */}
+          {/* Декоративные снежинки */}
           <View style={AppStyles.snowflakeContainer}>
             <Text style={AppStyles.snowflake}>❄️</Text>
             <Text style={[AppStyles.snowflake, AppStyles.snowflake2]}>❄️</Text>
@@ -236,8 +232,6 @@ export default function App() {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-
-          
           
         </ScrollView>
       </SafeAreaView>
@@ -246,104 +240,3 @@ export default function App() {
 
   return renderScreen();
 }
-
-const styles = StyleSheet.create({
-  userBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginTop: 8,
-    alignSelf: 'flex-start',
-  },
-  userAvatar: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-  userName: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  authSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  profileButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  profileButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 12,
-  },
-  profileButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  authButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  authButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 12,
-  },
-  authButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  statusCard: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  statusGradient: {
-    borderRadius: 24,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  statusContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  statusTextContainer: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  statusTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 4,
-  },
-  statusDescription: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-  },
-  logoutButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  logoutButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
