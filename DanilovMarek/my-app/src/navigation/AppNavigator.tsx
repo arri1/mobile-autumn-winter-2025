@@ -3,6 +3,7 @@ import UseEffectScreen from "../screens/Main/UseEffectScreen";
 import useStateScreen from "../screens/Main/UseStateScreen";
 import useMemoScreen from "../screens/Main/UseMemoScreen";
 import ProfileScreen from "../screens/Main/ProfileScreen";
+import UsersScreen from "../screens/Main/UsersScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -13,6 +14,7 @@ export default function AppNavigator() {
             <Tab.Screen name="UseEffect" component={UseEffectScreen} />
             <Tab.Screen name="UseMemo" component={useMemoScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Users" component={UsersScreen} />
         </Tab.Navigator>
     );
 }

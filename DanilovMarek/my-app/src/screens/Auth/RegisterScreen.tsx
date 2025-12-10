@@ -4,23 +4,16 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 export default function RegisterScreen({ navigation }: any) {
     const [name, setName] = useState("");
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const register = useAuthStore((state) => state.register);
-    const login = useAuthStore((state) => state.login);
+    const { register } = useAuthStore();
 
     const handleRegister = async () => {
-        if (!name || !username || !password) {
+        if (!name || !email || !password) {
             Alert.alert("Ошибка", "Заполните все поля");
             return;
         }
-
-        const success = await register(name, username, password);
-        if (success) {
-            login(username, password);
-        } else {
-            Alert.alert("Ошибка", "Логин уже занят");
-        }
+        await register(name, email, password);
     };
 
     return (
@@ -36,9 +29,9 @@ export default function RegisterScreen({ navigation }: any) {
 
             <TextInput
                 style={styles.input}
-                placeholder="Логин"
-                value={username}
-                onChangeText={setUsername}
+                placeholder="Почта"
+                value={email}
+                onChangeText={setEmail}
                 autoCapitalize="none"
             />
 

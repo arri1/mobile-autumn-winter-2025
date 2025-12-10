@@ -3,20 +3,17 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useAuthStore } from "../../store/useAuthStore";
 
 export default function LoginScreen({ navigation }: any) {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const login = useAuthStore((state) => state.login);
+    const { login, isLoading } = useAuthStore();
+
 
     const handleLogin = async () => {
-        if (!username || !password) {
+        if (!email || !password) {
             Alert.alert("Ошибка", "Заполните все поля");
             return;
         }
-
-        const success = await login(username, password);
-        if (!success) {
-            Alert.alert("Ошибка", "Неверный логин или пароль");
-        }
+        await login(email, password);
     };
 
     return (
@@ -25,9 +22,9 @@ export default function LoginScreen({ navigation }: any) {
 
             <TextInput
                 style={styles.input}
-                placeholder="Логин"
-                value={username}
-                onChangeText={setUsername}
+                placeholder="Почта"
+                value={email}
+                onChangeText={setEmail}
                 autoCapitalize="none"
             />
 
