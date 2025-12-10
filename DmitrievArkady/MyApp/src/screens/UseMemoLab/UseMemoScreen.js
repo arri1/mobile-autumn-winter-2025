@@ -71,10 +71,10 @@ export default function UseMemoScreen() {
   }, [activeType]);
 
   const renderItem = ({ item }) => (
-    <View style={styles.galleryCard}>
+    <View style={styles.Card}>
       <Image
         source={item.source}
-        style={styles.galleryImage}
+        style={styles.Image}
         resizeMode="cover"
       />
       <Text style={styles.galleryCaption}>{item.label}</Text>
@@ -87,9 +87,9 @@ export default function UseMemoScreen() {
   );
 
   return (
-    <View style={styles.galleryContainer}>
-      <View style={styles.galleryPickerWrap}>
-        <Text style={styles.galleryPickerLabel}>Тип:</Text>
+    <View style={styles.Container}>
+      <View style={styles.PickerWrap}>
+        <Text style={styles.PickerLabel}>Тип:</Text>
         <DropDownPicker
           open={open}
           value={activeType}
@@ -107,7 +107,7 @@ export default function UseMemoScreen() {
         keyExtractor={item => item.id}
         numColumns={2}
         columnWrapperStyle={styles.galleryRow}
-        contentContainerStyle={styles.galleryList}
+        contentContainerStyle={styles.List}
         renderItem={renderItem}
       />
     </View>
@@ -115,11 +115,11 @@ export default function UseMemoScreen() {
 }
 
 const styles = StyleSheet.create({
-    galleryContainer: {
+    Container: {
       flex: 1,
       backgroundColor: '#fff',
     },
-    galleryPickerWrap: {
+    PickerWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
@@ -128,18 +128,18 @@ const styles = StyleSheet.create({
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: '#ddd',
     },
-    galleryPickerLabel: {
+    PickerLabel: {
       color: '#555',
       fontSize: 14,
     },
-    galleryList: {
+    List: {
       padding: 12,
     },
     galleryRow: {
       justifyContent: 'space-between',
       marginBottom: 12,
     },
-    galleryCard: {
+    Card: {
       width: '48%',
       backgroundColor: '#fafafa',
       borderRadius: 10,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: '#e5e5e5',
     },
-    galleryImage: {
+    Image: {
       width: '100%',
       height: 120,
       backgroundColor: '#eee',

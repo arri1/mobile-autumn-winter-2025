@@ -101,7 +101,7 @@ export default function UseEffectScreen() {
 
 
 const styles = StyleSheet.create({
-    galleryPickerWrap: {
+    PickerWrap: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: '#ddd',
     },
-    galleryPickerLabel: {
+    PickerLabel: {
       color: '#555',
       fontSize: 14,
     },
