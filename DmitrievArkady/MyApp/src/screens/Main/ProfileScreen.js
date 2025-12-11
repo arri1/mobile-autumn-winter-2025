@@ -26,7 +26,7 @@ export default function ProfileScreen() {
                         <Button
                             title="Удалить аккаунт"
                             onPress={deleteAccount}
-                            color="red"
+                            color="#D93B3B"
                         />
                     ) : null}
                 </View>
