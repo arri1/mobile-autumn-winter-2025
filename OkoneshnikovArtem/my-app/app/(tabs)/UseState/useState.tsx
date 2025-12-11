@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState } from "react";
 import { Button, Switch, TextInput, Text } from "react-native";

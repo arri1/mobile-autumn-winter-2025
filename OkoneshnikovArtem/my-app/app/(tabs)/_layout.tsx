@@ -35,24 +35,6 @@ export default function TabLayout() {
 					),
 				}}
 			/>
-			<Tabs.Screen
-				name="useState"
-				options={{
-					title: "Use State",
-					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="useEffect"
-				options={{
-					title: "Use Effect",
-					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
-					),
-				}}
-			/>
 		</Tabs>
 	);
 }
