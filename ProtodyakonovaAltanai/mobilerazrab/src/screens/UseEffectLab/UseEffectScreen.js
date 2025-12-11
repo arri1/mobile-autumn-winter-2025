@@ -174,7 +174,6 @@ const UseEffectScreen = () => {
   );
 };
 
-// Стили (оставляем как в UseStateScreen.js)
 const SafeArea = styled.SafeAreaView`
   flex: 1;
   background-color: #0a0c10;

@@ -3,13 +3,27 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import UseStateScreen from './src/screens/UseStateLab/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectLab/UseEffectScreen';
+import UseMemoScreen from './src/screens/UseMemoLab/UseMemoScreen';
 
 export default function App() {
-  const [screen, setScreen] = useState('useState'); // 'useState' или 'useEffect'
+  const [screen, setScreen] = useState('useState'); // 'useState', 'useEffect' или 'useMemo'
+
+  const renderScreen = () => {
+    switch(screen) {
+      case 'useState':
+        return <UseStateScreen />;
+      case 'useEffect':
+        return <UseEffectScreen />;
+      case 'useMemo':
+        return <UseMemoScreen />;
+      default:
+        return <UseStateScreen />;
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {screen === 'useState' ? <UseStateScreen /> : <UseEffectScreen />}
+      {renderScreen()}
       
       <View style={styles.tabBar}>
         <TouchableOpacity 
@@ -29,6 +43,15 @@ export default function App() {
             useEffect
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.tab, screen === 'useMemo' && styles.activeTab]} 
+          onPress={() => setScreen('useMemo')}
+        >
+          <Text style={[styles.tabText, screen === 'useMemo' && styles.activeTabText]}>
+            useMemo
+          </Text>
+        </TouchableOpacity>
       </View>
       
       <StatusBar style="light" />
@@ -46,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0c0f14',
     borderTopWidth: 1,
     borderTopColor: '#1c2230',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   tab: {
     flex: 1,
@@ -60,7 +83,7 @@ const styles = StyleSheet.create({
   tabText: {
     color: '#9aa4b2',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
   },
   activeTabText: {
     color: '#5eead4',
