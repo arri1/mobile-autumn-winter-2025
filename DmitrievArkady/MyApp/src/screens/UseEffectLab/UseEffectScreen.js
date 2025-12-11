@@ -49,8 +49,8 @@ export default function UseEffectScreen() {
 
   return (
     <View>
-      <View style={styles.galleryPickerWrap}>
-          <Text style={styles.galleryPickerLabel}>Город:</Text>
+      <View style={styles.PickerWrap}>
+          <Text style={styles.PickerLabel}>Город:</Text>
           <DropDownPicker
             open={open}
             value={cityCoordinate}
