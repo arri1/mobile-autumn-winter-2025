@@ -9,30 +9,85 @@ export const AppStyles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight || 40,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    paddingHorizontal: 24,
-    paddingBottom: 20,
-  },
-  titleContainer: {
-    flex: 1,
-  },
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 10,
+  paddingHorizontal: 20,
+},
+titleContainer: {
+  flex: 1,
+},
+profileButton: {
+  backgroundColor: 'rgba(255, 215, 0, 0.2)',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: 'rgba(255, 215, 0, 0.3)',
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+profileButtonGradient: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+profileAvatar: {
+  fontSize: 16,
+  marginRight: 6,
+},
+userInfo: {
+  flex: 1,
+  marginRight: 8,
+},
+profileName: {
+  color: 'white',
+  fontSize: 14,
+  fontWeight: '600',
+  maxWidth: 100, 
+},
+userRole: {
+  color: 'rgba(255, 215, 0, 0.8)',
+  fontSize: 11,
+  marginTop: 2,
+},
+
+loginButton: {
+  backgroundColor: 'rgba(0, 100, 200, 0.3)',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: 'rgba(0, 100, 200, 0.5)',
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+loginButtonGradient: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+loginButtonText: {
+  color: '#FFD700',
+  fontSize: 14,
+  fontWeight: '600',
+  marginLeft: 6,
+},
   newYearBadge: {
-    backgroundColor: '#FF6B6B',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  newYearText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+  backgroundColor: 'rgba(255, 0, 0, 0.2)',
+  paddingHorizontal: 15,
+  paddingVertical: 6,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: 'rgba(255, 0, 0, 0.3)',
+  alignSelf: 'flex-start',
+},
+
+newYearText: {
+  color: '#FFD700',
+  fontSize: 18,
+  fontWeight: 'bold',
+},
   subtitle: {
     fontSize: 16,
     color: '#81D4FA',
@@ -49,19 +104,25 @@ export const AppStyles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 10,
   },
-  badge: {
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
-  },
-  badgeText: {
-    color: '#FFD700',
-    fontSize: 12,
-    fontWeight: '600',
-  },
+  badgeContainer: {
+  alignItems: 'center',
+  marginBottom: 15,
+},
+
+badge: {
+  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+  paddingHorizontal: 16,
+  paddingVertical: 6,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: 'rgba(255, 215, 0, 0.3)',
+},
+
+badgeText: {
+  color: '#FFD700',
+  fontSize: 12,
+  fontWeight: '500',
+},
   snowflakeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -316,4 +377,5 @@ export const AppStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  
 });

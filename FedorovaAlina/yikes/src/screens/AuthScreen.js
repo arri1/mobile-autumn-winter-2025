@@ -107,14 +107,6 @@ export default function AuthScreen({ goBack }) {
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Header */}
             <View style={AuthScreenStyles.header}>
-              {/* <TouchableOpacity 
-                style={AuthScreenStyles.backButton} 
-                onPress={goBack}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="chevron-back" size={24} color="white" />
-                <Text style={AuthScreenStyles.backButtonText}>Назад</Text>
-              </TouchableOpacity> */}
               <View style={AuthScreenStyles.headerCenter}>
                 <View style={AuthScreenStyles.titleBadge}>
                   <Text style={AuthScreenStyles.titleBadgeText}>🔐 Авторизация</Text>
@@ -316,39 +308,6 @@ export default function AuthScreen({ goBack }) {
                       <Text style={AuthScreenStyles.demoEmoji}>🎁</Text>
                       <Text style={AuthScreenStyles.demoText}>Гость</Text>
                     </TouchableOpacity>
-                  </View>
-                </View>
-              </LinearGradient>
-            </View>
-
-            {/* Информационная карточка */}
-            <View style={AuthScreenStyles.infoCard}>
-              <LinearGradient
-                colors={['#800707ff', '#D32F2F', '#B30000']}
-                style={AuthScreenStyles.infoGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View style={AuthScreenStyles.infoHeader}>
-                  <Ionicons name="information-circle" size={28} color="#FFD700" />
-                  <Text style={AuthScreenStyles.infoTitle}>Преимущества аккаунта</Text>
-                </View>
-                <View style={AuthScreenStyles.infoList}>
-                  <View style={AuthScreenStyles.infoItem}>
-                    <Ionicons name="star" size={16} color="#FFD700" />
-                    <Text style={AuthScreenStyles.infoText}>Сохранение прогресса</Text>
-                  </View>
-                  <View style={AuthScreenStyles.infoItem}>
-                    <Ionicons name="gift" size={16} color="#FFD700" />
-                    <Text style={AuthScreenStyles.infoText}>Дополнительные функции</Text>
-                  </View>
-                  <View style={AuthScreenStyles.infoItem}>
-                    <Ionicons name="cloud" size={16} color="#FFD700" />
-                    <Text style={AuthScreenStyles.infoText}>Синхронизация между устройствами</Text>
-                  </View>
-                  <View style={AuthScreenStyles.infoItem}>
-                    <Ionicons name="settings" size={16} color="#FFD700" />
-                    <Text style={AuthScreenStyles.infoText}>Персональные настройки</Text>
                   </View>
                 </View>
               </LinearGradient>

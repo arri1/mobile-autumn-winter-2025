@@ -272,22 +272,6 @@ export default function ProfileScreen({ goBack }) {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-
-          {/* Информация о приложении */}
-          <View style={ProfileScreenStyles.infoCard}>
-            <LinearGradient
-              colors={['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)']}
-              style={ProfileScreenStyles.infoGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Text style={ProfileScreenStyles.infoTitle}>Информация о приложении</Text>
-              <Text style={ProfileScreenStyles.infoText}>
-                Приложение "React Hooks Demo" - учебный проект для изучения хуков React
-              </Text>
-              <Text style={ProfileScreenStyles.versionText}>Версия 1.0.0</Text>
-            </LinearGradient>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

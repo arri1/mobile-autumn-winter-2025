@@ -55,24 +55,58 @@ export default function App() {
       end={{ x: 1, y: 1 }}
     >
       <SafeAreaView style={AppStyles.safeArea}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>      
+         
+
           <View style={AppStyles.header}>
-            <View style={AppStyles.titleContainer}>
-              <View style={AppStyles.newYearBadge}>
-                <Text style={AppStyles.newYearText}>🎄 2025</Text>
-              </View>
-              
-              {isAuthenticated && user && (
-                <View style={AppStyles.userBadge}>
-                  <Text style={AppStyles.userAvatar}>{user.avatar || '👤'}</Text>
-                  <Text style={AppStyles.userName}>{user.name}</Text>
-                </View>
-              )}
+            <View style={AppStyles.newYearBadge}>
+              <Text style={AppStyles.newYearText}>🎄 2025</Text>
             </View>
+            
+            {isAuthenticated && user ? (
+              <TouchableOpacity
+                style={AppStyles.profileButton}
+                onPress={() => setScreen('profile')}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={['rgba(255, 215, 0, 0.2)', 'rgba(255, 215, 0, 0.1)']}
+                  style={AppStyles.profileButtonGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Text style={AppStyles.profileAvatar}>{user.avatar || '👤'}</Text>
+                  <Text style={AppStyles.profileName} numberOfLines={1}>
+                    {user.name}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={AppStyles.loginButton}
+                onPress={() => setScreen('auth')}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={['rgba(0, 100, 200, 0.3)', 'rgba(0, 50, 150, 0.2)']}
+                  style={AppStyles.loginButtonGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="log-in" size={16} color="#FFD700" />
+                  <Text style={AppStyles.loginButtonText}>Войти</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
+          </View>
+            
+
+          <View style={AppStyles.badgeContainer}>
             <View style={AppStyles.badge}>
               <Text style={AppStyles.badgeText}>✨ Праздничная версия</Text>
             </View>
           </View>
+          
 
           {/* Декоративные снежинки */}
           <View style={AppStyles.snowflakeContainer}>
