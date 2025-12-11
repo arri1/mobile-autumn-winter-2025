@@ -1,12 +1,9 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useState } from "react";
-<<<<<<< HEAD:OkoneshnikovArtem/my-app/app/(tabs)/UseState/useState.tsx
 import { Button, Switch, TextInput, Text } from "react-native";
 import { styles } from "./style";
-=======
-import { Button, StyleSheet, Switch, TextInput } from "react-native";
->>>>>>> parent of fe4c754 (added UseMemo):OkoneshnikovArtem/my-app/app/(tabs)/useState.tsx
+
 
 export default function TabTwoScreen() {
   // Counter state
@@ -43,7 +40,6 @@ export default function TabTwoScreen() {
         <Text style={styles.text}>You typed: {text}</Text>
       </ThemedView>
 
-<<<<<<< HEAD:OkoneshnikovArtem/my-app/app/(tabs)/UseState/useState.tsx
       {/* Toggle section */}
       <ThemedView style={styles.section}>
         <Text style={styles.title}>Toggle Switch</Text>
@@ -56,39 +52,3 @@ export default function TabTwoScreen() {
     </ThemedView>
   );
 }
-=======
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 20,
-		gap: 20,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	section: {
-		padding: 16,
-		borderRadius: 8,
-		gap: 10,
-		backgroundColor: "#232224ff",
-		width: "30vh",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-		marginBottom: 10,
-	},
-	buttonContainer: {
-		flexDirection: "row",
-		backgroundColor: "none",
-		gap: 10,
-	},
-	input: {
-		height: 40,
-		borderWidth: 1,
-		padding: 10,
-		borderRadius: 5,
-		borderColor: "#ffffff",
-		color: "#ffffff",
-	},
-});
->>>>>>> parent of fe4c754 (added UseMemo):OkoneshnikovArtem/my-app/app/(tabs)/useState.tsx
