@@ -33,6 +33,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="zustandAction"
+        options={{
+          title: 'Zustand Add',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.and.pencil" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="zustandResults"
+        options={{
+          title: 'Zustand View',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="useStateLab"
         options={{
           title: 'useState',
