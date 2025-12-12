@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 
@@ -7,6 +7,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+
+  const API_URL = 'https://cloud.kit-imi.info/api';
 
   const handleLogin = async () => {
     setError('');
@@ -16,21 +19,23 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const response = await fetch('https://dummyjson.com/auth/login', {
+      const payload = {
+        email: username,
+        password: password,
+      };
+      console.log('Auth payload:', payload);
+
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        credentials: 'include'
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
       if (response.ok) {
         setLoading(false);
         router.replace('/(tabs)/catalog');
       } else {
-        setError(data.message || 'Ошибка авторизации');
+        setError(data?.message || 'Ошибка авторизации');
         setLoading(false);
       }
     } catch (e) {
@@ -39,23 +44,64 @@ export default function Login() {
     }
   };
 
-  const handleRegister = () => {
-    window.alert('Регистрация');
+  const handleRegister = async () => {
+    setError('');
+    if (!username || !password) {
+      setError('Введите email и пароль');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Пароль должен содержать минимум 6 символов');
+      return;
+    }
+    setLoading(true);
+    try {
+      const payload: { email: string; password: string } = {
+        email: username,
+        password: password,
+      };
+      console.log('Register payload:', payload);
+
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setLoading(false);
+        router.replace('/(tabs)/catalog');
+      } else {
+        if (data?.errors && Array.isArray(data.errors)) {
+          const errorMessages = data.errors.map((e: any) => e.message || `${e.field}: ${e.message}`).join(', ');
+          setError(errorMessages);
+        } else {
+          setError(data?.message || 'Ошибка регистрации');
+        }
+        setLoading(false);
+      }
+    } catch (e) {
+      setError('Ошибка сети');
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.bg}>
       <View style={styles.centerBox}>
-        <Text style={styles.header}>Вход в систему</Text>
+        <Text style={styles.header}>{isRegisterMode ? 'Регистрация' : 'Вход в систему'}</Text>
+        
         <TextInput
           style={styles.input}
-          placeholder="Логин"
+          placeholder="Email"
           placeholderTextColor="#B0B0B0"
           autoCapitalize="none"
+          keyboardType="email-address"
           value={username}
           onChangeText={setUsername}
-          autoFocus
+          autoFocus={!isRegisterMode}
         />
+        
         <View style={styles.passwordRow}>
           <TextInput
             style={[styles.input, { flex: 1, marginBottom: 0 }]}
@@ -65,19 +111,40 @@ export default function Login() {
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity onPress={() => window.alert('Восстановление пароля')} style={styles.forgotButton}>
-            <Text style={styles.forgotText}>Забыли?</Text>
-          </TouchableOpacity>
+          {!isRegisterMode && (
+            <TouchableOpacity onPress={() => window.alert('Восстановление пароля')} style={styles.forgotButton}>
+              <Text style={styles.forgotText}>Забыли?</Text>
+            </TouchableOpacity>
+          )}
         </View>
+        
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.loginButtonText}>Войти</Text>}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-            <Text style={styles.registerButtonText}>Регистрация</Text>
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            onPress={isRegisterMode ? handleRegister : handleLogin} 
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.loginButtonText}>{isRegisterMode ? 'Зарегистрироваться' : 'Войти'}</Text>
+            )}
           </TouchableOpacity>
         </View>
+        
+        <TouchableOpacity 
+          style={styles.switchModeButton} 
+          onPress={() => {
+            setIsRegisterMode(!isRegisterMode);
+            setError('');
+          }}
+        >
+          <Text style={styles.switchModeText}>
+            {isRegisterMode ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться'}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -187,5 +254,15 @@ const styles = StyleSheet.create({
     opacity: 0.3,
     fontWeight: '600',
     fontSize: 12,
+  },
+  switchModeButton: {
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  switchModeText: {
+    color: '#93E1A1',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

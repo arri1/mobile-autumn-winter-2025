@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, SafeAreaView, Modal } from 'react-native';
 import { router } from 'expo-router';
 import { useCart } from '../CartContext';
@@ -10,9 +10,17 @@ export default function Cart() {
   const [selectedCity, setSelectedCity] = React.useState<string>('Адрес доставки');
   const cities = ['Якутск', 'Москва', 'Санкт-Петербург', 'Новосибирск', 'Казань'];
 
-  const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalSum = cart.reduce((sum, item) => sum + item.price * item.quantity * (1 - item.discount / 100), 0);
-  const totalDiscount = cart.reduce((sum, item) => sum + item.price * item.quantity * (item.discount / 100), 0);
+  const { totalCount, totalSum, totalDiscount } = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => {
+        acc.totalCount += item.quantity;
+        acc.totalSum += item.price * item.quantity * (1 - item.discount / 100);
+        acc.totalDiscount += item.price * item.quantity * (item.discount / 100);
+        return acc;
+      },
+      { totalCount: 0, totalSum: 0, totalDiscount: 0 },
+    );
+  }, [cart]);
 
   return (
     <SafeAreaView style={styles.bg}>
@@ -24,7 +32,7 @@ export default function Cart() {
           <Image source={require('../../assets/images/geo.png')} style={styles.geoIcon} />
           <Text style={styles.addressText}>{selectedCity}</Text>
         </TouchableOpacity >
-        <TouchableOpacity onPress={() => {window.alert('Переход в профиль')/*router.replace('/(tabs)/profile')}*/}}>
+        <TouchableOpacity onPress={() => { router.replace('/(auth)/login'); }}>
           <Image source={require('../../assets/images/user.png')} style={styles.iconImg} />
         </TouchableOpacity>
       </View>
