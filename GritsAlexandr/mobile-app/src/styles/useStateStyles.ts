@@ -7,7 +7,7 @@ export const useStateStyles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: 700,
     marginBottom: 8,
   },
   subtitle: {
@@ -23,7 +23,7 @@ export const useStateStyles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 600,
   },
   counter: {
     fontSize: 72,
@@ -53,6 +53,6 @@ export const useStateStyles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 32,
-    fontWeight: '700',
+    fontWeight: 700,
   },
 });
