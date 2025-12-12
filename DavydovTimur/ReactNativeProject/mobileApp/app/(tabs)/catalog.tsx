@@ -98,7 +98,7 @@ export default function Catalog() {
         <TouchableOpacity onPress={() => {router.replace('/(tabs)/cart')}}>
           <Image source={require('../../assets/images/cart.png')} style={styles.iconImg} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {window.alert('Переход в профиль')/*router.replace('/(tabs)/profile')}*/}}>
+        <TouchableOpacity onPress={() => { router.replace('/(auth)/login'); }}>
           <Image source={require('../../assets/images/user.png')} style={styles.iconImg} />
         </TouchableOpacity>
       </View>
