@@ -17,11 +17,9 @@ export default function UseEffectExample() {
   const [error, setError] = useState<string | null>(null);
   const [fetchCount, setFetchCount] = useState(0);
 
-  // Получаем цвета для текущей темы
   const imageBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
 
-  // Вычисляем размер изображения в формате 16:9
-  const screenWidth = Dimensions.get('window').width - 32; // минус padding
+  const screenWidth = Dimensions.get('window').width - 32;
   const imageHeight = (screenWidth / 16) * 9;
 
   const fetchCatImage = async () => {
@@ -45,17 +43,15 @@ export default function UseEffectExample() {
     }
   };
 
-  // useEffect вызывается при монтировании компонента
   useEffect(() => {
     fetchCatImage();
-  }, []); // Пустой массив зависимостей = вызов только при монтировании
+  }, []); 
 
-  // Второй useEffect для демонстрации - реагирует на изменение fetchCount
   useEffect(() => {
     if (fetchCount > 0) {
       console.log(`Загружено изображений кошек: ${fetchCount}`);
     }
-  }, [fetchCount]); // Вызывается каждый раз при изменении fetchCount
+  }, [fetchCount]);
 
   const handleLoadNewCat = () => {
     fetchCatImage();
@@ -79,7 +75,6 @@ export default function UseEffectExample() {
           </ThemedText>
         </ThemedView>
 
-        {/* Контейнер с изображением */}
         <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
           {loading ? (
             <View style={[styles.loadingContainer, { height: imageHeight }]}>
@@ -113,10 +108,9 @@ export default function UseEffectExample() {
           ) : null}
         </ThemedView>
 
-        {/* Статистика */}
         <ThemedView style={styles.stats}>
           <ThemedText style={styles.statsText}>
-            📊 Статистика:{'\n'}
+            Статистика:{'\n'}
             Состояние: {loading ? 'Загрузка' : 'Готово'}{'\n'}
             Ошибок: {error ? '1' : '0'}{'\n'}
             Всего загрузок: {fetchCount}
