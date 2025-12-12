@@ -1,9 +1,30 @@
 import React from "react";
+import { useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import { useAuthStore } from "../../store/useAuthStore";
 
 export default function ProfileScreen() {
-    const { currentUser, logout, deleteAccount } = useAuthStore();
+    const { currentUser, logout, getProfile } = useAuthStore();
+
+    useEffect(() => {
+        // Обновляем профиль при открытии экрана
+        getProfile();
+    }, []);
+
+    //Форматирование даты
+    const formatDate = (dateString: any) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Asia/Tokyo'
+    });
+};
+
     return (
         <View style={styles.container}>
             <View style={styles.profileContainer}>
@@ -15,20 +36,28 @@ export default function ProfileScreen() {
                 </View>
 
                 <View style={styles.infoContainer}>
-                    <Text style={styles.label}>Логин:</Text>
-                    <Text style={styles.value}>{currentUser?.username}</Text>
+                    <Text style={styles.label}>Почта:</Text>
+                    <Text style={styles.value}>{currentUser?.email}</Text>
+                </View>
+
+                <View style={styles.infoContainer}>
+                    <Text style={styles.label}>Роль:</Text>
+                    <Text style={styles.value}>{currentUser?.role}</Text>
+                </View>
+
+                <View style={styles.infoContainer}>
+                    <Text style={styles.label}>Создан:</Text>
+                    <Text style={styles.value}>{formatDate(currentUser?.createdAt)}</Text>
+                </View>
+
+                <View style={styles.infoContainer}>
+                    <Text style={styles.label}>Обновлен:</Text>
+                    <Text style={styles.value}>{formatDate(currentUser?.updatedAt)}</Text>
                 </View>
 
                 <View style={styles.buttonsContainer}>
                     <Button title="Выйти из аккаунта" onPress={logout} />
                     <View style={styles.spacer} />
-                    {currentUser?.username != "admin" ? (
-                        <Button
-                            title="Удалить аккаунт"
-                            onPress={deleteAccount}
-                            color="red"
-                        />
-                    ) : null}
                 </View>
             </View>
         </View>

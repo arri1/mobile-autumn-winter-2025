@@ -2,134 +2,289 @@ import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface User {
+    id: string;
+    email: string;
     name: string;
-    username: string;
-    password: string;
+    role: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface AuthState {
     currentUser: User | null;
-    users: User[];
     isAuthenticated: boolean;
-    login: (username: string, password: string) => Promise<boolean>;
-    register: (
-        name: string,
-        username: string,
-        password: string
-    ) => Promise<boolean>;
-    logout: () => void;
-    deleteAccount: () => Promise<void>;
-    initializeUsers: () => Promise<void>;
+    isLoading: boolean;
+    login: (email: string, password: string) => Promise<boolean>;
+    register: (name: string, email: string, password: string) => Promise<boolean>;
+    logout: () => Promise<void>;
+    getProfile: () => Promise<boolean>;
+    refreshToken: () => Promise<boolean>;
+    getUsers: () => Promise<User[]>;
+    checkAuth: () => Promise<void>;
 }
 
-// Ключ для списка пользователей
-const USERS_STORAGE_KEY = "@users";
+// Ключи для async-storage
+const ACCESS_TOKEN_KEY = "@accessToken";
+const REFRESH_TOKEN_KEY = "@refreshToken";
+const USER_DATA_KEY = "@userData";
+
+//URL для API
+const API_URL = "https://cloud.kit-imi.info/api";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
     currentUser: null,
-    users: [],
     isAuthenticated: false,
+    isLoading: false,
 
-    initializeUsers: async () => {
+    //Проверка авторизации
+    checkAuth: async () => {
         try {
-            const usersJson = await AsyncStorage.getItem(USERS_STORAGE_KEY);
-
-            let users = usersJson ? JSON.parse(usersJson) : [];
-
-            // Если нет пользователей, создаем администратора по умолчанию
-            if (users.length === 0) {
-                const adminUser: User = {
-                    name: "Администратор",
-                    username: "admin",
-                    password: "admin",
-                };
-                users = [adminUser];
-                await AsyncStorage.setItem(
-                    USERS_STORAGE_KEY,
-                    JSON.stringify(users)
-                );
+            //Дастаем токен и данные
+            let token = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+            let userData = await AsyncStorage.getItem(USER_DATA_KEY);
+            //Проверка был ли уже авторизован
+            if (token && userData) {
+                set({ 
+                    currentUser: JSON.parse(userData),
+                    isAuthenticated: true 
+                });  
+                //Гарантия актульного токена
+                await get().getProfile();          
             }
-
-            set({ users });
         } catch (error) {
-            console.error("Ошибка инициализации пользователей:", error);
+            console.error("Ошибка проверки авторизации:", error);
         }
     },
 
-    login: async (username: string, password: string) => {
+    //Авторизация
+    login: async (email: string, password: string) => {
         try {
-            const { users } = get();
-            const user = users.find(
-                (u) => u.username === username && u.password === password
-            );
+            set({ isLoading: true });
 
-            if (user) {
-                set({ currentUser: user, isAuthenticated: true });
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Сохраняем токены и данные пользователя
+                await AsyncStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
+                await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.data.refreshToken);
+                await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(data.data.user));
+
+                set({
+                    currentUser: data.data.user,
+                    isAuthenticated: true,
+                    isLoading: false,
+                });
                 return true;
-            }
-            return false;
-        } catch (error) {
-            console.error("Ошибка входа:", error);
-            return false;
-        }
-    },
-
-    register: async (name: string, username: string, password: string) => {
-        try {
-            const { users } = get();
-
-            // Проверяем, не занят ли логин
-            if (users.some((u) => u.username === username)) {
+            } else {
+                set({ isLoading: false });
+                console.error("Ошибка с сервера:", data.message);
                 return false;
             }
+        } catch (error) {
+            console.error("Ошибка входа:", error);
+            set({ isLoading: false });
+            return false;
+        }
+    },
 
-            const newUser: User = {
-                name,
-                username,
-                password,
-            };
+    //Регистрация
+    register: async (name: string, email: string, password: string) => {
+        try {
+            set({ isLoading: true});
+            //Регистрируем
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email, password }),
+            });
 
-            const updatedUsers = [...users, newUser];
-            await AsyncStorage.setItem(
-                USERS_STORAGE_KEY,
-                JSON.stringify(updatedUsers)
-            );
+            const data = await response.json();
 
-            set({ users: updatedUsers });
-            return true;
+            if (response.ok) {
+                // Получаем и сохраняем токены и зарегистрированного пользователя
+                await AsyncStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
+                await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.data.refreshToken);
+                await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(data.data.user));
+                //Сразу авторизуем
+                set({
+                    currentUser: data.data.user,
+                    isAuthenticated: true,
+                    isLoading: false
+                });
+                return true;
+            } else {
+                set({isLoading: false});
+                console.error("Ошибка с сервера:", data.message);
+                return false;
+            }
         } catch (error) {
             console.error("Ошибка регистрации:", error);
             return false;
         }
     },
 
-    logout: () => {
-        // Cбрасываем состояние
-        set({ currentUser: null, isAuthenticated: false });
+    // Получение профиля
+    getProfile: async () => {
+        try {
+            const token = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+
+            let response = await fetch(`${API_URL}/auth/profile`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            //Проверка на устаревий токен
+            if (response.status === 401) {
+                const refreshed = await get().refreshToken();
+                if (refreshed) {
+                    // Повторяем запрос с новым токеном
+                    const newToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+                    response = await fetch(`${API_URL}/auth/profile`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${newToken}`
+                        },
+                    });
+                } else {
+                    // Не удалось обновить - разлогиниваем
+                    await get().logout();
+                    return false;
+                }
+            }
+
+            const data = await response.json();
+
+            if (response.ok) {
+                const user = data.data.user;
+                await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+                set({ currentUser: user });
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error("Get profile error:", error);
+            return false;
+        }
     },
 
-    deleteAccount: async () => {
+    // Обновление токена
+    refreshToken: async () => {
         try {
-            const { currentUser, users } = get();
-            if (!currentUser) return;
+            const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
 
-            // Удаляем пользователя из списка
-            const updatedUsers = users.filter(
-                (u) => u.username !== currentUser.username
-            );
-            await AsyncStorage.setItem(
-                USERS_STORAGE_KEY,
-                JSON.stringify(updatedUsers)
-            );
+            const response = await fetch(`${API_URL}/auth/refresh`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ refreshToken }),
+            });
 
-            // Сбрасываем текущего пользователя
+            const data = await response.json();
+
+            if (response.ok) {
+                await AsyncStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
+                await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.data.refreshToken);
+                return true;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error("Refresh token error:", error);
+            return false;
+        }
+    },
+
+    //Получание пользователей
+    getUsers: async () => {
+        try {
+            const token = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+
+            //Просто получаем первую страницу с большим лимитом
+            const url = `${API_URL}/auth/users?page=1&limit=100`;
+
+            let response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            // Проверка на устаревший токен
+            if (response.status === 401) {
+                const refreshed = await get().refreshToken();
+                if (refreshed) {
+                    // Повторяем запрос с новым токеном
+                    const newToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+                    response = await fetch(url, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${newToken}`
+                        },
+                    });
+                } else {
+                    // Не удалось обновить - разлогиниваем
+                    await get().logout();
+                    return null;
+                }
+            }
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Возвращаем просто массив пользователей
+                return data.data.users;
+            }
+            
+            return null;
+        } catch (error) {
+            console.error("Get users error:", error);
+            return null;
+        }
+    },
+
+    // Выход
+    logout: async () => {
+        try {
+            const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+            
+            await fetch(`${API_URL}/auth/logout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ refreshToken }),
+            });
+
+            // Очищаем локальное хранилище
+            await AsyncStorage.multiRemove([
+                ACCESS_TOKEN_KEY,
+                REFRESH_TOKEN_KEY,
+                USER_DATA_KEY,
+            ]);
+
             set({
-                users: updatedUsers,
                 currentUser: null,
                 isAuthenticated: false,
+                isLoading: false,
             });
         } catch (error) {
-            console.error("Ошибка удаления аккаунта:", error);
+            console.error("Logout error:", error);
         }
     },
 }));
+
+export type { User };
