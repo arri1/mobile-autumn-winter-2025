@@ -1,15 +1,27 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/appnavigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '../hooks/useAuth';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const { authState, logout } = useAuth();
 
   const labs = [
+    {
+      id: 0,
+      title: authState.isAuthenticated ? ' Профиль' : ' Авторизация',
+      subtitle: authState.isAuthenticated 
+        ? `Вы вошли как ${authState.user?.email}` 
+        : 'Вход или регистрация в системе',
+      screen: authState.isAuthenticated ? 'Home' : 'Login' as keyof RootStackParamList,
+      color: authState.isAuthenticated ? '#28a745' : '#dc3545',
+      icon: authState.isAuthenticated ? '👤' : '🔐',
+    },
     {
       id: 1,
       title: 'Лаб. 1: UseState',
@@ -46,7 +58,26 @@ export const HomeScreen: React.FC = () => {
 
   const handleLabPress = (screen: keyof RootStackParamList) => {
     console.log('Навигация к:', screen);
-    navigation.navigate(screen);
+     if (screen === 'Home' && authState.isAuthenticated) {
+      // Если пользователь авторизован и нажимает на "Профиль"
+      Alert.alert(
+        'Выход',
+        'Вы уверены, что хотите выйти?',
+        [
+          { text: 'Отмена', style: 'cancel' },
+          { 
+            text: 'Выйти', 
+            style: 'destructive',
+            onPress: () => {
+              logout();
+              Alert.alert('Успешно', 'Вы вышли из системы');
+            }
+          }
+        ]
+      );
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -54,6 +85,27 @@ export const HomeScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.mainTitle}>React Native Лабораторные</Text>
         <Text style={styles.subtitle}>Выберите лабораторную работу:</Text>
+
+         <View style={[
+          styles.infoBox, 
+          { 
+            backgroundColor: authState.isAuthenticated ? '#d4edda' : '#f8d7da',
+            borderLeftColor: authState.isAuthenticated ? '#28a745' : '#dc3545'
+          }
+        ]}>
+          <Text style={styles.infoTitle}>
+            {authState.isAuthenticated ? 'Вы авторизованы' : ' Требуется авторизация'}
+          </Text>
+          <Text style={styles.infoText}>
+            {authState.isAuthenticated 
+              ? `Вы вошли как: ${authState.user?.email}`
+              : 'Для доступа к некоторым функциям требуется войти в систему'
+            }
+          </Text>
+          {authState.isAuthenticated && authState.user?.name && (
+            <Text style={styles.infoText}>Имя: {authState.user.name}</Text>
+          )}
+        </View>
 
         {labs.map((lab) => (
           <TouchableOpacity
