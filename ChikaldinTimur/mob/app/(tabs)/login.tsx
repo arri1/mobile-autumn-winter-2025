@@ -7,7 +7,7 @@ export default function LoginTab() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { login, logout, user, status, clearStatus } = useAuthStore();
+  const { login, logout, user, status, clearStatus, loading } = useAuthStore();
 
   const isLoggedIn = useMemo(() => Boolean(user), [user]);
 
@@ -41,8 +41,11 @@ export default function LoginTab() {
           style={styles.input}
         />
 
-        <TouchableOpacity style={styles.button} onPress={() => login({ email, password })}>
-          <Text style={styles.buttonText}>Войти</Text>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={() => login({ email, password })}
+          disabled={loading}>
+          <Text style={styles.buttonText}>{loading ? 'Входим...' : 'Войти'}</Text>
         </TouchableOpacity>
 
         {status && (
@@ -111,6 +114,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',

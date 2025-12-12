@@ -10,7 +10,7 @@ export default function RegisterTab() {
   const [confirm, setConfirm] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { register, status, clearStatus } = useAuthStore();
+  const { register, status, clearStatus, loading } = useAuthStore();
 
   useEffect(() => {
     if (!status) return;
@@ -67,8 +67,11 @@ export default function RegisterTab() {
           style={styles.input}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Создать аккаунт</Text>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={handleRegister}
+          disabled={loading}>
+          <Text style={styles.buttonText}>{loading ? 'Создаем...' : 'Создать аккаунт'}</Text>
         </TouchableOpacity>
 
         {message && (
@@ -115,6 +118,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
