@@ -10,7 +10,9 @@ import {
   View,
 } from 'react-native';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 import useAuthStore from '../../store/authStore';
+import socketService from '../../services/socketService';
 import { Ionicons } from '@expo/vector-icons';
 
 // Styled Components
@@ -75,6 +77,17 @@ const UserCard = styled.View`
   align-items: center;
   border-left-width: 4px;
   border-left-color: ${props => props.role === 'ADMIN' ? '#EF4444' : '#5EEAD4'};
+`;
+
+const CallButton = styled.TouchableOpacity`
+  padding: 10px;
+  margin-left: 12px;
+  background-color: #5EEAD4;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const UserAvatar = styled.View`
@@ -187,7 +200,9 @@ const EmptyStateText = styled.Text`
 `;
 
 const UsersScreen = () => {
+  const navigation = useNavigation();
   const { getUsers } = useAuthStore();
+  const currentUser = useAuthStore((state) => state.user);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -222,7 +237,59 @@ const UsersScreen = () => {
 
   useEffect(() => {
     fetchUsers(1, searchQuery, filterRole);
-  }, [fetchUsers, searchQuery, filterRole]);
+    
+    // Настраиваем обработку входящих звонков
+    const setupIncomingCalls = async () => {
+      try {
+        await socketService.connect();
+        
+        socketService.on('call:incoming', ({ fromUserId, fromUserEmail, offer }) => {
+          Alert.alert(
+            'Входящий звонок',
+            `Входящий звонок от ${fromUserEmail || 'пользователя'}`,
+            [
+              {
+                text: 'Отклонить',
+                style: 'cancel',
+                onPress: () => {
+                  socketService.rejectCall(fromUserId);
+                },
+              },
+              {
+                text: 'Принять',
+                onPress: () => {
+                  // Находим пользователя в списке
+                  const caller = users.find(u => u.id === fromUserId);
+                  if (caller) {
+                    navigation.navigate('Call', {
+                      user: caller,
+                      incomingCall: true,
+                      offer,
+                    });
+                  } else {
+                    // Если пользователя нет в списке, создаем объект
+                    navigation.navigate('Call', {
+                      user: { id: fromUserId, email: fromUserEmail },
+                      incomingCall: true,
+                      offer,
+                    });
+                  }
+                },
+              },
+            ]
+          );
+        });
+      } catch (error) {
+        console.error('Error setting up incoming calls:', error);
+      }
+    };
+    
+    setupIncomingCalls();
+    
+    return () => {
+      socketService.off('call:incoming');
+    };
+  }, [fetchUsers, searchQuery, filterRole, users, navigation]);
 
   const handleRefresh = () => {
     fetchUsers(1, searchQuery, filterRole);
@@ -237,6 +304,14 @@ const UsersScreen = () => {
     fetchUsers(1, searchQuery, role);
   };
 
+  const handleCall = (user) => {
+    if (user.id === currentUser?.id) {
+      Alert.alert('Ошибка', 'Нельзя позвонить самому себе');
+      return;
+    }
+    navigation.navigate('Call', { user });
+  };
+
   const renderUserItem = ({ item }) => (
     <UserCard role={item.role}>
       <UserAvatar>
@@ -247,6 +322,11 @@ const UsersScreen = () => {
         <UserEmail>{item.email}</UserEmail>
         <UserRoleText role={item.role}>{item.role}</UserRoleText>
       </UserInfo>
+      {item.id !== currentUser?.id && (
+        <CallButton onPress={() => handleCall(item)}>
+          <Ionicons name="call" size={20} color="#0D0F14" />
+        </CallButton>
+      )}
     </UserCard>
   );
 
