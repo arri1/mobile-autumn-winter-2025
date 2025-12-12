@@ -17,6 +17,36 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
+        name="login"
+        options={{
+          title: 'Login',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="register"
+        options={{
+          title: 'Register',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="person.badge.plus" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="zustandAction"
+        options={{
+          title: 'Zustand Add',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="square.and.pencil" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="zustandResults"
+        options={{
+          title: 'Zustand View',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="useStateLab"
         options={{
           title: 'useState',

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { AuthGuard } from '@/components/auth-guard';
+
 export default function UseMemoLab() {
   const [filter, setFilter] = useState('');
 
@@ -12,6 +14,7 @@ export default function UseMemoLab() {
   );
 
   return (
+    <AuthGuard>
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Пример useMemo</Text>
 
@@ -34,6 +37,7 @@ export default function UseMemoLab() {
         </Text>
       </View>
     </ScrollView>
+    </AuthGuard>
   );
 }
 
