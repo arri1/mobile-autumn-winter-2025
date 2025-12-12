@@ -9,6 +9,8 @@ import {
     View,
 } from 'react-native';
 
+import { AuthGuard } from '@/components/auth-guard';
+
 type Post = {
   id: number;
   title: string;
@@ -41,6 +43,7 @@ export default function UseEffectLab() {
   }, []);
 
   return (
+    <AuthGuard>
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Пример useEffect с загрузкой данных</Text>
 
@@ -75,6 +78,7 @@ export default function UseEffectLab() {
         <Button title="Обновить данные" onPress={loadPosts} disabled={loading} />
       </View>
     </SafeAreaView>
+    </AuthGuard>
   );
 }
 

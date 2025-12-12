@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 
+import { AuthGuard } from '@/components/auth-guard';
+
 
 export default function useStateLab(){
     const [count, setCount] = useState(0);
@@ -8,6 +10,7 @@ export default function useStateLab(){
     const [enabled, setEnabled] = useState(false);
 
     return(
+    <AuthGuard>
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
         <View style={{ marginBottom: 40, alignItems: "center" }}>
             <Text style={{ fontSize: 20, marginBottom: 10 }}>Счётчик</Text>
@@ -39,6 +42,7 @@ export default function useStateLab(){
             <Text>Вы ввели: {text}</Text>
         </View>
     </ScrollView>
+    </AuthGuard>
     )
 }
 
