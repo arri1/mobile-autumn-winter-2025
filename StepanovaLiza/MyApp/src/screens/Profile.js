@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
-import styled from 'styled-components/native';
 import useAuthStore from '../store/authStore';
 import * as S from './ProfileStyle';
-
 
 const ProfileScreen = ({ navigation }) => {
   const {
@@ -22,16 +19,27 @@ const ProfileScreen = ({ navigation }) => {
     register,
     logout,
     clearError,
+    getProfile,
+    initialize,
   } = useAuthStore();
   
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    username: '',
+    name: '', 
   });
   
-  // Очищаем ошибки при смене режима
+  useEffect(() => {
+    initialize();
+  }, []);
+  
+  useEffect(() => {
+    if (isAuthenticated && !user) {
+      getProfile();
+    }
+  }, [isAuthenticated, user]);
+  
   useEffect(() => {
     clearError();
   }, [isLoginMode]);
@@ -50,16 +58,18 @@ const ProfileScreen = ({ navigation }) => {
       const result = await login(formData.email, formData.password);
       if (result.success) {
         Alert.alert('Успех', 'Вы успешно вошли!');
+        setFormData({ email: '', password: '', name: '' });
       }
     } else {
-      if (!formData.email || !formData.password || !formData.username) {
+      if (!formData.email || !formData.password || !formData.name) {
         Alert.alert('Ошибка', 'Заполните все поля');
         return;
       }
       
-      const result = await register(formData.email, formData.password, formData.username);
+      const result = await register(formData.email, formData.password, formData.name);
       if (result.success) {
         Alert.alert('Успех', 'Вы успешно зарегистрировались!');
+        setFormData({ email: '', password: '', name: '' });
       }
     }
   };
@@ -73,9 +83,9 @@ const ProfileScreen = ({ navigation }) => {
         { 
           text: 'Выйти', 
           style: 'destructive',
-          onPress: () => {
-            logout();
-            setFormData({ email: '', password: '', username: '' });
+          onPress: async () => {
+            await logout();
+            setFormData({ email: '', password: '', name: '' });
           }
         },
       ]
@@ -99,11 +109,18 @@ const ProfileScreen = ({ navigation }) => {
       <S.Container>
         <ScrollView>
           <S.Header>
-            <S.ProfileImage source={{ uri: user.avatar }} />
-            <S.UserName>{user.name}</S.UserName>
-            <S.MemberSince>
-              Участник с: {new Date(user.createdAt).toLocaleDateString()}
-            </S.MemberSince>
+            <S.ProfileImage 
+              source={{ 
+                uri: user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=007AFF&color=fff`
+              }} 
+            />
+            <S.UserName>{user.name || user.email}</S.UserName>
+            <S.UserEmail>{user.email}</S.UserEmail>
+            {user.createdAt && (
+              <S.MemberSince>
+                Участник с: {new Date(user.createdAt).toLocaleDateString()}
+              </S.MemberSince>
+            )}
           </S.Header>
           
           <S.Section>
@@ -111,8 +128,8 @@ const ProfileScreen = ({ navigation }) => {
             
             <S.InfoCard>
               <S.InfoRow>
-                <S.InfoLabel>Имя пользователя:</S.InfoLabel>
-                <S.InfoValue>{user.username}</S.InfoValue>
+                <S.InfoLabel>Имя:</S.InfoLabel>
+                <S.InfoValue>{user.name || 'Не указано'}</S.InfoValue>
               </S.InfoRow>
               
               <S.Divider />
@@ -125,9 +142,19 @@ const ProfileScreen = ({ navigation }) => {
               <S.Divider />
               
               <S.InfoRow>
-                <S.InfoLabel>ID:</S.InfoLabel>
-                <S.InfoValue>{user.id}</S.InfoValue>
+                <S.InfoLabel>Роль:</S.InfoLabel>
+                <S.InfoValue>{user.role || 'USER'}</S.InfoValue>
               </S.InfoRow>
+              
+              {user.id && (
+                <>
+                  <S.Divider />
+                  <S.InfoRow>
+                    <S.InfoLabel>ID:</S.InfoLabel>
+                    <S.InfoValue>{user.id.substring(0, 8)}...</S.InfoValue>
+                  </S.InfoRow>
+                </>
+              )}
             </S.InfoCard>
           </S.Section>
           
@@ -138,6 +165,7 @@ const ProfileScreen = ({ navigation }) => {
               <S.ActionButtonText>Выйти из аккаунта</S.ActionButtonText>
             </S.ActionButton>
           </S.Section>
+          
           
         </ScrollView>
       </S.Container>
@@ -174,10 +202,10 @@ const ProfileScreen = ({ navigation }) => {
             {!isLoginMode && (
               <>
                 <S.Input
-                  placeholder="Имя пользователя"
-                  value={formData.username}
-                  onChangeText={(text) => handleInputChange('username', text)}
-                  autoCapitalize="none"
+                  placeholder="Имя"
+                  value={formData.name}
+                  onChangeText={(text) => handleInputChange('name', text)}
+                  autoCapitalize="words"
                 />
                 <S.InputSpacer />
               </>
@@ -189,6 +217,7 @@ const ProfileScreen = ({ navigation }) => {
               onChangeText={(text) => handleInputChange('email', text)}
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
             />
             <S.InputSpacer />
             
@@ -197,6 +226,8 @@ const ProfileScreen = ({ navigation }) => {
               value={formData.password}
               onChangeText={(text) => handleInputChange('password', text)}
               secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
             />
             
             {isLoginMode && (
@@ -223,11 +254,6 @@ const ProfileScreen = ({ navigation }) => {
             </S.SwitchModeButton>
           </S.SwitchModeContainer>
           
-          <S.DemoCredentials>
-            <S.DemoTitle>Демо-доступ:</S.DemoTitle>
-            <S.DemoText>Email: demo@example.com</S.DemoText>
-            <S.DemoText>Пароль: любой</S.DemoText>
-          </S.DemoCredentials>
         </ScrollView>
       </S.Container>
     </KeyboardAvoidingView>
