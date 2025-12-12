@@ -6,6 +6,7 @@ import UseMemoContainer from "@/screens/UseMemo/UseMemoContainer";
 import UseStateContainer from "@/screens/UseState/UseStateContainer";
 
 import ZustandControlContainer from "@/screens/ZustandControl/ZustandControlContainer";
+import ZustandHistoryContainer from '@/screens/ZustandHistory/ZustandHistoryContainer';
 
 const Tab = createBottomTabNavigator();
 
@@ -59,6 +60,16 @@ export default function RootNavigator() {
         }}
       />
 
+      <Tab.Screen
+        name="ZustandHistory"
+        component={ZustandHistoryContainer}
+        options={{
+          title: "Store 2",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="history" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
