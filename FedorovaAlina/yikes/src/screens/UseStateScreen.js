@@ -136,7 +136,7 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
 
               <TouchableOpacity
                 style={UseStateStyles.toggleButton}
-                onPress={() => setText(text === 'SYSTEM_READY' ? 'EXECUTE_COMMAND' : 'SYSTEM_READY')}
+                onPress={() => setText(text === 'SYSTEM_READY' ? 'SYSTEM_UNREADY' : 'SYSTEM_READY')}
                 activeOpacity={0.8}
               >
                 <View style={UseStateStyles.toggleButtonInner}>
@@ -192,26 +192,6 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
             </View>
           </View>
 
-          {/* Terminal Output */}
-          <View style={UseStateStyles.terminalOutput}>
-            <View style={UseStateStyles.terminalLine}>
-              <Text style={UseStateStyles.terminalPrompt}>$</Text>
-              <Text style={UseStateStyles.terminalText}>useState hook initialized</Text>
-            </View>
-            <View style={UseStateStyles.terminalLine}>
-              <Text style={UseStateStyles.terminalPrompt}></Text>
-              <Text style={UseStateStyles.terminalText}>counter: {count}</Text>
-            </View>
-            <View style={UseStateStyles.terminalLine}>
-              <Text style={UseStateStyles.terminalPrompt}></Text>
-              <Text style={UseStateStyles.terminalText}>status: {isActive ? 'active' : 'standby'}</Text>
-            </View>
-            <View style={UseStateStyles.terminalLine}>
-              <Text style={UseStateStyles.terminalPrompt}>#</Text>
-              <Text style={UseStateStyles.terminalText}>state management operational</Text>
-            </View>
-          </View>
-
           {/* Пробел для нижней навигации */}
           <View style={AppStyles.bottomSpacer}></View>
         </ScrollView>
@@ -248,6 +228,23 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'usestate' && AppStyles.dockTextActive]}>
               useState
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useEffect экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('useeffect')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="infinite" size={24} color={activeScreen === 'useeffect' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'useeffect' && AppStyles.dockTextActive]}>
+              useEffect
             </Text>
           </TouchableOpacity>
         </View>
