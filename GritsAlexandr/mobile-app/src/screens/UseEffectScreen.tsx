@@ -104,7 +104,7 @@ const UseEffectScreen = () => {
         <Text style={{ 
           color: theme === 'dark' ? '#e5e7eb' : '#475569', 
           fontSize: 14, 
-          fontWeight: '600' 
+          fontWeight: 600 
         }}>
           📊 Использований useEffect: {counters.useEffect}
         </Text>

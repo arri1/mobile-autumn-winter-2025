@@ -10,7 +10,7 @@ export const useMemoStyles = StyleSheet.create({
   heading: {
     color: '#f8fafc',
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: 700,
     marginBottom: 8,
   },
   subheading: {
@@ -28,7 +28,7 @@ export const useMemoStyles = StyleSheet.create({
     color: '#e2e8f0',
     fontSize: 16,
     marginBottom: 8,
-    fontWeight: '600',
+    fontWeight: 600,
   },
   input: {
     borderWidth: 1,
@@ -65,7 +65,7 @@ export const useMemoStyles = StyleSheet.create({
   calculateButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 600,
   },
   calculationBox: {
     backgroundColor: 'rgba(30, 41, 59, 0.8)',
@@ -77,7 +77,7 @@ export const useMemoStyles = StyleSheet.create({
   },
   calculationTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: 700,
     marginBottom: 12,
     color: '#f8fafc',
   },
@@ -88,7 +88,7 @@ export const useMemoStyles = StyleSheet.create({
   },
   calculationResult: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 600,
     marginVertical: 8,
     color: '#22c55e',
   },
@@ -97,7 +97,7 @@ export const useMemoStyles = StyleSheet.create({
   },
   subsetsTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: 700,
     marginBottom: 12,
     color: '#f8fafc',
   },

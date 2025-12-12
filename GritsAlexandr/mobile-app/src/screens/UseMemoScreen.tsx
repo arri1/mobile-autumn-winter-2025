@@ -127,7 +127,7 @@ const UseMemoScreen = () => {
         borderWidth: 1,
         borderColor: themeStyles.border
       }}>
-        <Text style={{ color: themeStyles.text, fontSize: 14, fontWeight: '600' }}>
+        <Text style={{ color: themeStyles.text, fontSize: 14, fontWeight: 600 }}>
           Использований useMemo: {counters.useMemo}
         </Text>
       </View>

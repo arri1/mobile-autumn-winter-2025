@@ -118,7 +118,7 @@ const UseStateScreen = () => {
           }}
           onPress={handleSaveName}
         >
-          <Text style={{ color: '#fff', fontWeight: '600' }}>Сохранить</Text>
+          <Text style={{ color: '#fff', fontWeight: 600 }}>Сохранить</Text>
         </TouchableOpacity>
       </View>
 

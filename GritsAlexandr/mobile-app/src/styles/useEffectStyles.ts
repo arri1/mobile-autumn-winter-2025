@@ -14,7 +14,7 @@ export const useEffectStyles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: 700,
     color: '#0f172a',
   },
   subtitle: {
@@ -35,7 +35,7 @@ export const useEffectStyles = StyleSheet.create({
   timerValue: {
     color: '#fff',
     fontSize: 40,
-    fontWeight: '700',
+    fontWeight: 700,
     marginVertical: 8,
   },
   timerActions: {
@@ -61,7 +61,7 @@ export const useEffectStyles = StyleSheet.create({
   },
   actionText: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: 600,
   },
   quoteCard: {
     padding: 20,
@@ -71,7 +71,7 @@ export const useEffectStyles = StyleSheet.create({
   },
   quoteTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 700,
     color: '#0f172a',
     marginBottom: 12,
   },
@@ -94,6 +94,6 @@ export const useEffectStyles = StyleSheet.create({
   },
   refreshText: {
     color: '#2563eb',
-    fontWeight: '600',
+    fontWeight: 600,
   },
 });
