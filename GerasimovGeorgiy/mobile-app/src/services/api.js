@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // API Configuration
 const API_CONFIG = {
   baseURL: 'https://cloud.kit-imi.info',
+ // baseURL: 'http://localhost:3000',
   endpoints: {
     health: '/api/health',
     register: '/api/auth/register',
@@ -11,7 +12,10 @@ const API_CONFIG = {
     profile: '/api/auth/profile',
     refresh: '/api/auth/refresh',
     logout: '/api/auth/logout',
-    users: '/api/auth/users'
+    users: '/api/auth/users',
+    iceServers: '/api/webrtc/ice-servers',
+    posts: '/api/posts',
+    myPosts: '/api/posts/my'
   },
   timeout: 10000
 };
@@ -142,6 +146,75 @@ class ApiService {
       headers: {
         'Authorization': `Bearer ${token}`
       }
+    });
+  }
+
+  // Get ICE servers for WebRTC
+  async getIceServers() {
+    return this.request(API_CONFIG.endpoints.iceServers, {
+      method: 'GET',
+    });
+  }
+
+  // Get posts list
+  async getPosts(params = {}) {
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page);
+    if (params.limit) queryParams.append('limit', params.limit);
+    if (params.published !== undefined) queryParams.append('published', params.published);
+    if (params.authorId) queryParams.append('authorId', params.authorId);
+    if (params.search) queryParams.append('search', params.search);
+    
+    const endpoint = `${API_CONFIG.endpoints.posts}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    return this.request(endpoint, {
+      method: 'GET',
+    });
+  }
+
+  // Get my posts
+  async getMyPosts(params = {}) {
+    const queryParams = new URLSearchParams();
+    
+    if (params.page) queryParams.append('page', params.page);
+    if (params.limit) queryParams.append('limit', params.limit);
+    if (params.published !== undefined) queryParams.append('published', params.published);
+    
+    const endpoint = `${API_CONFIG.endpoints.myPosts}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    return this.request(endpoint, {
+      method: 'GET',
+    });
+  }
+
+  // Get post by ID
+  async getPostById(id) {
+    return this.request(`${API_CONFIG.endpoints.posts}/${id}`, {
+      method: 'GET',
+    });
+  }
+
+  // Create post
+  async createPost(postData) {
+    return this.request(API_CONFIG.endpoints.posts, {
+      method: 'POST',
+      data: postData,
+    });
+  }
+
+  // Update post
+  async updatePost(id, postData) {
+    return this.request(`${API_CONFIG.endpoints.posts}/${id}`, {
+      method: 'PUT',
+      data: postData,
+    });
+  }
+
+  // Delete post
+  async deletePost(id) {
+    return this.request(`${API_CONFIG.endpoints.posts}/${id}`, {
+      method: 'DELETE',
     });
   }
 

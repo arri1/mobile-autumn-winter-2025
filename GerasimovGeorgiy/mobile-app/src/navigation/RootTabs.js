@@ -5,6 +5,7 @@ import UseEffectLabScreen from '../screens/UseEffectLab/UseEffectLabScreen';
 import UseMemoLabScreen from '../screens/UseMemoLab/UseMemoLabScreen';
 import ZustandLabScreen from '../screens/ZustandLab/ZustandLabScreen';
 import UsersScreen from '../screens/Users/UsersScreen';
+import PostsScreen from '../screens/PostsScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -64,6 +65,16 @@ export default function RootTabs() {
             <Ionicons name="people-outline" size={size} color={color} />
           ),
           title: 'Пользователи',
+        }}
+      />
+      <Tab.Screen 
+        name="posts" 
+        component={PostsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="document-text-outline" size={size} color={color} />
+          ),
+          title: 'Посты',
         }}
       />
       <Tab.Screen 
