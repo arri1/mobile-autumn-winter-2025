@@ -80,7 +80,7 @@ export default function UseMemoScreen({ goBack }) {
     return sortUsers(users);
   }, [usersCount]);
 
-  // useMemo для статистики
+
   const userStats = useMemo(() => {
     console.log("Пересчет статистики");
     if (sortedUsers.length === 0) return null;
