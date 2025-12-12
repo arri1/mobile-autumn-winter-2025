@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthStore } from '../../backend/auth'; 
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HomeStyles } from './HomeScreenStyle';
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function HomeLab({ navigation }: Props) {
-  const { user } = useAuth();
+  const user = useAuthStore((state) => state.user);
 
   const features = [
     { title: 'useState Хук', screen: 'UseState', color: '#ff859bff' },
@@ -23,7 +23,7 @@ export default function HomeLab({ navigation }: Props) {
       <ScrollView style={HomeStyles.container}>
         <View style={HomeStyles.header}>
           <Text style={HomeStyles.welcome}>Добро пожаловать!</Text>
-          <Text style={HomeStyles.userName}>{user?.name}</Text>
+          <Text style={HomeStyles.userName}>{user?.email}</Text>
         </View>
 
         <View style={HomeStyles.featuresContainer}>

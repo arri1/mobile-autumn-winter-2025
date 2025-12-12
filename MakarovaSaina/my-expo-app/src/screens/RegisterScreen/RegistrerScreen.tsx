@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { RegisterStyles } from './RegisterScreenStyle';
+import { useAuthStore } from '../../backend/auth'; 
+import { RootStackParamList } from '../../navigation/types'; 
 
-type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
+type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
 
 type Props = {
   navigation: RegisterScreenNavigationProp;
 };
 
-export default function RegisterLab({ navigation }: Props) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+export default function RegisterScreen({ navigation }: Props) {
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { register, isLoading } = useAuth();
+  
+  const register = useAuthStore((state) => state.register);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const error = useAuthStore((state) => state.error);
 
   const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword) {
       Alert.alert('Ошибка', 'Пожалуйста, заполните все поля');
       return;
     }
@@ -34,9 +36,10 @@ export default function RegisterLab({ navigation }: Props) {
       return;
     }
 
-    const success = await register(email, password, name);
-    if (!success) {
-      Alert.alert('Ошибка', 'Не удалось создать аккаунт');
+    try {
+      await register({ email, password });
+    } catch (error: any) {
+      Alert.alert('Ошибка', error.message || 'Не удалось создать аккаунт');
     }
   };
 
@@ -55,19 +58,7 @@ export default function RegisterLab({ navigation }: Props) {
 
           <View style={RegisterStyles.form}>
             <View style={RegisterStyles.inputContainer}>
-              <Text style={RegisterStyles.label}>Имя</Text>
-              <TextInput
-                style={RegisterStyles.input}
-                placeholder="Введите ваше имя"
-                placeholderTextColor="#C5C6C7"
-                value={name}
-                onChangeText={setName}
-                editable={!isLoading}
-              />
-            </View>
-
-            <View style={RegisterStyles.inputContainer}>
-              <Text style={RegisterStyles.label}>Email</Text>
+              <Text style={RegisterStyles.label}>Email</Text> 
               <TextInput
                 style={RegisterStyles.input}
                 placeholder="Введите ваш email"

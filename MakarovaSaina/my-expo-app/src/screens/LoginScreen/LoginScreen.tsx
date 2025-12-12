@@ -1,41 +1,41 @@
 import React, { useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../../navigation/AuthNavigator';
 import { LoginStyles } from './LoginScreenStyle';
+import { useAuthStore } from '../../backend/auth'; 
+import { RootStackParamList } from '../../navigation/types'; 
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
-export default function LoginLab({ navigation }: Props) {
-  const [username, setUsername] = useState('');
+export default function LoginScreen({ navigation }: Props) { 
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuth();
+  
+  
+  const login = useAuthStore((state) => state.login);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const error = useAuthStore((state) => state.error);
 
   const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       Alert.alert('Ошибка', 'Пожалуйста, заполните все поля');
       return;
     }
 
-    if (username.length < 3) {
-      Alert.alert('Ошибка', 'Логин должен содержать минимум 3 символа');
-      return;
-    }
-
-    const success = await login(username, password);
-    if (!success) {
-      Alert.alert('Ошибка', 'Неверный логин или пароль');
+    try {
+      await login({ email, password });
+    } catch (error: any) {
+      Alert.alert('Ошибка', error.message || 'Неверный email или пароль');
     }
   };
 
-  const fillDemoCredentials = (demoUsername: string, demoPassword: string) => {
-    setUsername(demoUsername);
+  const fillDemoCredentials = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail);
     setPassword(demoPassword);
   };
 
@@ -44,20 +44,21 @@ export default function LoginLab({ navigation }: Props) {
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={LoginStyles.scrollContent}>
           <View style={LoginStyles.header}>
-            <Text style={LoginStyles.welcomeTitle}>Добро пожаловать! Сай</Text>
+            <Text style={LoginStyles.welcomeTitle}>Добро пожаловать!</Text>
             <Text style={LoginStyles.subtitle}>Войдите в свой аккаунт</Text>
           </View>
 
           <View style={LoginStyles.form}>
             <View style={LoginStyles.inputContainer}>
-              <Text style={LoginStyles.label}>Логин</Text>
+              <Text style={LoginStyles.label}>Email</Text>
               <TextInput
                 style={LoginStyles.input}
-                placeholder="Введите ваш логин"
+                placeholder="Введите ваш email"
                 placeholderTextColor="#C5C6C7"
-                value={username}
-                onChangeText={setUsername}
+                value={email}
+                onChangeText={setEmail}
                 autoCapitalize="none"
+                keyboardType="email-address" 
                 editable={!isLoading}
               />
             </View>
@@ -79,7 +80,6 @@ export default function LoginLab({ navigation }: Props) {
                 </TouchableOpacity>
               </View>
             </View>
-
             <TouchableOpacity
               style={[LoginStyles.primaryButton, isLoading && LoginStyles.buttonDisabled]}
               onPress={handleLogin}
@@ -99,11 +99,11 @@ export default function LoginLab({ navigation }: Props) {
               <Text style={LoginStyles.demoTitle}>Демо доступы:</Text>
               <TouchableOpacity
                 style={LoginStyles.demoAccount}
-                onPress={() => fillDemoCredentials('user', 'password123')}
+                onPress={() => fillDemoCredentials('test@example.com', 'password123')} 
                 disabled={isLoading}
               >
-                <Text style={LoginStyles.demoAccountText}>Гость</Text>
-                <Text style={LoginStyles.demoAccountDetails}>user / password123</Text>
+                <Text style={LoginStyles.demoAccountText}>Тестовый пользователь</Text>
+                <Text style={LoginStyles.demoAccountDetails}>test@example.com / password123</Text>
               </TouchableOpacity>
             </View>
           </View>
