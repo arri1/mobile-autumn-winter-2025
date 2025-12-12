@@ -1,27 +1,57 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import UseStateScreen from '../screens/UseStateLab/UseStateScreen';
-import UseEffectScreen from '../screens/UseEffectLab/UseEffectScreen';
-import UseMemoScreen from '../screens/UseMemoLab/UseMemoScreen';
+import { Image, StyleSheet } from 'react-native';
+import UseStateScreen from '../screens/Main/UseStateScreen';
+import UseEffectScreen from '../screens/Main/UseEffectScreen';
+import UseMemoScreen from '../screens/Main/UseMemoScreen';
+import ProfileScreen from '../screens/Main/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
  
 export default function RootTabs() {
+  const getIconStyle = (focused) => ({
+    width: 24,
+    height: 24,
+    tintColor: focused ? '#4287f5' : 'gray'
+  });
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: '#0D0F14' },
-          headerTintColor: '#E6E9EF',
-          tabBarStyle: { backgroundColor: '#0D0F14', borderTopColor: '#1C2230' },
-          tabBarActiveTintColor: '#007AFF',
-          tabBarInactiveTintColor: '#9AA4B2',
-        }}
-      >
-        <Tab.Screen name="useState" component={UseStateScreen} />
-        <Tab.Screen name="useEffect" component={UseEffectScreen} />
-        <Tab.Screen name="useMemo" component={UseMemoScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <Tab.Navigator>
+      <Tab.Screen name="useState" component={UseStateScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={require('../icons/hook.png')}
+              style={getIconStyle(focused)}
+            />
+          )
+        }}/>
+      <Tab.Screen name="useEffect" component={UseEffectScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={require('../icons/hook.png')}
+              style={getIconStyle(focused)}
+            />
+          )
+        }}/>
+      <Tab.Screen name="useMemo" component={UseMemoScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={require('../icons/hook.png')}
+              style={getIconStyle(focused)}
+            />
+          )
+        }}/>
+      <Tab.Screen name="Профиль" component={ProfileScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={require('../icons/profile.png')}
+              style={getIconStyle(focused)}
+            />
+          )
+        }}/>
+    </Tab.Navigator>
   );
 }
