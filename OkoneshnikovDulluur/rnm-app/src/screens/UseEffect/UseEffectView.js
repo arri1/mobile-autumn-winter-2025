@@ -21,7 +21,6 @@ export default function UseEffectView({
   return (
     <>
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.navigate('UseState')} />
         <Appbar.Content title="Пример useEffect" />
       </Appbar.Header>
 

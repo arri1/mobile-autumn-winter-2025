@@ -1,75 +1,27 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useEffect } from "react";
+import { View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
-import UseEffectContainer from "@/screens/UseEffect/UseEffectContainer";
-import UseMemoContainer from "@/screens/UseMemo/UseMemoContainer";
-import UseStateContainer from "@/screens/UseState/UseStateContainer";
-
-import ZustandControlContainer from "@/screens/ZustandControl/ZustandControlContainer";
-import ZustandHistoryContainer from '@/screens/ZustandHistory/ZustandHistoryContainer';
-
-const Tab = createBottomTabNavigator();
+import AuthNavigator from "@/navigation/AuthNavigator";
+import AppTabs from "@/navigation/AppTabs";
+import { useAuthStore } from "@/store/authStore";
 
 export default function RootNavigator() {
-  return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen
-        name="UseState"
-        component={UseStateContainer}
-        options={{
-          title: "useState",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="inbox" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="UseEffect"
-        component={UseEffectContainer}
-        options={{
-          title: "useEffect",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cloud" color={color} size={size} />
-          ),
-        }}
-      />
+  const hydrate = useAuthStore((s) => s.hydrate);
+  const isReady = useAuthStore((s) => s.isReady);
+  const accessToken = useAuthStore((s) => s.accessToken);
 
-      <Tab.Screen
-        name="UseMemo"
-        component={UseMemoContainer}
-        options={{
-          title: "useMemo",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="comment" color={color} size={size} />
-          ),
-        }}
-      />
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
 
-      <Tab.Screen
-        name="ZustandControl"
-        component={ZustandControlContainer}
-        options={{
-          title: "Store 1",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="gesture-tap"
-              color={color}
-              size={size}
-            />
-          ),
-        }}
-      />
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
-      <Tab.Screen
-        name="ZustandHistory"
-        component={ZustandHistoryContainer}
-        options={{
-          title: "Store 2",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="history" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
+  return accessToken ? <AppTabs /> : <AuthNavigator />;
 }
