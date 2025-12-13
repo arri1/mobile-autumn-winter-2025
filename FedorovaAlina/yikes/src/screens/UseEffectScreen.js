@@ -423,6 +423,22 @@ export default function UseEffectScreen({ goBack, setActiveScreen, activeScreen 
               useEffect
             </Text>
           </TouchableOpacity>
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useMemo экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('usememo')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="flash" size={24} color={activeScreen === 'usememo' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
+              useMemo
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
