@@ -1,36 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
-import { useUserState } from './hooks/useUserState';
-import NameInput from './components/NameInput';
-import AgeInput from './components/AgeInput';
-import SubscriptionToggle from './components/SubscriptionToggle';
-import HobbyButtons from './components/HobbyButtons';
-import UserInfoDisplay from './components/UserInfoDisplay';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useAuthStore } from './hooks/useAuthStore';
+import RegisterScreen from './components/RegisterScreen';
+import LoginScreen from './components/LoginScreen';
+import MainScreen from './components/MainScreen';
 
 export default function App() {
-  const {
-    name,
-    setName,
-    age,
-    setAge,
-    isSubscribed,
-    setIsSubscribed,
-    hobbies,
-    addHobby
-  } = useUserState();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const [route, setRoute] = useState('login');
+
+  if (isAuthenticated) {
+    return <MainScreen />;
+  }
+
+  const navigate = (to) => setRoute(to);
 
   return (
     <View style={styles.container}>
-      <NameInput value={name} onChangeText={setName}/>
-      <AgeInput value={age} onChangeText={setAge}/>
-      <SubscriptionToggle value={isSubscribed} onValueChange={setIsSubscribed}/>
-      <HobbyButtons onAddHobby={addHobby}/>
-      <UserInfoDisplay
-        name={name}
-        age={age}
-        isSubscribed={isSubscribed}
-        hobbies={hobbies}
-      />
+      {route === 'login' && <LoginScreen navigate={navigate} />}
+      {route === 'register' && <RegisterScreen navigate={navigate} />}
     </View>
   );
 }
