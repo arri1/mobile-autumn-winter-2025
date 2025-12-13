@@ -1,95 +1,85 @@
 import { useState, useEffect } from "react";
-import { ScrollView, View, Text, Button, TextInput } from "react-native";
-import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
+import { StyleSheet, FlatList, ActivityIndicator, View, Text } from "react-native";
 
-export default function useStateLab() {
-    const [timer, setTimer] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState(['']);
-    const [isFormValid, setIsFormValid] = useState(false);
+export default function useEffectLab() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        let interval = 0;
-        if(isRunning){
-            interval = setInterval(() => {
-                setTimer(prevTimer => prevTimer+1);
-            },100)
+        const fetchPosts = async () => {
+        try {
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+            const data = await response.json();
+            setPosts(data.slice(0,10));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-        return () => {if(interval) clearInterval(interval);}
-    }, [isRunning])
-
-    useEffect(() => {
-        const validateForm = () => {
-            let newErrors = [];
-
-            if (password.length < 8) {
-                newErrors.push('Пароль должен быть не менее 8 символов');
-            }
-            if (!/[0-9]/.test(password)) {
-                newErrors.push('Пароль должен содержать хотя бы одну цифру')
-            }
-            if (!/[A-Z]/.test(password)) {
-                newErrors.push('Пароль должен содержать хотя бы одну заглавную букву')
-            }
-            if (!/[a-z]/.test(password)) {
-                newErrors.push('Пароль должен содержать хотя бы одну строчную букву');
-            }
-            if (!/[_.:;@?!-]/.test(password)) {
-                newErrors.push('Пароль должен содержать хотя бы один специальный символ ( _.:;@?!- )');
-            }
-            setErrors(newErrors);
-            newErrors.length>0 ? setIsFormValid(false) : setIsFormValid(true);
         };
 
-        validateForm();
-    }, [password]);
+        fetchPosts();
+        
+        // Очистка при размонтировании
+        return () => {
+        console.log('Компонент размонтируется');
+        // Можно отменять запросы, если используете AbortController
+        };
+    }, []);
 
-    const formatTime = (timer:Int32) => {
-        const min = Math.floor(timer/600)%60
-        const sec = Math.floor(timer/10)%60
-        const msec = timer%10
-        return `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}.${msec.toString()}`
+    if (loading) {
+        return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" />
+            <Text>Загрузка...</Text>
+        </View>
+        );
     }
 
+    if (error) {
+        return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Ошибка: {error}</Text>
+        </View>
+        );
+    }
+    
     return (
-        <ScrollView contentContainerStyle={{alignItems:"center", padding: 20}}>
-            <Text style={{ fontSize: 30, 
-                marginBottom: 20, 
-                fontWeight: "bold"}}>
-                useEffect
-            </Text>
-
-
-            <View style={{alignItems:"center", marginBottom: 40,}}>
-                <Text style={{fontWeight:'bold', fontSize:26}}>{formatTime(timer)}</Text>
-                <View style={{flexDirection: "row", gap:8}}>
-                    <Button title="Старт" onPress={()=>setIsRunning(true)}></Button>
-                    <Button title="Пауза" onPress={()=>setIsRunning(false)}></Button>
-                    <Button title="Сброс" onPress={()=>{setIsRunning(false);
-                                                        setTimer(0)}}></Button>
-                </View>
-            </View>
-
-
-            <View style={{alignItems:"center", marginBottom: 40,}}>
-                <View style={{flexDirection: "row"}}>
-                    <TextInput style={{borderWidth:1,
-                                       borderColor:'gray',
-                                       paddingInline: 10}}
-                               placeholder="Введите пароль"
-                               value={password}
-                               onChangeText={setPassword}/>
-                </View>
-                <View>
-                    {errors.map((item) => (
-                        <Text style={{fontSize: 12, color:'red'}}>{item}</Text>
-                    ))}
-                    {isFormValid?(<Text style={{fontSize: 12, color:'green'}}>
-                                     Пароль правильный
-                                  </Text>):(<></>)}
-                </View>
-            </View>
-        </ScrollView>
+        <View style={styles.container}>
+            <Text style={styles.title}>UseEffect</Text>
+            <FlatList
+                style={styles.list}
+                data={posts}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.post}>
+                        <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
+                        <Text>{item.body}</Text>
+                    </View>
+                )}
+            />
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: "bold"
+    },
+    list: {
+        marginBlock: 10
+    },
+    post: {
+        marginHorizontal: 20, 
+        marginBottom: 10, 
+        borderRadius: 10, 
+        padding: 16, 
+        backgroundColor: '#dddddd'
+    }
+})
