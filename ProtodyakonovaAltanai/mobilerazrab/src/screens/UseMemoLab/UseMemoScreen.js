@@ -1,9 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
-// Функция для вычисления факториала (альтернатива Фибоначчи)
+/**
+ * Вычисляет факториал числа
+ * Сложность: O(n)
+ * @param {number} n - Число для вычисления факториала
+ * @returns {number} Факториал числа
+ */
 function factorial(n) {
   if (n <= 1) return 1;
   let result = 1;
@@ -13,7 +18,12 @@ function factorial(n) {
   return result;
 }
 
-// Функция для проверки простого числа
+/**
+ * Проверяет, является ли число простым
+ * Сложность: O(√n)
+ * @param {number} num - Число для проверки
+ * @returns {boolean} true если число простое, false если составное
+ */
 function isPrime(num) {
   if (num <= 1) return false;
   if (num <= 3) return true;
@@ -24,17 +34,26 @@ function isPrime(num) {
   return true;
 }
 
+/**
+ * Основной компонент для демонстрации работы React хука useMemo
+ * Показывает:
+ * 1. Мемоизацию дорогостоящих вычислений
+ * 2. Мемоизацию больших массивов данных
+ * 3. Мемоизацию фильтрации и агрегации
+ */
 const UseMemoScreen = () => {
-  // Состояния для вычислений
+  // Состояние для ввода числа (математические вычисления)
   const [numberInput, setNumberInput] = useState('10');
+  // Состояние для поискового запроса (фильтрация пользователей)
   const [query, setQuery] = useState('');
 
   // Преобразуем ввод в число
   const number = useMemo(() => {
     const num = parseInt(numberInput) || 0;
-    return Math.min(100, Math.max(0, num));
+    return Math.min(100, Math.max(0, num)); // Ограничиваем диапазон для предотвращения переполнения
   }, [numberInput]);
 
+  
   // Мемоизированные вычисления
   const factorialResult = useMemo(() => factorial(number), [number]);
   const isPrimeResult = useMemo(() => isPrime(number), [number]);

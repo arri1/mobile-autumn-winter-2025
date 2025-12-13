@@ -1,48 +1,62 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  View, 
-  Text, 
   TextInput, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
+import useAuthStore from '../../store/authStore';
 
-const AuthScreen = ({ onLogin, onRegister }) => {
+// Компонент экрана авторизации/регистрации, демонстрация хуков
+const AuthScreen = () => { //управление формой
+  // Определяем режим: вход или регистрация
   const [isLogin, setIsLogin] = useState(true);
+  //поля формы
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  // Получаем состояние и методы из хранилища аутентификации (Zustand)
+  const { login, register, isLoading, error } = useAuthStore();
 
-  // Валидация email с использованием useMemo
+   // Валидация email с использованием регулярного выражения
   const isValidEmail = useMemo(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }, [email]);
 
-  // Валидация пароля с использованием useMemo
+  // Валидация длины пароля
   const isPasswordValid = useMemo(() => {
     return password.length >= 6;
   }, [password]);
 
+  // Проверка совпадения паролей (только для регистрации)
   const doPasswordsMatch = useMemo(() => {
     return password === confirmPassword;
   }, [password, confirmPassword]);
 
-  // useEffect для очистки полей при переключении между логином и регистрацией
+  // Эффект для очистки полей при переключении режима
   useEffect(() => {
     if (isLogin) {
       setConfirmPassword('');
-      setName('');
+      setName(''); // Срабатывает при изменении isLogin
     }
   }, [isLogin]);
 
+  // Эффект для показа ошибок из стора
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Ошибка', error);
+    }
+  }, [error]);
+
+  // Обработчик отправки формы, выполняет валидацию и вызывает соответствующий метод аутентификации
   const handleSubmit = async () => {
     if (!isValidEmail) {
       Alert.alert('Ошибка', 'Введите корректный email');
@@ -59,42 +73,63 @@ const AuthScreen = ({ onLogin, onRegister }) => {
       return;
     }
 
-    setLoading(true);
-    
-    // Имитация запроса к API
-    setTimeout(() => {
-      setLoading(false);
-      
-      // Для демо просто генерируем токен
-      const token = `demo-token-${Date.now()}`;
-      
+    if (!isLogin && !name.trim()) {
+      Alert.alert('Ошибка', 'Введите имя');
+      return;
+    }
+
+    try {
       if (isLogin) {
-        // Логика входа
+        // Вызов метода входа
+        await login({ email, password });
         Alert.alert('Успешно', 'Вы успешно вошли в систему!');
-        onLogin(token);
       } else {
-        // Логика регистрации
+        // Вызов метода регистрации
+        await register({ name, email, password });
         Alert.alert('Успешно', 'Регистрация завершена!');
-        onRegister(token);
       }
-    }, 1500);
+    } catch (err) {
+      // Ошибка уже обрабатывается в сторе
+    }
   };
 
+  // Определение валидности всей формы
   const isFormValid = useMemo(() => {
     if (isLogin) {
+      // Для входа: email и пароль должны быть заполнены и валидны
       return isValidEmail && isPasswordValid && email && password;
     } else {
+      // Для регистрации: все поля должны быть заполнены и валидны
       return isValidEmail && isPasswordValid && doPasswordsMatch && email && password && confirmPassword && name;
     }
   }, [isLogin, isValidEmail, isPasswordValid, doPasswordsMatch, email, password, confirmPassword, name]);
 
+
+  // Заполнение формы демо-данными для тестирования
+  const handleDemoLogin = () => {
+    if (isLogin) {
+      // Демо-данные для входа
+      setEmail('demo@example.com');
+      setPassword('demo123');
+      Alert.alert('Демо', 'Данные заполнены! Нажмите "Войти"');
+    } else {
+      // Демо-данные для регистрации
+      setName('Демо Пользователь');
+      setEmail('demo@example.com');
+      setPassword('demo123');
+      setConfirmPassword('demo123');
+      Alert.alert('Демо', 'Данные заполнены! Нажмите "Зарегистрироваться"');
+    }
+  };
+
   return (
     <SafeArea>
-      <KeyboardAvoidingView
+      <KeyboardAvoidingView //предотвращает наложение клавиатуры на поля ввода
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
         <Container>
+           {/* ScrollView для прокрутки на маленьких экранах */}
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <Header>
               <Emoji>{isLogin ? '🔐' : '📝'}</Emoji>
@@ -106,9 +141,11 @@ const AuthScreen = ({ onLogin, onRegister }) => {
               </SubTitle>
             </Header>
 
+            {/* КАРТОЧКА С ФОРМОЙ */}       
             <Card>
               <CardHeader>
                 <CardTitle>Данные аккаунта</CardTitle>
+                {/* Показываем текущий режим с цветовой индикацией */}
                 <Pill tone={isLogin ? 'success' : 'warning'}>
                   {isLogin ? 'Вход' : 'Регистрация'}
                 </Pill>
@@ -117,6 +154,7 @@ const AuthScreen = ({ onLogin, onRegister }) => {
               <Divider />
               
               <Column>
+              {/* ПОЛЕ ИМЕНИ (только для регистрации) */}
                 {!isLogin && (
                   <InputContainer>
                     <Label>Имя</Label>
@@ -129,6 +167,7 @@ const AuthScreen = ({ onLogin, onRegister }) => {
                   </InputContainer>
                 )}
                 
+                 {/* ПОЛЕ EMAIL С ВАЛИДАЦИЕЙ */}
                 <InputContainer>
                   <Label>Email</Label>
                   <Input
@@ -139,11 +178,13 @@ const AuthScreen = ({ onLogin, onRegister }) => {
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
+                  {/* Показываем ошибку если email некорректный */}
                   {email.length > 0 && !isValidEmail && (
                     <ErrorText>Некорректный email</ErrorText>
                   )}
                 </InputContainer>
                 
+                 {/* ПОЛЕ ПАРОЛЯ С ВАЛИДАЦИЕЙ */}
                 <InputContainer>
                   <Label>Пароль</Label>
                   <Input
@@ -153,11 +194,13 @@ const AuthScreen = ({ onLogin, onRegister }) => {
                     placeholderTextColor="#889096"
                     secureTextEntry
                   />
+                  {/* Показываем ошибку если пароль слишком короткий */}
                   {password.length > 0 && !isPasswordValid && (
                     <ErrorText>Пароль должен быть не менее 6 символов</ErrorText>
                   )}
                 </InputContainer>
                 
+                 {/* ПОЛЕ ПОДТВЕРЖДЕНИЯ ПАРОЛЯ (только для регистрации) */}
                 {!isLogin && (
                   <InputContainer>
                     <Label>Подтверждение пароля</Label>
@@ -168,29 +211,38 @@ const AuthScreen = ({ onLogin, onRegister }) => {
                       placeholderTextColor="#889096"
                       secureTextEntry
                     />
+                    {/* Показываем ошибку если пароли не совпадают */}
                     {confirmPassword.length > 0 && !doPasswordsMatch && (
                       <ErrorText>Пароли не совпадают</ErrorText>
                     )}
                   </InputContainer>
                 )}
                 
+                {/* КНОПКА ОТПРАВКИ ФОРМЫ */}
                 <SubmitButton 
                   onPress={handleSubmit} 
-                  disabled={!isFormValid || loading}
+                  disabled={!isFormValid || isLoading}
                   valid={isFormValid}
                 >
-                  {loading ? (
-                    <ButtonText>Загрузка...</ButtonText>
+                  {isLoading ? (
+                    // Индикатор загрузки при отправке
+                    <ActivityIndicator color="#052925" />
                   ) : (
                     <ButtonText>{isLogin ? 'Войти' : 'Зарегистрироваться'}</ButtonText>
                   )}
                 </SubmitButton>
+
+                {/* КНОПКА ДЕМО-ДАННЫХ */}
+                <DemoButton onPress={handleDemoLogin} disabled={isLoading}>
+                  <DemoButtonText>Заполнить демо данные</DemoButtonText>
+                </DemoButton>
                 
+                {/* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА ВХОД/РЕГИСТРАЦИЯ */}
                 <ToggleContainer>
                   <ToggleText>
                     {isLogin ? 'Еще нет аккаунта?' : 'Уже есть аккаунт?'}
                   </ToggleText>
-                  <ToggleButton onPress={() => setIsLogin(!isLogin)}>
+                  <ToggleButton onPress={() => setIsLogin(!isLogin)} disabled={isLoading}>
                     <ToggleButtonText>
                       {isLogin ? 'Зарегистрироваться' : 'Войти'}
                     </ToggleButtonText>
@@ -199,9 +251,12 @@ const AuthScreen = ({ onLogin, onRegister }) => {
               </Column>
             </Card>
 
+            {/* ИНФОРМАЦИОННАЯ КАРТОЧКА О ХУКАХ REACT */}
             <InfoCard>
               <InfoTitle>Используемые хуки React:</InfoTitle>
               <Divider />
+
+              {/* useState */}
               <InfoRow>
                 <HookEmoji>🎣</HookEmoji>
                 <HookInfo>
@@ -209,13 +264,17 @@ const AuthScreen = ({ onLogin, onRegister }) => {
                   <HookDesc>Управление состоянием формы</HookDesc>
                 </HookInfo>
               </InfoRow>
+
+              {/* useEffect */}
               <InfoRow>
                 <HookEmoji>⏱️</HookEmoji>
                 <HookInfo>
                   <HookName>useEffect</HookName>
-                  <HookDesc>Очистка полей при переключении режима</HookDesc>
+                  <HookDesc>Очистка полей и обработка ошибок</HookDesc>
                 </HookInfo>
               </InfoRow>
+
+              {/* useMemo */}
               <InfoRow>
                 <HookEmoji>💾</HookEmoji>
                 <HookInfo>
@@ -230,6 +289,7 @@ const AuthScreen = ({ onLogin, onRegister }) => {
         </Container>
       </KeyboardAvoidingView>
       
+       {/* Статус бар с светлой темой */}
       <StatusBar style="light" />
     </SafeArea>
   );
@@ -251,12 +311,12 @@ const Header = styled.View`
   align-items: center;
 `;
 
-const Emoji = styled(Text)`
+const Emoji = styled.Text`
   font-size: 48px;
   margin-bottom: 12px;
 `;
 
-const Title = styled(Text)`
+const Title = styled.Text`
   font-size: 32px;
   font-weight: 700;
   color: #e6e9ef;
@@ -264,7 +324,7 @@ const Title = styled(Text)`
   text-align: center;
 `;
 
-const SubTitle = styled(Text)`
+const SubTitle = styled.Text`
   color: #9aa4b2;
   font-size: 16px;
   text-align: center;
@@ -285,13 +345,14 @@ const CardHeader = styled.View`
   margin-bottom: 8px;
 `;
 
-const CardTitle = styled(Text)`
+const CardTitle = styled.Text`
   color: #e6e9ef;
   font-weight: 700;
   font-size: 18px;
 `;
 
-const Pill = styled(Text)`
+// Динамически стилизуемый компонент с цветами в зависимости от tone
+const Pill = styled.Text`
   color: ${(p) => {
     if (p.tone === 'success') return '#5eead4';
     if (p.tone === 'warning') return '#f39c12';
@@ -327,14 +388,14 @@ const InputContainer = styled.View`
   gap: 4px;
 `;
 
-const Label = styled(Text)`
+const Label = styled.Text`
   color: #b3b8c3;
   font-size: 14px;
   font-weight: 600;
   margin-left: 4px;
 `;
 
-const Input = styled(TextInput)`
+const Input = styled.TextInput`
   background-color: #0f1218;
   border: 1px solid #1c2230;
   border-radius: 12px;
@@ -343,13 +404,14 @@ const Input = styled(TextInput)`
   font-size: 16px;
 `;
 
-const ErrorText = styled(Text)`
+const ErrorText = styled.Text`
   color: #e74c3c;
   font-size: 12px;
   margin-left: 4px;
   margin-top: 2px;
 `;
 
+// Кнопка с динамическим цветом фона в зависимости от валидности формы
 const SubmitButton = styled.TouchableOpacity`
   background-color: ${(p) => p.valid ? '#5eead4' : '#2a2f3a'};
   padding: 16px;
@@ -359,9 +421,24 @@ const SubmitButton = styled.TouchableOpacity`
   opacity: ${(p) => p.disabled ? 0.6 : 1};
 `;
 
-const ButtonText = styled(Text)`
+const ButtonText = styled.Text`
   color: #052925;
   font-weight: 700;
+  font-size: 16px;
+`;
+
+const DemoButton = styled.TouchableOpacity`
+  background-color: transparent;
+  border: 1px solid #5eead4;
+  padding: 16px;
+  border-radius: 12px;
+  align-items: center;
+  opacity: ${(p) => p.disabled ? 0.6 : 1};
+`;
+
+const DemoButtonText = styled.Text`
+  color: #5eead4;
+  font-weight: 600;
   font-size: 16px;
 `;
 
@@ -372,27 +449,31 @@ const ToggleContainer = styled.View`
   margin-top: 8px;
 `;
 
-const ToggleText = styled(Text)`
+const ToggleText = styled.Text`
   color: #9aa4b2;
   font-size: 14px;
 `;
 
 const ToggleButton = styled.TouchableOpacity`
   margin-left: 8px;
+  opacity: ${(p) => p.disabled ? 0.6 : 1};
 `;
 
-const ToggleButtonText = styled(Text)`
+const ToggleButtonText = styled.Text`
   color: #5eead4;
   font-weight: 600;
   font-size: 14px;
 `;
 
-const InfoCard = styled(Card)`
+const InfoCard = styled.View`
   background-color: #0f1218;
-  border-color: #3498db;
+  border: 1px solid #3498db;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
 `;
 
-const InfoTitle = styled(Text)`
+const InfoTitle = styled.Text`
   color: #3498db;
   font-weight: 700;
   font-size: 16px;
@@ -404,7 +485,7 @@ const InfoRow = styled.View`
   padding: 12px 0;
 `;
 
-const HookEmoji = styled(Text)`
+const HookEmoji = styled.Text`
   font-size: 24px;
   margin-right: 12px;
 `;
@@ -413,13 +494,13 @@ const HookInfo = styled.View`
   flex: 1;
 `;
 
-const HookName = styled(Text)`
+const HookName = styled.Text`
   color: #e6e9ef;
   font-weight: 600;
   font-size: 15px;
 `;
 
-const HookDesc = styled(Text)`
+const HookDesc = styled.Text`
   color: #9aa4b2;
   font-size: 13px;
 `;
