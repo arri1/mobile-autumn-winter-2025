@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -10,47 +11,79 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
+    <Drawer>
+      <Drawer.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          drawerLabel: 'Home',
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          drawerLabel: 'Explore',
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="useStateLab"
         options={{
-          title: 'useStateLab',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          drawerLabel: 'useStateLab',
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="useEffectLab"
         options={{
-          title: 'useEffectLab',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          drawerLabel: 'useEffectLab',
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="useMemoLab"
         options={{
-          title: 'useMemoLab',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          drawerLabel: 'useMemoLab',
         }}
       />
-    </Tabs>
+    </Drawer>
+    // <Tabs
+    //   screenOptions={{
+    //     // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+    //     headerShown: false,
+    //     tabBarButton: HapticTab,
+    //   }}>
+    //   <Tabs.Screen
+    //     name="index"
+    //     options={{
+    //       title: 'Home',
+    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    //     }}
+    //   />
+    //   <Tabs.Screen
+    //     name="explore"
+    //     options={{
+    //       title: 'Explore',
+    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+    //     }}
+    //   />
+    //   <Tabs.Screen
+    //     name="useStateLab"
+    //     options={{
+    //       title: 'useStateLab',
+    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    //     }}
+    //   />
+    //   <Tabs.Screen
+    //     name="useEffectLab"
+    //     options={{
+    //       title: 'useEffectLab',
+    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    //     }}
+    //   />
+    //   <Tabs.Screen
+    //     name="useMemoLab"
+    //     options={{
+    //       title: 'useMemoLab',
+    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    //     }}
+    //   />
+    // </Tabs>
   );
 }
