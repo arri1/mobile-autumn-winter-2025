@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import AppTabs from './src/navigation/AppTabs';
+import { AuthProvider } from './src/context/AuthContext';
+import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {
-  const [cart, setCart] = useState([]);
-
   return (
     <NavigationContainer>
-      <AppTabs cart={cart} setCart={setCart} />
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
     </NavigationContainer>
   );
 }
