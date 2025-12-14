@@ -7,20 +7,45 @@ export default function ShopScreen({ cart, setCart }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setProducts([
-        { id: "1", name: "Смартфон", price: 35000 },
-        { id: "2", name: "Ноутбук", price: 75000 },
-        { id: "3", name: "Наушники", price: 5000 },
-        { id: "4", name: "Смарт-часы", price: 12000 },
-      ]);
-      setLoading(false);
-    }, 1000);
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("https://dummyjson.com/products?limit=50&skip=10");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const formatted = data.products.map(item => ({
+          id: item.id.toString(),
+          name: item.title,
+          price: item.price,
+          image: item.images[0],
+        }));
+
+        setProducts(formatted);
+      } catch (error) {
+        console.error("Ошибка загрузки товаров:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const addToCart = (product) => setCart([...cart, product]);
 
-  if (loading) return <ActivityIndicator size="large" color="#3498db" style={{ marginTop: 20 }} />;
+  if (loading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#3498db"
+        style={{ marginTop: 20 }}
+      />
+    );
+  }
 
   return (
     <FlatList
