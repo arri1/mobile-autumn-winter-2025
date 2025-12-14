@@ -35,7 +35,12 @@ const useMoviesSearch = () => {
       }
 
       const data = await response.json();
-      setMovies(data.docs || []);
+      const sortedMovies = (data.docs || []).sort((a, b) => {
+        const ratingA = a.rating?.kp || a.rating?.imdb || 0;
+        const ratingB = b.rating?.kp || b.rating?.imdb || 0;
+        return ratingB - ratingA;
+      });
+      setMovies(sortedMovies);
 
     } catch (err) {
       console.error('Error fetching movies:', err);
@@ -51,11 +56,18 @@ const useMoviesSearch = () => {
 
 
 const MoviesSearchComponent = () => {
+  const [searchQuery, setSearchQuery] = useState("Гарри");
   const { movies, loading, error, getMoviesByName } = useMoviesSearch();
 
   useEffect(() => {
-    getMoviesByName("дневник", 1, 10);
+    getMoviesByName(searchQuery, 1, 10);
   }, []);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      getMoviesByName(searchQuery, 1, 10);
+    }
+  };
 
   if (loading) {
     return (
@@ -75,6 +87,19 @@ const MoviesSearchComponent = () => {
 
   return (
     <Container>
+      <SearchContainer>
+        <SearchInput
+          placeholder="Введите название фильма..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSearch}
+          returnKeyType="search"
+        />
+        <SearchButton onPress={handleSearch}>
+          <SearchButtonText>Найти</SearchButtonText>
+        </SearchButton>
+      </SearchContainer>
+      
       <Header>
         <ResultsCount>Найдено фильмов: {movies.length}</ResultsCount>
       </Header>
@@ -87,6 +112,7 @@ const MoviesSearchComponent = () => {
           
           <InfoRow>
             <InfoText>Год: {movie.year || 'не указан'}</InfoText>
+            <InfoText>Рейтинг: {movie.rating?.kp || movie.rating?.imdb || 'нет'}</InfoText>
             <InfoText>Тип: {movie.type || 'не указан'}</InfoText>
           </InfoRow>
           
@@ -114,6 +140,38 @@ const CenterContainer = styled.View`
   justify-content: center;
   align-items: center;
   padding: 20px;
+`;
+
+const SearchContainer = styled.View`
+  flex-direction: row;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom-width: 1px;
+  border-bottom-color: #e0e0e0;
+`;
+
+const SearchInput = styled.TextInput`
+  flex: 1;
+  height: 40px;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: #ddd;
+  margin-right: 8px;
+`;
+
+const SearchButton = styled.TouchableOpacity`
+  padding: 8px 16px;
+  background-color: #007AFF;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SearchButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
 `;
 
 const Header = styled.View`
@@ -150,13 +208,6 @@ const Title = styled.Text`
   font-weight: bold;
   margin-bottom: 8px;
   color: #333;
-`;
-
-const AlternativeName = styled.Text`
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  font-style: italic;
 `;
 
 const InfoRow = styled.View`
