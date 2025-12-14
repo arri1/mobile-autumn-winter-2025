@@ -11,6 +11,10 @@ import UseStateScreen from './screens/UseState';
 import UseEffectScreen from './screens/UseEffect';
 import UseMemoScreen from './screens/UseMemo';
 import ProfileScreen from './screens/ProfileScreen';
+import PostsScreen from './screens/PostsScreen';
+import CreatePostScreen from './screens/CreatePostScreen';
+import MyPostsScreen from './screens/MyPostsScreen';
+import PostDetailScreen from './screens/PostDetailScreen';
 
 const Stack = createStackNavigator();
 
@@ -55,6 +59,26 @@ const MainStack = () => (
       name="Profile" 
       component={ProfileScreen}
       options={{ title: 'Профиль' }}
+    />
+    <Stack.Screen 
+      name="Posts" 
+      component={PostsScreen}
+      options={{ title: 'Посты' }}
+    />
+    <Stack.Screen 
+      name="CreatePost" 
+      component={CreatePostScreen}
+      options={{ title: 'Новый пост' }}
+    />
+    <Stack.Screen 
+      name="MyPosts" 
+      component={MyPostsScreen}
+      options={{ title: 'Мои посты' }}
+    />
+    <Stack.Screen 
+      name="PostDetail" 
+      component={PostDetailScreen}
+      options={{ title: 'Пост' }}
     />
   </Stack.Navigator>
 );

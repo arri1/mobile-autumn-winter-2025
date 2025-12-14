@@ -1,0 +1,110 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f7',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1d1d1f',
+  },
+  createButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  createButtonText: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  errorContainer: {
+    margin: 16,
+    padding: 12,
+    backgroundColor: '#fff3f3',
+    borderColor: '#ff3b30',
+    borderWidth: 1,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#ff3b30',
+    fontSize: 14,
+    flex: 1,
+  },
+  retryText: {
+    color: '#007AFF',
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  postCard: {
+    backgroundColor: 'white',
+    marginHorizontal: 16,
+    marginVertical: 6,
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2, 
+  },
+  postTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1d1d1f',
+    marginBottom: 6,
+  },
+  postContent: {
+    fontSize: 15,
+    color: '#6e6e73',
+    marginBottom: 12,
+    lineHeight: 22,
+  },
+  postFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  postAuthor: {
+    fontSize: 13,
+    color: '#8e8e93',
+    fontWeight: '500',
+  },
+  postDate: {
+    fontSize: 12,
+    color: '#a1a1a6',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 40,
+    fontSize: 16,
+    color: '#8e8e93',
+  },
+  backButton: {
+  fontSize: 20,
+  color: '#007AFF',
+  fontWeight: '600',
+},
+myPostsButton: {
+  fontSize: 16,
+  color: '#007AFF',
+  fontWeight: '500',
+},
+});

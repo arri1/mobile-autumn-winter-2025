@@ -9,6 +9,8 @@ export const useAuthStore = create(
     (set, get) => ({
       // Состояние
       user: null,
+      token: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -32,6 +34,10 @@ export const useAuthStore = create(
       checkAuth: async () => {
         const token = await get().getAccessToken();
         return !!token;
+      },
+      getAccessToken: () => {
+        const state = get();
+        return state.token; 
       },
       
 
@@ -58,6 +64,8 @@ export const useAuthStore = create(
             
           set({
             user,
+            token: accessToken, 
+            refreshToken: refreshToken, 
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -115,6 +123,8 @@ export const useAuthStore = create(
 
           set({
             user,
+            token: accessToken,      // ✅
+            refreshToken: refreshToken,  
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -211,6 +221,8 @@ export const useAuthStore = create(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         user: state.user,
+        token: state.token,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }
