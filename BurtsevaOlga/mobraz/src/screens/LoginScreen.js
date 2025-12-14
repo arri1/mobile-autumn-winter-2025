@@ -12,8 +12,8 @@ import {
 import { useAuthStore } from '../store/authStore';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('test@test.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   
   const { login, isLoading, error, clearError } = useAuthStore();
 
@@ -21,8 +21,9 @@ const LoginScreen = ({ navigation }) => {
     clearError();
     const result = await login(email, password);
     if (result.success) {
-      // Навигация произойдет автоматически через ProtectedRoute
+      navigation.replace('Profile');
     }
+    
   };
 
   return (
@@ -95,12 +96,7 @@ const LoginScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            {/* Тестовые данные */}
-            <View style={styles.testData}>
-              <Text style={styles.testDataTitle}>Тестовые данные:</Text>
-              <Text style={styles.testDataText}>Email: test@test.com</Text>
-              <Text style={styles.testDataText}>Пароль: 123456</Text>
-            </View>
+            
           </View>
         </View>
       </KeyboardAvoidingView>

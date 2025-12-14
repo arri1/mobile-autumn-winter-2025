@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {  useEffect } from 'react';
 import {  View,  Text,  TouchableOpacity,  SafeAreaView,  ScrollView,} from 'react-native';
 import { useAuthStore } from '../store/authStore';
 
 const ProfileScreen = ({ navigation }) => {
-  const { user, logout } = useAuthStore();
+  const { user, logout, getProfile } = useAuthStore();
+
+  useEffect(() => {
+    getProfile();
+  }, []);
 
   const handleLogout = () => {
     logout();
+  };
+
+  const handleRefreshProfile = async () => {
+    await getProfile();
   };
 
   return (
