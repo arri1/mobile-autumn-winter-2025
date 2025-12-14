@@ -71,166 +71,231 @@ const MoviesSearchComponent = () => {
 
   if (loading) {
     return (
-      <CenterContainer>
-        <LoadingText>Загрузка фильмов...</LoadingText>
-      </CenterContainer>
+      <SafeArea>
+        <Container>
+          <Header>
+            <Title>useEffect</Title>
+            <SubTitle>Поиск фильмов</SubTitle>
+          </Header>
+          <Card>
+            <LoadingText>Загрузка фильмов...</LoadingText>
+          </Card>
+        </Container>
+      </SafeArea>
     );
   }
 
   if (error) {
     return (
-      <CenterContainer>
-        <ErrorText>Ошибка: {error}</ErrorText>
-      </CenterContainer>
+      <SafeArea>
+        <Container>
+          <Header>
+            <Title>useEffect</Title>
+            <SubTitle>Поиск фильмов</SubTitle>
+          </Header>
+          <Card>
+            <ErrorText>Ошибка: {error}</ErrorText>
+          </Card>
+        </Container>
+      </SafeArea>
     );
   }
 
   return (
-    <Container>
-      <SearchContainer>
-        <SearchInput
-          placeholder="Введите название фильма..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-        />
-        <SearchButton onPress={handleSearch}>
-          <SearchButtonText>Найти</SearchButtonText>
-        </SearchButton>
-      </SearchContainer>
-      
-      <Header>
-        <ResultsCount>Найдено фильмов: {movies.length}</ResultsCount>
-      </Header>
-      
-      {movies.map((movie, index) => (
-        <MovieItem key={movie.id || index}>
-          <Title>
-            {movie.name || movie.alternativeName || movie.enName || 'Название не указано'}
-          </Title>
-          
-          <InfoRow>
-            <InfoText>Год: {movie.year || 'не указан'}</InfoText>
-            <InfoText>Рейтинг: {movie.rating?.kp || movie.rating?.imdb || 'нет'}</InfoText>
-            <InfoText>Тип: {movie.type || 'не указан'}</InfoText>
-          </InfoRow>
-          
-          {movie.description && (
-            <Description numberOfLines={3}>
-              {movie.description}
-            </Description>
-          )}
-        </MovieItem>
-      ))}
-    </Container>
+    <SafeArea>
+      <Container>
+        <Header>
+          <Title>useEffect</Title>
+          <SubTitle>Поиск фильмов</SubTitle>
+        </Header>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Поиск фильмов</CardTitle>
+          </CardHeader>
+          <Divider />
+          <SearchContainer>
+            <SearchInput
+              placeholder="Введите название фильма..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
+              placeholderTextColor="#889096"
+            />
+            <SearchButton onPress={handleSearch}>
+              <BtnText>Найти</BtnText>
+            </SearchButton>
+          </SearchContainer>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Результаты</CardTitle>
+            <Pill tone={movies.length > 0 ? 'success' : 'neutral'}>
+              Найдено: {movies.length}
+            </Pill>
+          </CardHeader>
+          <Divider />
+          {movies.map((movie, index) => (
+            <MovieItem key={movie.id || index}>
+              <MovieTitle>
+                {movie.name || movie.alternativeName || movie.enName || 'Название не указано'}
+              </MovieTitle>
+              
+              <MovieInfoRow>
+                <MovieInfo>Год: {movie.year || 'не указан'}</MovieInfo>
+                <MovieInfo>Рейтинг: {movie.rating?.kp || movie.rating?.imdb || 'нет'}</MovieInfo>
+                <MovieInfo>Тип: {movie.type || 'не указан'}</MovieInfo>
+              </MovieInfoRow>
+              
+              {movie.description && (
+                <Description numberOfLines={3}>
+                  {movie.description}
+                </Description>
+              )}
+              {index < movies.length - 1 && <Divider />}
+            </MovieItem>
+          ))}
+        </Card>
+
+        <BottomSpacer />
+      </Container>
+    </SafeArea>
   );
 };
 
 export default MoviesSearchComponent;
 
+const SafeArea = styled.View`
+  flex: 1;
+  background-color: #0f2042ff;
+`;
 
 const Container = styled.ScrollView`
   flex: 1;
-  background-color: #fff;
+  padding: 24px;
+  padding-top: 60px;
 `;
 
-const CenterContainer = styled.View`
-  flex: 1;
-  justify-content: center;
+const Header = styled.View`
+  margin-bottom: 16px;
   align-items: center;
-  padding: 20px;
+  text-align: center;
+`;
+
+const Title = styled.Text`
+  font-size: 28px;
+  font-weight: 700;
+  color: #e6e9ef;
+  margin-bottom: 6px;
+`;
+
+const SubTitle = styled.Text`
+  color: #9aa4b2;
+`;
+
+const Card = styled.View`
+  background-color: #0c0f14;
+  border: 1px solid #1c2230;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+`;
+
+const CardHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const CardTitle = styled.Text`
+  color: #e6e9ef;
+  font-weight: 700;
+`;
+
+const Pill = styled.Text`
+  color: #b3b8c3;
+  background-color: ${(p) => (p.tone === 'success' ? '#0e2f25' : '#552525ff')};
+  border: 1px solid ${(p) => (p.tone === 'success' ? '#1f7a4a' : '#dc595bff')};
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+`;
+
+const Divider = styled.View`
+  height: 1px;
+  background-color: #1c2230;
+  margin: 12px 0;
 `;
 
 const SearchContainer = styled.View`
   flex-direction: row;
-  padding: 16px;
-  background-color: #f5f5f5;
-  border-bottom-width: 1px;
-  border-bottom-color: #e0e0e0;
+  gap: 8px;
 `;
 
 const SearchInput = styled.TextInput`
   flex: 1;
-  height: 40px;
-  padding: 8px 12px;
-  background-color: white;
-  border-radius: 8px;
-  border-width: 1px;
-  border-color: #ddd;
-  margin-right: 8px;
+  background-color: #0f1218;
+  border: 1px solid #1c2230;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #e6e9ef;
 `;
 
 const SearchButton = styled.TouchableOpacity`
-  padding: 8px 16px;
-  background-color: #007AFF;
-  border-radius: 8px;
+  background-color: #4b87a2ff;
+  padding: 12px 16px;
+  border-radius: 12px;
   justify-content: center;
-  align-items: center;
 `;
 
-const SearchButtonText = styled.Text`
-  color: white;
-  font-weight: bold;
-`;
-
-const Header = styled.View`
-  padding: 16px;
-  border-bottom-width: 1px;
-  border-bottom-color: #e0e0e0;
+const BtnText = styled.Text`
+  color: #052925;
+  font-weight: 700;
 `;
 
 const LoadingText = styled.Text`
-  font-size: 16px;
+  color: #e6e9ef;
   text-align: center;
+  font-size: 16px;
 `;
 
 const ErrorText = styled.Text`
+  color: #dc595bff;
+  text-align: center;
   font-size: 16px;
-  color: red;
-  text-align: center;
-`;
-
-const ResultsCount = styled.Text`
-  font-size: 14px;
-  color: #666;
-  text-align: center;
 `;
 
 const MovieItem = styled.View`
-  padding: 16px;
-  border-bottom-width: 1px;
-  border-bottom-color: #e0e0e0;
+  margin-bottom: 12px;
 `;
 
-const Title = styled.Text`
-  font-size: 18px;
-  font-weight: bold;
+const MovieTitle = styled.Text`
+  color: #e6e9ef;
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
 `;
 
-const InfoRow = styled.View`
+const MovieInfoRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 8px;
 `;
 
-const InfoText = styled.Text`
+const MovieInfo = styled.Text`
+  color: #9aa4b2;
   font-size: 14px;
-  color: #555;
 `;
 
 const Description = styled.Text`
+  color: #b3b8c3;
   font-size: 14px;
-  color: #444;
-  margin-top: 8px;
   line-height: 18px;
+  margin-top: 4px;
 `;
 
-const ShortDescription = styled.Text`
-  font-size: 13px;
-  color: #666;
-  margin-top: 6px;
-  font-style: italic;
+const BottomSpacer = styled.View`
+  height: 24px;
 `;
