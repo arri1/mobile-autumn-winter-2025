@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useUserStore } from "../../store/useUserStore";
 
 export default function RegisterScreen({ navigation }: any) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { register } = useAuthStore();
+    const { register } = useUserStore();
 
     const handleRegister = async () => {
         if (!name || !email || !password) {

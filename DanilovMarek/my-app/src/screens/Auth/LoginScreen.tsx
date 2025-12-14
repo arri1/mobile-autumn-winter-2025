@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useUserStore } from "../../store/useUserStore";
 
 export default function LoginScreen({ navigation }: any) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login, isLoading } = useAuthStore();
+    const { login } = useUserStore();
 
 
     const handleLogin = async () => {

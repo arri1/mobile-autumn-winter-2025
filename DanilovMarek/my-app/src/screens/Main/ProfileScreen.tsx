@@ -1,10 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useUserStore } from "../../store/useUserStore";
 
 export default function ProfileScreen() {
-    const { currentUser, logout, getProfile } = useAuthStore();
+    const { currentUser, logout, getProfile } = useUserStore();
 
     useEffect(() => {
         // Обновляем профиль при открытии экрана

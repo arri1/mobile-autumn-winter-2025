@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useAuthStore } from '../../store/useAuthStore';
-import { User } from '../../store/useAuthStore';
+import { useUserStore } from '../../store/useUserStore';
+import { User } from '../../store/useUserStore';
 
 export default function UsersScreen() {
-    const { getUsers } = useAuthStore();
+    const { getUsers } = useUserStore();
     
     const [users, setUsers] = useState<User[]>([]);
 
     // Загрузка пользователей
     const loadUsers = async () => {
         try {
-            const fetchedUsers = await getUsers();
-            if (fetchedUsers) {
-                setUsers(fetchedUsers);
-            }
+            const users = await getUsers();
+            setUsers(users);
+            
         } catch (error) {
             console.error('Ошибка загрузки пользователей:', error);
         }
