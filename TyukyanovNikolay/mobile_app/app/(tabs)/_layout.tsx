@@ -11,79 +11,79 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Drawer>
-      <Drawer.Screen
+  //   <Drawer>
+  //     <Drawer.Screen
+  //       name="index"
+  //       options={{
+  //         drawerLabel: 'Home',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="explore"
+  //       options={{
+  //         drawerLabel: 'Explore',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useStateLab"
+  //       options={{
+  //         drawerLabel: 'useStateLab',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useEffectLab"
+  //       options={{
+  //         drawerLabel: 'useEffectLab',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useMemoLab"
+  //       options={{
+  //         drawerLabel: 'useMemoLab',
+  //       }}
+  //     />
+  //   </Drawer>
+    <Tabs
+      screenOptions={{
+        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerShown: false,
+        tabBarButton: HapticTab,
+      }}>
+      <Tabs.Screen
         name="index"
         options={{
-          drawerLabel: 'Home',
+          title: 'Home',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      <Drawer.Screen
+      <Tabs.Screen
         name="explore"
         options={{
-          drawerLabel: 'Explore',
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-      <Drawer.Screen
+      <Tabs.Screen
         name="useStateLab"
         options={{
-          drawerLabel: 'useStateLab',
+          title: 'useStateLab',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      <Drawer.Screen
+      <Tabs.Screen
         name="useEffectLab"
         options={{
-          drawerLabel: 'useEffectLab',
+          title: 'useEffectLab',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      <Drawer.Screen
+      <Tabs.Screen
         name="useMemoLab"
         options={{
-          drawerLabel: 'useMemoLab',
+          title: 'useMemoLab',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-    </Drawer>
-    // <Tabs
-    //   screenOptions={{
-    //     // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-    //     headerShown: false,
-    //     tabBarButton: HapticTab,
-    //   }}>
-    //   <Tabs.Screen
-    //     name="index"
-    //     options={{
-    //       title: 'Home',
-    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-    //     }}
-    //   />
-    //   <Tabs.Screen
-    //     name="explore"
-    //     options={{
-    //       title: 'Explore',
-    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-    //     }}
-    //   />
-    //   <Tabs.Screen
-    //     name="useStateLab"
-    //     options={{
-    //       title: 'useStateLab',
-    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-    //     }}
-    //   />
-    //   <Tabs.Screen
-    //     name="useEffectLab"
-    //     options={{
-    //       title: 'useEffectLab',
-    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-    //     }}
-    //   />
-    //   <Tabs.Screen
-    //     name="useMemoLab"
-    //     options={{
-    //       title: 'useMemoLab',
-    //       tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-    //     }}
-    //   />
-    // </Tabs>
+    </Tabs>
   );
 }
