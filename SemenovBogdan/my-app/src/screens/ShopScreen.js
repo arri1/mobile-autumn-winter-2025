@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import ProductCard from "../components/ProductCard";
+import { useCartStore } from "../store/cartStore";
 
-export default function ShopScreen({ cart, setCart }) {
+export default function ShopScreen() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("https://dummyjson.com/products?limit=50&skip=10");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
 
         const formatted = data.products.map(item => ({
@@ -35,16 +33,8 @@ export default function ShopScreen({ cart, setCart }) {
     fetchProducts();
   }, []);
 
-  const addToCart = (product) => setCart([...cart, product]);
-
   if (loading) {
-    return (
-      <ActivityIndicator
-        size="large"
-        color="#3498db"
-        style={{ marginTop: 20 }}
-      />
-    );
+    return <ActivityIndicator size="large" color="#3498db" style={{ marginTop: 20 }} />;
   }
 
   return (

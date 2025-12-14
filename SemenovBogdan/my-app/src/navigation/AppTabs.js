@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
-export default function AppTabs({ cart, setCart }) {
+export default function AppTabs() {
 	return (
 		<Tab.Navigator
 			initialRouteName="Home"
@@ -30,15 +30,9 @@ export default function AppTabs({ cart, setCart }) {
 				},
 			})}
 		>
-			<Tab.Screen name="Home">
-				{props => <HomeScreen {...props} />}
-			</Tab.Screen>
-			<Tab.Screen name="Shop">
-				{props => <ShopScreen {...props} cart={cart} setCart={setCart} {...props} />}
-			</Tab.Screen>
-			<Tab.Screen name="Cart">
-				{props => <CartScreen {...props} cart={cart} />}
-			</Tab.Screen>
+			<Tab.Screen name="Home" component={HomeScreen} />
+			<Tab.Screen name="Shop" component={ShopScreen} />
+			<Tab.Screen name="Cart" component={CartScreen} />
 			<Tab.Screen name="Profile" component={ProfileScreen} />
 		</Tab.Navigator>
 	);

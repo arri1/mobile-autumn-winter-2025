@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { FlatList, View, Text, StyleSheet } from "react-native";
 import CartItem from "../components/CartItem";
+import { useCartStore } from "../store/cartStore";
 
-export default function CartScreen({ cart, setCart }) {
-  const removeFromCart = (id) => {
-    setCart(cart.filter((_, index) => index !== id));
-  };
+export default function CartScreen() {
+  const cart = useCartStore((state) => state.cart) || []; // защита от undefined
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
 
   const total = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price, 0);
@@ -20,6 +20,7 @@ export default function CartScreen({ cart, setCart }) {
           <CartItem item={item} onRemove={() => removeFromCart(index)} />
         )}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20 }}>Корзина пуста</Text>}
       />
       <View style={styles.totalBox}>
         <Text style={styles.totalText}>Итого: {total} ₽</Text>
@@ -30,11 +31,6 @@ export default function CartScreen({ cart, setCart }) {
 
 const styles = StyleSheet.create({
   list: { padding: 10 },
-  totalBox: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
-  },
+  totalBox: { padding: 20, borderTopWidth: 1, borderColor: "#ccc", backgroundColor: "#fff" },
   totalText: { fontSize: 20, fontWeight: "700", textAlign: "right" },
 });
