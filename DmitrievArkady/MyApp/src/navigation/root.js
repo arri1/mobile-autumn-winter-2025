@@ -3,6 +3,7 @@ import { Image, StyleSheet } from 'react-native';
 import UseStateScreen from '../screens/Main/UseStateScreen';
 import UseEffectScreen from '../screens/Main/UseEffectScreen';
 import UseMemoScreen from '../screens/Main/UseMemoScreen';
+import PostsScreen from '../screens/Main/PostsScreen';
 import ProfileScreen from '../screens/Main/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -39,6 +40,15 @@ export default function RootTabs() {
           tabBarIcon: ({ focused }) => (
             <Image 
               source={require('../icons/hook.png')}
+              style={getIconStyle(focused)}
+            />
+          )
+        }}/>
+        <Tab.Screen name="Посты" component={PostsScreen} 
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={require('../icons/post.png')}
               style={getIconStyle(focused)}
             />
           )

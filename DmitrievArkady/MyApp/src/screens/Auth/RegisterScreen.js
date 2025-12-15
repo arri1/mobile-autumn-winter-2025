@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     ActivityIndicator 
 } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export default function RegisterScreen({ navigation }) {
     const [name, setName] = useState("");

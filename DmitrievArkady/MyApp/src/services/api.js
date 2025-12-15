@@ -130,6 +130,38 @@ export const userAPI = {
     }).then(res => res.json())
 };
 
+// После userAPI добавь:
+export const postsAPI = {
+  getPosts: (page = 1, limit = 10) =>
+    apiFetch(`/posts?page=${page}&limit=${limit}`)
+      .then(res => res.json()),
+
+  getMyPosts: (page = 1, limit = 10) =>
+    apiFetch(`/posts/my?page=${page}&limit=${limit}`)
+      .then(res => res.json()),
+
+  getPost: (id) =>
+    apiFetch(`/posts/${id}`)
+      .then(res => res.json()),
+
+  createPost: (title, content, published = false) =>
+    apiFetch('/posts', {
+      method: 'POST',
+      body: JSON.stringify({ title, content, published })
+    }).then(res => res.json()),
+
+  updatePost: (id, updates) =>
+    apiFetch(`/posts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    }).then(res => res.json()),
+
+  deletePost: (id) =>
+    apiFetch(`/posts/${id}`, {
+      method: 'DELETE'
+    }).then(res => res.json())
+};
+
 initTokens();
 
 export { setTokens, clearTokens, BASE_URL };

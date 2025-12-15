@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export default function ProfileScreen() {
     const { currentUser, logout, deleteAccount } = useAuthStore();
