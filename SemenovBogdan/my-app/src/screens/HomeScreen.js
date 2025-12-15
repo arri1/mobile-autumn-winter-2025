@@ -48,12 +48,16 @@ export default function HomeScreen() {
             contentContainerStyle={styles.list}
             renderItem={({ item }) => (
                 <View style={styles.card}>
+					<View style={{flexDirection: "row", justifyContent: 'space-between'}}>
+						<Text style={styles.author}>
+							{item.author?.name || item.author?.email}
+						</Text>
+						<Text style={styles.author}>
+							{item.createdAt}
+						</Text>
+					</View>
                     <Text style={styles.title}>{item.title}</Text>
                     <Text style={styles.content}>{item.content}</Text>
-
-                    <Text style={styles.author}>
-                        {item.author?.name || item.author?.email}
-                    </Text>
                 </View>
             )}
         />
@@ -82,8 +86,8 @@ const styles = StyleSheet.create({
         color: theme.colors.muted,
     },
     author: {
-        marginTop: 10,
-        fontSize: 12,
+        marginBottom: 20,
+        fontSize: 11,
         color: theme.colors.muted,
     },
 });
