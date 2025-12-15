@@ -13,12 +13,15 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAppStore } from '../store/AppStore';
 import { UseEffectStyles } from '../styles/UseEffectStyles';
 import { AppStyles } from '../styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
 
-export default function UseEffectScreen({ goBack, setActiveScreen, activeScreen }) {
+export default function UseEffectScreen() {
+  const { activeScreen, setActiveScreen } = useAppStore();
+  
   const [userId, setUserId] = useState(1);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -439,6 +442,22 @@ export default function UseEffectScreen({ goBack, setActiveScreen, activeScreen 
               useMemo
             </Text>
           </TouchableOpacity>
+{/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Profile экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('profile')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="person" size={24} color={activeScreen === 'profile' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
+              Profile
+            </Text>
+          </TouchableOpacity>          
         </View>
       </View>
     </View>

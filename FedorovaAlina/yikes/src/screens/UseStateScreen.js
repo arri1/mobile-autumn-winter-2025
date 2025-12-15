@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -10,27 +10,36 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAppStore } from '../store/AppStore';
 import { UseStateStyles } from '../styles/UseStateStyles';
 import { AppStyles } from '../styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
 
-export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }) {
-  const [count, setCount] = useState(0);
-  const [text, setText] = useState('SYSTEM_READY');
-  const [isActive, setIsActive] = useState(false);
-  const [scaleAnim] = useState(new Animated.Value(1));
+export default function UseStateScreen() {
+  const { 
+    count, 
+    useStateText, 
+    useStateActive, 
+    activeScreen,
+    incrementCount, 
+    decrementCount, 
+    resetCount, 
+    toggleUseStateText, 
+    toggleUseStateActive,
+    setActiveScreen
+  } = useAppStore();
+  
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handleIncrement = () => {
-    setCount(count + 1);
+    incrementCount();
     animateButton();
   };
 
   const handleDecrement = () => {
-    if (count > 0) {
-      setCount(count - 1);
-      animateButton();
-    }
+    decrementCount();
+    animateButton();
   };
 
   const animateButton = () => {
@@ -107,7 +116,7 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
 
                 <TouchableOpacity 
                   style={UseStateStyles.actionButton}
-                  onPress={() => setCount(0)}
+                  onPress={resetCount}
                   activeOpacity={0.8}
                 >
                   <Ionicons name="refresh" size={18} color="#ffffff" />
@@ -131,12 +140,12 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
               </View>
               
               <View style={UseStateStyles.textDisplay}>
-                <Text style={UseStateStyles.textValue}>{text}</Text>
+                <Text style={UseStateStyles.textValue}>{useStateText}</Text>
               </View>
 
               <TouchableOpacity
                 style={UseStateStyles.toggleButton}
-                onPress={() => setText(text === 'SYSTEM_READY' ? 'SYSTEM_UNREADY' : 'SYSTEM_READY')}
+                onPress={toggleUseStateText}
                 activeOpacity={0.8}
               >
                 <View style={UseStateStyles.toggleButtonInner}>
@@ -163,29 +172,29 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
               <View style={UseStateStyles.statusContainer}>
                 <View style={UseStateStyles.statusIndicator}>
                   <Ionicons 
-                    name={isActive ? "flash" : "flash-off"} 
+                    name={useStateActive ? "flash" : "flash-off"} 
                     size={40} 
-                    color={isActive ? "#00d4ff" : "#ffffff"} 
+                    color={useStateActive ? "#00d4ff" : "#ffffff"} 
                   />
                 </View>
                 <Text style={UseStateStyles.statusText}>
-                  {isActive ? 'SYSTEM ACTIVE' : 'SYSTEM STANDBY'}
+                  {useStateActive ? 'SYSTEM ACTIVE' : 'SYSTEM STANDBY'}
                 </Text>
               </View>
 
               <TouchableOpacity
                 style={UseStateStyles.toggleButton}
-                onPress={() => setIsActive(!isActive)}
+                onPress={toggleUseStateActive}
                 activeOpacity={0.8}
               >
                 <View style={UseStateStyles.toggleButtonInner}>
                   <Ionicons 
-                    name={isActive ? "toggle" : "toggle-outline"} 
+                    name={useStateActive ? "toggle" : "toggle-outline"} 
                     size={16} 
                     color="#00d4ff" 
                   />
                   <Text style={UseStateStyles.toggleButtonText}>
-                    {isActive ? 'DEACTIVATE' : 'ACTIVATE'}
+                    {useStateActive ? 'DEACTIVATE' : 'ACTIVATE'}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -249,6 +258,7 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
           </TouchableOpacity>
           {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
+
           {/* useMemo экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
@@ -260,6 +270,22 @@ export default function UseStateScreen({ goBack, setActiveScreen, activeScreen }
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
               useMemo
+            </Text>
+          </TouchableOpacity>
+{/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Profile экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('profile')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="person" size={24} color={activeScreen === 'profile' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
+              Profile
             </Text>
           </TouchableOpacity>
         </View>
