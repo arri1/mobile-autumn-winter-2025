@@ -15,20 +15,18 @@ export default function ProfileScreen() {
                 </View>
 
                 <View style={styles.infoContainer}>
-                    <Text style={styles.label}>Логин:</Text>
-                    <Text style={styles.value}>{currentUser?.username}</Text>
+                    <Text style={styles.label}>Почта:</Text>
+                    <Text style={styles.value}>{currentUser?.email}</Text>
                 </View>
 
                 <View style={styles.buttonsContainer}>
                     <Button title="Выйти из аккаунта" onPress={logout} />
                     <View style={styles.spacer} />
-                    {currentUser?.username != "admin" ? (
-                        <Button
-                            title="Удалить аккаунт"
-                            onPress={deleteAccount}
-                            color="#D93B3B"
-                        />
-                    ) : null}
+                    <Button
+                        title="Удалить аккаунт"
+                        onPress={deleteAccount}
+                        color="#D93B3B"
+                    />
                 </View>
             </View>
         </View>
