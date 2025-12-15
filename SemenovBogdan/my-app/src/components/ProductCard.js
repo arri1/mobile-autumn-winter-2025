@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, Image, StyleSheet } from 'react-native';
+import AppButton from '../components/AppButton';
+import { theme } from '../theme/theme';
 
 export default function ProductCard({ item, onAdd }) {
   return (
@@ -9,49 +11,37 @@ export default function ProductCard({ item, onAdd }) {
         style={styles.image}
       />
 
-      <Text style={styles.productName}>{item.name}</Text>
+      <Text style={styles.name}>{item.name}</Text>
       <Text style={styles.price}>{item.price} $</Text>
-
-      <TouchableOpacity style={styles.button} onPress={onAdd}>
-        <Text style={styles.buttonText}>В корзину</Text>
-      </TouchableOpacity>
+      <AppButton title="В корзину" onPress={onAdd} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
-    elevation: 2,
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.md,
   },
   image: {
     width: "100%",
     height: 150,
+    borderRadius: theme.radius.sm,
+    marginBottom: theme.spacing.sm,
     resizeMode: "contain",
-    backgroundColor: "#f0f0f0",
-    marginBottom: 10,
   },
-  productName: {
-    fontSize: 18,
+  name: {
+    fontSize: 16,
     fontWeight: "600",
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
   },
   price: {
-    fontSize: 16,
-    marginVertical: 5,
-    color: "#2c3e50",
-  },
-  button: {
-    marginTop: 5,
-    backgroundColor: "#27ae60",
-    padding: 10,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "500",
+    color: theme.colors.muted,
+    marginBottom: theme.spacing.sm,
   },
 });

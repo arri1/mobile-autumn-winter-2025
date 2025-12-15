@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, ActivityIndicator, StyleSheet } from "react-native";
+import { FlatList, View, ActivityIndicator, StyleSheet } from "react-native";
 import ProductCard from "../components/ProductCard";
 import { useCartStore } from "../store/cartStore";
+import { theme } from '../theme/theme';
 
 export default function ShopScreen() {
   const [products, setProducts] = useState([]);
@@ -38,17 +39,18 @@ export default function ShopScreen() {
   }
 
   return (
-    <FlatList
-      data={products}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <ProductCard item={item} onAdd={() => addToCart(item)} />
-      )}
-      contentContainerStyle={styles.list}
-    />
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ProductCard item={item} onAdd={() => addToCart(item)} />
+        )}
+        contentContainerStyle={{
+          padding: theme.spacing.md,
+          backgroundColor: theme.colors.background,
+        }}
+      />
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  list: { padding: 10 },
-});

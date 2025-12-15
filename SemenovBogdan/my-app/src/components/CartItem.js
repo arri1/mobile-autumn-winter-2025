@@ -1,36 +1,50 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from 'react-native';
+import AppButton from './AppButton';
+import { theme } from '../theme/theme';
 
 export default function CartItem({ item, onRemove }) {
   return (
     <View style={styles.card}>
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.price}>{item.price} ₽</Text>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: "#c0392b" }]}
-        onPress={onRemove}
-      >
-        <Text style={styles.buttonText}>Удалить</Text>
-      </TouchableOpacity>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.info}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.price}>{item.price} $</Text>
+        <AppButton title="Удалить" variant="danger" onPress={onRemove} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 8,
-    elevation: 2,
+    flexDirection: "row",
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.md,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.md,
   },
-  productName: { fontSize: 18, fontWeight: "600" },
-  price: { fontSize: 16, marginVertical: 5, color: "#2c3e50" },
-  button: {
-    marginTop: 5,
-    padding: 10,
-    borderRadius: 6,
-    alignItems: "center",
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: theme.radius.sm,
+    marginRight: theme.spacing.md,
+    resizeMode: "contain",
   },
-  buttonText: { color: "#fff", fontWeight: "600" },
+  info: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+  },
+  price: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: theme.colors.muted,
+    marginBottom: theme.spacing.sm,
+  },
 });
