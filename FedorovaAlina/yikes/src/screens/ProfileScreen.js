@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,11 @@ import {
   Modal,
   Alert,
   Switch,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthStore } from '../store/authStore';
 import { useAppStore } from '../store/AppStore';
 import { ProfileStyles } from '../styles/ProfileStyles';
 import { AppStyles } from '../styles/AppStyles';
@@ -23,18 +25,35 @@ export default function ProfileScreen({ onLogout }) {
   const [darkModeEnabled, setDarkModeEnabled] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   
-  const { user, activeScreen, setActiveScreen } = useAppStore();
+  const { user, isAuthenticated, logout, getProfile } = useAuthStore();
+  const { activeScreen, setActiveScreen } = useAppStore();
+
+  // Загружаем актуальный профиль при открытии экрана
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadUserProfile();
+    }
+  }, [isAuthenticated]);
+
+  const loadUserProfile = async () => {
+    setLoading(true);
+    await getProfile();
+    setLoading(false);
+  };
 
   // Генерация аватара на основе имени
   const getAvatarInitial = () => {
-    return user?.username?.charAt(0)?.toUpperCase() || 'U';
+    return user?.name?.charAt(0)?.toUpperCase() || 
+           user?.username?.charAt(0)?.toUpperCase() || 
+           'U';
   };
 
   // Информация о пользователе
   const userInfo = {
-    email: `${user?.username}@cybersystem.com`,
-    joinDate: '2024-01-15',
+    email: user?.email || `${user?.username}@cybersystem.com`,
+    joinDate: user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '2024-01-15',
     lastLogin: 'Just now',
     accessLevel: user?.role === 'admin' ? 'Administrator' : 'Standard User',
     hooksStudied: 3,
@@ -50,9 +69,10 @@ export default function ProfileScreen({ onLogout }) {
     { id: 4, icon: 'person', text: 'Updated profile information', time: '1 week ago' },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setShowLogoutModal(false);
-    onLogout();
+    await logout();
+    if (onLogout) onLogout();
   };
 
   const handleDeleteAccount = () => {
@@ -60,7 +80,7 @@ export default function ProfileScreen({ onLogout }) {
     Alert.alert(
       'Account Deleted',
       'Your account has been deleted successfully.',
-      [{ text: 'OK', onPress: onLogout }]
+      [{ text: 'OK', onPress: () => logout() }]
     );
   };
 
@@ -79,6 +99,20 @@ export default function ProfileScreen({ onLogout }) {
       [{ text: 'OK' }]
     );
   };
+
+  if (loading) {
+    return (
+      <View style={ProfileStyles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
+        <SafeAreaView style={ProfileStyles.safeArea}>
+          <View style={ProfileStyles.loadingContainer}>
+            <ActivityIndicator size="large" color="#00d4ff" />
+            <Text style={ProfileStyles.loadingText}>Loading profile...</Text>
+          </View>
+        </SafeAreaView>
+      </View>
+    );
+  }
 
   return (
     <View style={ProfileStyles.container}>
@@ -108,8 +142,14 @@ export default function ProfileScreen({ onLogout }) {
                     <View style={ProfileStyles.avatarStatus} />
                   </View>
                 </View>
-                <Text style={ProfileStyles.userName}>{user?.username}</Text>
+                <Text style={ProfileStyles.userName}>{user?.name || user?.username}</Text>
                 <Text style={ProfileStyles.userRole}>{userInfo.accessLevel}</Text>
+                {/* Безопасное отображение ID */}
+                {user?.id && (
+                  <Text style={ProfileStyles.userId}>
+                    ID: {String(user.id).slice(0, 8)}...
+                  </Text>
+                )}
               </View>
 
               <View style={ProfileStyles.infoGrid}>

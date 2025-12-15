@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,45 +14,88 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAppStore } from '../store/AppStore';
+import { useAuthStore } from '../store/authStore';
 import { LoginStyles } from '../styles/LoginStyles';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoginMode, setIsLoginMode] = useState(true);
   
-  const { login, isLoading, error, setError } = useAppStore();
+  const { 
+    login, 
+    register, 
+    isLoading, 
+    error, 
+    clearError,
+  } = useAuthStore();
 
-  // Демо учетные данные
-  const demoCredentials = [
-    { label: 'Admin', username: 'admin', password: 'admin123' },
-    { label: 'User', username: 'user', password: 'user123' },
-    { label: 'Guest', username: 'guest', password: 'guest123' }
-  ];
+  // Очищаем ошибку при смене режима
+  useEffect(() => {
+    clearError();
+  }, [isLoginMode]);
 
   const handleLogin = async () => {
     if (!username.trim() || !password.trim()) {
-      setError('Please enter both username and password');
+      Alert.alert('Error', 'Please enter both username and password');
       return;
     }
 
-    // Используем Zustand для логина
-    const result = await login(username, password);
-
-    if (!result.success) {
-      setError('Invalid credentials. Use demo credentials below.');
+    try {
+      if (isLoginMode) {
+        // ТОЛЬКО реальный логин через API
+        const result = await login(username, password);
+        
+        if (result.success) {
+          // Успешный вход
+          setUsername('');
+          setPassword('');
+          clearError();
+        } else {
+          // Показываем ошибку от API
+          Alert.alert(
+            'Login Failed',
+            result.error || 'Invalid email/username or password'
+          );
+        }
+      } else {
+        // Регистрация через API
+        const email = username.includes('@') ? username : `${username}@cybersystem.com`;
+        const result = await register(username, password, email);
+        
+        if (result.success) {
+          Alert.alert('Success', 'Account created successfully!');
+          setUsername('');
+          setPassword('');
+          clearError();
+        } else {
+          Alert.alert('Registration Failed', result.error || 'Registration failed');
+        }
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Network error. Please check your connection.');
     }
   };
 
-  const copyToClipboard = async (text) => {
-    Alert.alert('Copied!', 'Text copied to clipboard');
-  };
-
-  const fillDemoCredentials = (cred) => {
-    setUsername(cred.username);
-    setPassword(cred.password);
-    setError('');
+  // Функция проверки статуса API
+  const checkApiStatus = async () => {
+    try {
+      setLoadingStatus(true);
+      const response = await fetch('https://cloud.kit-imi.info/api/health', {
+        timeout: 5000
+      });
+      
+      if (response.ok) {
+        Alert.alert('API Status', '✅ API is working properly');
+      } else {
+        Alert.alert('API Status', '⚠️ API returned an error');
+      }
+    } catch (error) {
+      Alert.alert('API Status', '❌ Cannot connect to API. Please check the server.');
+    } finally {
+      setLoadingStatus(false);
+    }
   };
 
   return (
@@ -84,19 +127,59 @@ export default function LoginScreen() {
             <View style={LoginStyles.loginCard}>
               <Text style={LoginStyles.loginTitle}>SYSTEM ACCESS</Text>
               <Text style={LoginStyles.loginSubtitle}>
-                Enter credentials to access React Native Hooks dashboard
+                {isLoginMode 
+                  ? 'Enter credentials to access React Native Hooks dashboard'
+                  : 'Create new account to get started'
+                }
               </Text>
+
+              {/* Переключение между логином и регистрацией */}
+              <View style={LoginStyles.modeSwitchContainer}>
+                <TouchableOpacity
+                  style={[
+                    LoginStyles.modeButton,
+                    isLoginMode && LoginStyles.modeButtonActive
+                  ]}
+                  onPress={() => setIsLoginMode(true)}
+                  disabled={isLoading}
+                >
+                  <Text style={[
+                    LoginStyles.modeButtonText,
+                    isLoginMode && LoginStyles.modeButtonTextActive
+                  ]}>
+                    LOGIN
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[
+                    LoginStyles.modeButton,
+                    !isLoginMode && LoginStyles.modeButtonActive
+                  ]}
+                  onPress={() => setIsLoginMode(false)}
+                  disabled={isLoading}
+                >
+                  <Text style={[
+                    LoginStyles.modeButtonText,
+                    !isLoginMode && LoginStyles.modeButtonTextActive
+                  ]}>
+                    REGISTER
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               {/* Поле ввода логина */}
               <View style={LoginStyles.inputContainer}>
-                <Text style={LoginStyles.inputLabel}>USERNAME</Text>
+                <Text style={LoginStyles.inputLabel}>
+                  {isLoginMode ? 'USERNAME OR EMAIL' : 'USERNAME'}
+                </Text>
                 <View style={LoginStyles.inputWrapper}>
                   <View style={LoginStyles.inputIcon}>
                     <Ionicons name="person" size={20} color="rgba(255, 255, 255, 0.6)" />
                   </View>
                   <TextInput
                     style={LoginStyles.textInput}
-                    placeholder="Enter username"
+                    placeholder={isLoginMode ? "Enter username or email" : "Enter username"}
                     placeholderTextColor="rgba(255, 255, 255, 0.3)"
                     value={username}
                     onChangeText={setUsername}
@@ -138,7 +221,15 @@ export default function LoginScreen() {
                 </View>
               </View>
 
-              {/* Кнопка входа */}
+              {/* Сообщение об ошибке */}
+              {error ? (
+                <View style={LoginStyles.errorContainer}>
+                  <Ionicons name="warning" size={20} color="#ff2a6d" />
+                  <Text style={LoginStyles.errorText}>{error}</Text>
+                </View>
+              ) : null}
+
+              {/* Кнопка входа/регистрации */}
               <TouchableOpacity
                 style={[
                   LoginStyles.loginButton,
@@ -155,46 +246,21 @@ export default function LoginScreen() {
                     LoginStyles.loginButtonText,
                     (!username.trim() || !password.trim()) && LoginStyles.loginButtonTextDisabled
                   ]}>
-                    ACCESS SYSTEM
+                    {isLoginMode ? 'ACCESS SYSTEM' : 'CREATE ACCOUNT'}
                   </Text>
                 )}
               </TouchableOpacity>
 
-              {/* Сообщение об ошибке */}
-              {error ? (
-                <View style={LoginStyles.errorContainer}>
-                  <Text style={LoginStyles.errorText}>{error}</Text>
-                </View>
-              ) : null}
-
-              {/* Демо учетные данные */}
-              <View style={LoginStyles.demoCredentials}>
-                <Text style={LoginStyles.demoTitle}>DEMO CREDENTIALS</Text>
-                {demoCredentials.map((cred, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={LoginStyles.demoItem}
-                    onPress={() => fillDemoCredentials(cred)}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={LoginStyles.demoLabel}>{cred.label}:</Text>
-                    <Text style={LoginStyles.demoValue}>username: {cred.username}</Text>
-                    <TouchableOpacity
-                      style={LoginStyles.demoCopyButton}
-                      onPress={() => copyToClipboard(cred.username)}
-                    >
-                      <Ionicons name="copy" size={14} color="rgba(255, 255, 255, 0.4)" />
-                    </TouchableOpacity>
-                    <Text style={LoginStyles.demoValue}>password: {cred.password}</Text>
-                    <TouchableOpacity
-                      style={LoginStyles.demoCopyButton}
-                      onPress={() => copyToClipboard(cred.password)}
-                    >
-                      <Ionicons name="copy" size={14} color="rgba(255, 255, 255, 0.4)" />
-                    </TouchableOpacity>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              {/* Кнопка проверки API */}
+              <TouchableOpacity
+                style={LoginStyles.apiStatusButton}
+                onPress={checkApiStatus}
+                activeOpacity={0.7}
+                disabled={isLoading}
+              >
+                <Ionicons name="wifi" size={16} color="#00d4ff" />
+                <Text style={LoginStyles.apiStatusButtonText}>CHECK API STATUS</Text>
+              </TouchableOpacity>
             </View>
 
             {/* Нижняя кибер-линия */}
@@ -204,11 +270,15 @@ export default function LoginScreen() {
             <View style={LoginStyles.terminalOutput}>
               <View style={LoginStyles.terminalLine}>
                 <Text style={LoginStyles.terminalPrompt}>$</Text>
-                <Text style={LoginStyles.terminalText}>System login interface initialized</Text>
+                <Text style={LoginStyles.terminalText}>
+                  {isLoginMode ? 'System login interface initialized' : 'Registration interface active'}
+                </Text>
               </View>
               <View style={LoginStyles.terminalLine}>
                 <Text style={LoginStyles.terminalPrompt}>{'>'}</Text>
-                <Text style={LoginStyles.terminalText}>Awaiting user authentication...</Text>
+                <Text style={LoginStyles.terminalText}>
+                  {isLoginMode ? 'Awaiting user authentication...' : 'Ready to create new account...'}
+                </Text>
               </View>
               <View style={LoginStyles.terminalLine}>
                 <Text style={LoginStyles.terminalPrompt}>{'>'}</Text>
@@ -216,7 +286,12 @@ export default function LoginScreen() {
               </View>
               <View style={LoginStyles.terminalLine}>
                 <Text style={LoginStyles.terminalPrompt}>#</Text>
-                <Text style={LoginStyles.terminalText}>Access level: {username === 'admin' ? 'admin' : 'standard'}</Text>
+                <Text style={LoginStyles.terminalText}>
+                  {isLoginMode 
+                    ? 'Authenticating via API server...'
+                    : 'Creating account via API server...'
+                  }
+                </Text>
               </View>
             </View>
 

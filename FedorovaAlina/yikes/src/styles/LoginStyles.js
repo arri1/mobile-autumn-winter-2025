@@ -228,4 +228,23 @@ export const LoginStyles = StyleSheet.create({
     fontFamily: 'monospace',
     fontSize: 14,
   },
+  apiStatusButton: {
+  marginTop: 16,
+  paddingVertical: 12,
+  paddingHorizontal: 24,
+  backgroundColor: 'rgba(0, 212, 255, 0.1)',
+  borderWidth: 1,
+  borderColor: 'rgba(0, 212, 255, 0.3)',
+  borderRadius: 12,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'row',
+},
+
+apiStatusButtonText: {
+  color: '#00d4ff',
+  fontSize: 14,
+  fontWeight: '600',
+  marginLeft: 8,
+},
 });

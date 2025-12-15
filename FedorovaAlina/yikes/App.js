@@ -10,13 +10,13 @@ import {
   Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthStore } from './src/store/authStore';
 import { useAppStore } from './src/store/AppStore';
 import UseStateScreen from './src/screens/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectScreen';
 import UseMemoScreen from './src/screens/UseMemoScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-
 import { AppStyles } from './src/styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
@@ -27,14 +27,23 @@ export default function App() {
     isAuthenticated, 
     activeScreen,
     setActiveScreen,
-    checkAuthStatus,
+    initialize,
     logout
-  } = useAppStore();
+  } = useAuthStore();
+  
+  const { setActiveScreen: setUIScreen } = useAppStore();
 
   // Проверка авторизации при загрузке
   useEffect(() => {
-    checkAuthStatus();
+    initialize();
   }, []);
+
+  // Синхронизируем экраны между хранилищами
+  useEffect(() => {
+    if (activeScreen) {
+      setUIScreen(activeScreen);
+    }
+  }, [activeScreen]);
 
   // Если пользователь не авторизован, показываем экран логина
   if (!isAuthenticated) {
@@ -65,7 +74,7 @@ export default function App() {
           <View style={AppStyles.header}>
             <View style={AppStyles.systemInfo}>
               <Text style={AppStyles.systemTitle}>REACT NATIVE HOOKS</Text>
-              <Text style={AppStyles.systemSubtitle}>v2.0.5 | {user?.username || 'User'}</Text>
+              <Text style={AppStyles.systemSubtitle}>v2.0.5 | {user?.name || user?.username || 'User'}</Text>
             </View>
             <TouchableOpacity 
               style={[AppStyles.systemStatus, { flexDirection: 'row', alignItems: 'center' }]}
@@ -94,7 +103,7 @@ export default function App() {
                 fontWeight: 'bold',
                 marginBottom: 8 
               }}>
-                Welcome, {user?.username}!
+                Welcome, {user?.name || user?.username}!
               </Text>
               <Text style={{ 
                 color: 'rgba(255, 255, 255, 0.7)', 
