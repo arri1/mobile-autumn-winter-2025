@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/AppStore';
+import { useAuthStore } from '../store/authStore'; // Добавляем
 import { UseStateStyles } from '../styles/UseStateStyles';
 import { AppStyles } from '../styles/AppStyles';
 
@@ -21,14 +22,16 @@ export default function UseStateScreen() {
     count, 
     useStateText, 
     useStateActive, 
-    activeScreen,
+    activeScreen, // Берем из AppStore для подсветки
     incrementCount, 
     decrementCount, 
     resetCount, 
     toggleUseStateText, 
     toggleUseStateActive,
-    setActiveScreen
   } = useAppStore();
+  
+  // Для навигации используем authStore
+  const { setActiveScreen } = useAuthStore();
   
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -286,6 +289,22 @@ export default function UseStateScreen() {
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
               Profile
+            </Text>
+          </TouchableOpacity>
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Посты экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('posts')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="document-text" size={24} color={activeScreen === 'posts' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'posts' && AppStyles.dockTextActive]}>
+              Посты
             </Text>
           </TouchableOpacity>
         </View>
