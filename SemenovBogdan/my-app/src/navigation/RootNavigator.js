@@ -8,16 +8,16 @@ import SplashScreen from '../screens/SplashScreen';
 const Stack = createStackNavigator();
 
 export default function RootNavigator() {
-	const { initializing, userToken } = useAuth();
+	const { accessToken, initializing } = useAuth();
 
 	if (initializing) return <SplashScreen />;
 
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			{userToken == null ? (
-				<Stack.Screen name="Auth" component={AuthStack} />
-			) : (
+			{accessToken ? (
 				<Stack.Screen name="App" component={AppTabs} />
+			) : (
+				<Stack.Screen name="Auth" component={AuthStack} />
 			)}
 		</Stack.Navigator>
 	);

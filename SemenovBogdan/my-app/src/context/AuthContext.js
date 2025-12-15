@@ -1,28 +1,95 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-	const [userToken, setUserToken] = useState(null);
+	const [user, setUser] = useState(null);
 	const [initializing, setInitializing] = useState(true);
+	const [accessToken, setAccessToken] = useState(null);
+	const [refreshToken, setRefreshToken] = useState(null);
 
 	useEffect(() => {
-		setTimeout(() => {
-			setUserToken(null);
-			setInitializing(false);
-		}, 1000);
+		setInitializing(false);
 	}, []);
 
-	const login = (username, password) => {
-		setUserToken('dummy-token');
+	const register = async ({ email, password }) => {
+		try {
+			setInitializing(true);
+
+			const response = await fetch(
+			'https://cloud.kit-imi.info/api/auth/register',
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			}
+			);
+
+			const json = await response.json();
+
+			if (!response.ok) {
+				throw new Error(json.message || 'Register error');
+			}
+
+			setUser(json.data.user);
+			setAccessToken(json.data.accessToken);
+			setRefreshToken(json.data.refreshToken);
+		} catch (e) {
+			console.error('REGISTER ERROR:', e.message);
+			throw e;
+		} finally {
+			setInitializing(false);
+		}
 	};
 
 	const logout = () => {
-		setUserToken(null);
+		setUser(null);
+		setAccessToken(null);
+		setRefreshToken(null);
+	};
+
+	const login = async (email, password) => {
+		try {
+		setInitializing(true);
+
+		const response = await fetch(
+			'https://cloud.kit-imi.info/api/auth/login',
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			}
+		);
+
+		const json = await response.json();
+
+		if (!response.ok) {
+			throw new Error(json.message || 'Login failed');
+		}
+
+		setUser(json.data.user);
+		setAccessToken(json.data.accessToken);
+		setRefreshToken(json.data.refreshToken);
+		} catch (e) {
+			console.error('LOGIN ERROR:', e.message);
+			throw e;
+		} finally {
+			setInitializing(false);
+		}
 	};
 
 	return (
-		<AuthContext.Provider value={{ userToken, initializing, login, logout }}>
+		<AuthContext.Provider
+			value={{
+				user,
+				accessToken,
+				refreshToken,
+				initializing,
+				register,
+				login,
+				logout,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	);
