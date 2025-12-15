@@ -5,10 +5,14 @@ import {
 	Button,
 	StyleSheet,
 	Alert,
+	TouchableOpacity,
+	Text,
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
+	const navigation = useNavigation();
 	const { login } = useAuth();
 
 	const [email, setEmail] = useState('');
@@ -39,6 +43,14 @@ export default function LoginScreen() {
 				style={styles.input}
 			/>
 			<Button title="Войти" onPress={onSubmit} />
+			<TouchableOpacity
+				style={styles.registerBtn}
+				onPress={() => navigation.navigate('Register')}
+			>
+				<Text style={styles.registerText}>
+					Нет аккаунта? Зарегистрироваться
+				</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
@@ -51,5 +63,13 @@ const styles = StyleSheet.create({
 		padding: 12,
 		marginBottom: 12,
 		borderRadius: 6,
+	},
+	registerBtn: {
+		marginTop: 16,
+		alignItems: 'center',
+	},
+	registerText: {
+		color: '#3498db',
+		fontSize: 14,
 	},
 });
