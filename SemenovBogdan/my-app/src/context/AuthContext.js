@@ -42,11 +42,25 @@ export const AuthProvider = ({ children }) => {
 		}
 	};
 
-	const logout = () => {
-		setUser(null);
-		setAccessToken(null);
-		setRefreshToken(null);
-	};
+const logout = async () => {
+    try {
+        if (refreshToken) {
+            await fetch('https://cloud.kit-imi.info/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ refreshToken }),
+            });
+        }
+    } catch (e) {
+        console.warn('Logout error:', e.message);
+    } finally {
+        setUser(null);
+        setAccessToken(null);
+        setRefreshToken(null);
+    }
+};
 
 	const login = async (email, password) => {
 		try {
