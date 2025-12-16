@@ -3,17 +3,17 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { useAuthStore } from '../store/useAuthStore';
 
 export default function LoginScreen({ navigation }: any) {
-  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
-  const doLogin = useAuthStore(state => state.login);
+  const login = useAuthStore(state => state.login);
 
   const handleLogin = async () => {
-    if (!login.trim() || !pass.trim()) {
+    if (!email.trim() || !pass.trim()) {
       Alert.alert('Ошибка', 'Введите логин и пароль');
       return;
     }
 
-    const ok = await doLogin(login, pass);
+    const ok = await login(email, pass);
     if (!ok) Alert.alert('Ошибка', 'Неверные данные');
   };
 
@@ -22,9 +22,9 @@ export default function LoginScreen({ navigation }: any) {
       <Text style={styles.title}>Вход</Text>
       <TextInput
         style={styles.input}
-        placeholder="Логин"
-        value={login}
-        onChangeText={setLogin}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         autoCapitalize="none"
       />
       <TextInput

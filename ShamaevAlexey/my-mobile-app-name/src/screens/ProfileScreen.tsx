@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useAuthStore } from '../store/useAuthStore';
 
 export default function ProfileScreen() {
-  const { currentUser, logout } = useAuthStore();
+  const { currentUser, getProfile, logout } = useAuthStore();
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '—';
+    const date = new Date(dateString);
+    return date.toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -32,8 +48,23 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.infoBlock}>
-        <Text style={styles.label}>Логин:</Text>
-        <Text style={styles.value}>{currentUser?.username || '—'}</Text>
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.value}>{currentUser?.email || '—'}</Text>
+      </View>
+
+      <View style={styles.infoBlock}>
+        <Text style={styles.label}>Роль:</Text>
+        <Text style={styles.value}>{currentUser?.role || '—'}</Text>
+      </View>
+
+      <View style={styles.infoBlock}>
+        <Text style={styles.label}>Создан:</Text>
+        <Text style={styles.value}>{formatDate(currentUser?.createdAt)}</Text>
+      </View>
+
+      <View style={styles.infoBlock}>
+        <Text style={styles.label}>Обновлён:</Text>
+        <Text style={styles.value}>{formatDate(currentUser?.updatedAt)}</Text>
       </View>
 
       <View style={styles.spacer} />

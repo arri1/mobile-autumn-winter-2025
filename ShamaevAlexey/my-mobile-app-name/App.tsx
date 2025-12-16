@@ -13,6 +13,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import UseStateScreen from './src/screens/useState';
 import UseEffectScreen from './src/screens/useEffect';
 import UseMemoScreen from './src/screens/useMemo';
+import UsersScreen from './src/screens/UsersScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,16 +60,24 @@ function MainTabs() {
           tabBarIcon: ({ color, size }) => <Text style={{ color, fontSize: size }}>👤</Text>,
         }}
       />
+      <Tab.Screen
+        name="Users"
+        component={UsersScreen}
+        options={{
+          title: 'Пользователи',
+          tabBarIcon: ({ color, size }) => <Text style={{ color, fontSize: size }}>👥</Text>,
+        }}
+      />
     </Tab.Navigator>
   );
 }
 
 export default function App() {
-  const { initAuth, isAuthenticated } = useAuthStore();
+  const { checkAuth, isAuthenticated, isLoading } = useAuthStore();
 
   useEffect(() => {
-    initAuth();
-  }, [initAuth]);
+    checkAuth();
+  }, [checkAuth]);
 
   return (
     <NavigationContainer>

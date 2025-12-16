@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { useAuthStore } from '../store/useAuthStore';
 
 export default function RegisterScreen({ navigation }: any) {
   const [name, setName] = useState('');
-  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const doRegister = useAuthStore(state => state.register);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigation.replace('Main');
+    }
+  }, [isAuthenticated, navigation]);
 
   const handleRegister = async () => {
-    if (!name.trim() || !login.trim() || !pass.trim()) {
+    if (!name.trim() || !email.trim() || !pass.trim()) {
       Alert.alert('Ошибка', 'Заполните все поля');
       return;
     }
 
-    const ok = await doRegister(name, login, pass);
+    const ok = await doRegister(name, email, pass);
     if (ok) {
       Alert.alert('Успех', 'Регистрация прошла успешно');
-      navigation.navigate('Login');
     } else {
-      Alert.alert('Ошибка', 'Логин уже занят');
+      Alert.alert('Ошибка', 'Email уже занят');
     }
   };
 
@@ -34,9 +40,9 @@ export default function RegisterScreen({ navigation }: any) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Логин"
-        value={login}
-        onChangeText={setLogin}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         autoCapitalize="none"
       />
       <TextInput
@@ -47,6 +53,7 @@ export default function RegisterScreen({ navigation }: any) {
         secureTextEntry
       />
       <Button title="Зарегистрироваться" onPress={handleRegister} />
+      <View style={{ height: 12 }} />
       <Button
         title="Назад"
         onPress={() => navigation.navigate('Login')}
