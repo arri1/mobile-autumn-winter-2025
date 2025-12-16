@@ -1,7 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView, Text } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { styles } from "./styles";
 
@@ -53,13 +51,6 @@ export default function UseMemoExample() {
   const [renderCount, setRenderCount] = useState(0);
 
   // Получаем цвета для текущей темы
-  const backgroundColor = useThemeColor({}, 'background');
-  const textColor = useThemeColor({}, 'text');
-  const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
-  const borderColor = useThemeColor({ light: '#ddd', dark: '#38383A' }, 'background');
-  const inputBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
-  const buttonBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
-  const secondaryText = useThemeColor({ light: '#666', dark: '#999' }, 'text');
 
  
 
@@ -123,50 +114,49 @@ export default function UseMemoExample() {
   }, [filteredAndSortedProducts]);
 
   const renderProduct = ({ item }: { item: Product }) => (
-    <View style={[styles.productCard, { backgroundColor: cardBg, borderColor }]}>
+    <View style={[styles.productCard]}>
       <View style={styles.productHeader}>
-        <ThemedText style={styles.productName}>{item.name}</ThemedText>
-        <ThemedText style={styles.productPrice}>{item.price} ₽</ThemedText>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>{item.price} ₽</Text>
       </View>
       <View style={styles.productFooter}>
-        <ThemedText style={styles.productCategory}>{item.category}</ThemedText>
-        <ThemedText style={styles.productRating}>⭐ {item.rating}</ThemedText>
+        <Text style={styles.productCategory}>{item.category}</Text>
+        <Text style={styles.productRating}>⭐ {item.rating}</Text>
       </View>
     </View>
   );
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</ThemedText>
-          <ThemedText style={styles.subtitle}>Оптимизация вычислений</ThemedText>
-        </ThemedView>
+        <View style={styles.header}>
+          <Text style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</Text>
+          <Text style={styles.subtitle}>Оптимизация вычислений</Text>
+        </View>
 
-        <ThemedView style={styles.infoBox}>
-          <ThemedText type="subtitle" style={styles.infoTitle}>Что происходит:</ThemedText>
-          <ThemedText style={styles.infoText}>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Что происходит:</Text>
+          <Text style={styles.infoText}>
             • useMemo кэширует результаты фильтрации{'\n'}
             • Пересчет только при изменении зависимостей{'\n'}
             • Всего товаров в базе: {PRODUCTS.length}{'\n'}
-          </ThemedText>
-        </ThemedView>
+          </Text>
+        </View>
 
         {/* Поиск */}
-        <ThemedView style={styles.searchSection}>
-          <ThemedText style={styles.sectionTitle}>Поиск:</ThemedText>
+        <View style={styles.searchSection}>
+          <Text style={styles.sectionTitle}>Поиск:</Text>
           <TextInput
-            style={[styles.searchInput, { backgroundColor: inputBg, borderColor, color: textColor }]}
+            style={[styles.searchInput]}
             placeholder="Введите название товара..."
-            placeholderTextColor={secondaryText}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-        </ThemedView>
+        </View>
 
         {/* Категории */}
-        <ThemedView style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Категория:</ThemedText>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Категория:</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.categoryContainer}>
               {categories.map(cat => (
@@ -174,85 +164,81 @@ export default function UseMemoExample() {
                   key={cat}
                   style={[
                     styles.categoryButton,
-                    { backgroundColor: buttonBg, borderColor },
                     selectedCategory === cat && styles.categoryButtonActive
                   ]}
                   onPress={() => setSelectedCategory(cat)}>
-                  <ThemedText
+                  <Text
                     style={[
                       styles.categoryText,
                       selectedCategory === cat && styles.categoryTextActive
                     ]}>
                     {cat}
-                  </ThemedText>
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
           </ScrollView>
-        </ThemedView>
+        </View>
 
         {/* Сортировка */}
-        <ThemedView style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Сортировка:</ThemedText>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Сортировка:</Text>
           <View style={styles.sortContainer}>
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'name' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('name')}>
-              <ThemedText style={styles.sortText}>По имени</ThemedText>
+              <Text style={styles.sortText}>По имени</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'price' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('price')}>
-              <ThemedText style={styles.sortText}>По цене</ThemedText>
+              <Text style={styles.sortText}>По цене</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'rating' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('rating')}>
-              <ThemedText style={styles.sortText}>По рейтингу</ThemedText>
+              <Text style={styles.sortText}>По рейтингу</Text>
             </TouchableOpacity>
           </View>
-        </ThemedView>
+        </View>
 
         {/* Статистика */}
-        <ThemedView style={[styles.statsBox, { borderColor }]}>
-          <ThemedText type="subtitle" style={styles.statsTitle}>Статистика:</ThemedText>
+        <View style={[styles.statsBox]}>
+          <Text style={styles.statsTitle}>Статистика:</Text>
           <View style={styles.statsGrid}>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
-              <ThemedText style={styles.statValue}>{statistics.count}</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Найдено</ThemedText>
+            <View style={[styles.statItem]}>
+              <Text style={styles.statValue}>{statistics.count}</Text>
+              <Text style={[styles.statLabel]}>Найдено</Text>
             </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
-              <ThemedText style={styles.statValue}>{statistics.avgPrice} ₽</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Средняя цена</ThemedText>
+            <View style={[styles.statItem]}>
+              <Text style={styles.statValue}>{statistics.avgPrice} ₽</Text>
+              <Text style={[styles.statLabel]}>Средняя цена</Text>
             </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
-              <ThemedText style={styles.statValue}>{statistics.maxPrice} ₽</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Макс. цена</ThemedText>
+            <View style={[styles.statItem]}>
+              <Text style={styles.statValue}>{statistics.maxPrice} ₽</Text>
+              <Text style={[styles.statLabel]}>Макс. цена</Text>
             </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
-              <ThemedText style={styles.statValue}>⭐ {statistics.avgRating}</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Средний рейтинг</ThemedText>
+            <View style={[styles.statItem]}>
+              <Text style={styles.statValue}>⭐ {statistics.avgRating}</Text>
+              <Text style={[styles.statLabel]}>Средний рейтинг</Text>
             </View>
           </View>
-        </ThemedView>
+        </View>
 
         {/* Список товаров */}
-        <ThemedView style={styles.productsSection}>
-          <ThemedText style={styles.sectionTitle}>
+        <View style={styles.productsSection}>
+          <Text style={styles.sectionTitle}>
             Товары ({filteredAndSortedProducts.length}):
-          </ThemedText>
+          </Text>
           <View style={styles.productsList}>
             {filteredAndSortedProducts.slice(0, 50).map(product => (
               <View key={product.id}>
@@ -260,14 +246,14 @@ export default function UseMemoExample() {
               </View>
             ))}
             {filteredAndSortedProducts.length > 50 && (
-              <ThemedText style={styles.moreText}>
+              <Text style={styles.moreText}>
                 ... и еще {filteredAndSortedProducts.length - 50} товаров
-              </ThemedText>
+              </Text>
             )}
           </View>
-        </ThemedView>
+        </View>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }
 

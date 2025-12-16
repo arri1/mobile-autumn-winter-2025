@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView, Image as RNImage, Dimensions } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView, Image as RNImage, Dimensions, Text } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { styles } from "./styles";
 type CatImage = {
@@ -59,33 +57,33 @@ export default function UseEffectExample() {
 
   return (
     <ScrollView style={styles.scrollView}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.title}>Пример useEffect: тапалка котейек</ThemedText>
-          <ThemedText style={styles.subtitle}>Загрузка данных из API</ThemedText>
-        </ThemedView>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Пример useEffect: тапалка котейек</Text>
+          <Text style={styles.subtitle}>Загрузка данных из API</Text>
+        </View>
 
-        <ThemedView style={styles.infoBox}>
-          <ThemedText type="subtitle" style={styles.infoTitle}>Что происходит:</ThemedText>
-          <ThemedText style={styles.infoText}>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Что происходит:</Text>
+          <Text style={styles.infoText}>
             • useEffect загружает фото при открытии вкладки{'\n'}
             • useState хранит данные и состояние загрузки{'\n'}
             • API: thecatapi.com{'\n'}
             • Загружено фотографий: {fetchCount}
-          </ThemedText>
-        </ThemedView>
+          </Text>
+        </View>
 
-        <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
+        <View style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
           {loading ? (
             <View style={[styles.loadingContainer, { height: imageHeight }]}>
               <ActivityIndicator size="large" color="#007AFF" />
-              <ThemedText style={styles.loadingText}>Загрузка котика...</ThemedText>
+              <Text style={styles.loadingText}>Загрузка котика...</Text>
             </View>
           ) : error ? (
             <View style={[styles.errorContainer, { height: imageHeight }]}>
-              <ThemedText style={styles.errorText}>❌ {error}</ThemedText>
+              <Text style={styles.errorText}>❌ {error}</Text>
               <TouchableOpacity style={styles.retryButton} onPress={handleLoadNewCat}>
-                <ThemedText style={styles.buttonText}>Попробовать снова</ThemedText>
+                <Text style={styles.buttonText}>Попробовать снова</Text>
               </TouchableOpacity>
             </View>
           ) : catImage ? (
@@ -98,25 +96,25 @@ export default function UseEffectExample() {
                 style={[styles.catImage, { width: screenWidth, height: imageHeight }]}
                 resizeMode="contain"
               />
-              <ThemedText style={styles.imageInfo}>
+              <Text style={styles.imageInfo}>
                 ID: {catImage.id.substring(0, 8)}... • Формат 16:9
-              </ThemedText>
+              </Text>
               <View style={styles.tapHint}>
-                <ThemedText style={styles.tapHintText}>👆 Нажми для новой кошки</ThemedText>
+                <Text style={styles.tapHintText}>👆 Нажми для новой кошки</Text>
               </View>
             </TouchableOpacity>
           ) : null}
-        </ThemedView>
+        </View>
 
-        <ThemedView style={styles.stats}>
-          <ThemedText style={styles.statsText}>
+        <View style={styles.stats}>
+          <Text style={styles.statsText}>
             Статистика:{'\n'}
             Состояние: {loading ? 'Загрузка' : 'Готово'}{'\n'}
             Ошибок: {error ? '1' : '0'}{'\n'}
             Всего загрузок: {fetchCount}
-          </ThemedText>
-        </ThemedView>
-      </ThemedView>
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }

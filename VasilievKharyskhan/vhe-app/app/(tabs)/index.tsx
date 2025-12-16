@@ -1,7 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Image, TouchableOpacity } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, ScrollView, View, Image, TouchableOpacity, Text } from 'react-native';
 import { useTheme } from '@/contexts/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { styles } from "./styles";
@@ -11,12 +9,12 @@ export default function AboutScreen() {
   const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
   return (
     <ScrollView style={styles.scrollView}>
-      <ThemedView style={styles.container}>
+      <View style={styles.container}>
         {/* Header */}
-        <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.mainTitle}>
+        <View style={styles.header}>
+          <Text style={styles.mainTitle}>
             О приложении
-          </ThemedText>
+          </Text>
           <View style={styles.divider} />
 
           {/* Theme Toggle Button */}
@@ -24,16 +22,16 @@ export default function AboutScreen() {
             style={[styles.themeButton, { backgroundColor: buttonBg }]}
             onPress={toggleTheme}
             activeOpacity={0.7}>
-            <ThemedText style={styles.themeButtonText}>
+            <Text style={styles.themeButtonText}>
               {actualColorScheme === 'dark' ? '☀️' : '🌙'}
               {' '}
               {actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
-            </ThemedText>
+            </Text>
           </TouchableOpacity>
-        </ThemedView>
+        </View>
 
         {/* Profile Section */}
-        <ThemedView style={styles.profileSection}>
+        <View style={styles.profileSection}>
           <View style={styles.photoContainer}>
             <Image
               source={require('@/assets/images/profile.jpg')}
@@ -41,130 +39,130 @@ export default function AboutScreen() {
             />
           </View>
 
-          <ThemedText type="subtitle" style={styles.name}>
+          <Text style={styles.name}>
             Васильев Харысхан
-          </ThemedText>
+          </Text>
 
-          <ThemedText style={styles.info}>
+          <Text style={styles.info}>
             ФИИТ-22
-          </ThemedText>
-        </ThemedView>
+          </Text>
+        </View>
 
         {/* Project Info */}
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle" style={styles.cardTitle}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
             О проекте
-          </ThemedText>
-          <ThemedText style={styles.cardText}>
+          </Text>
+          <Text style={styles.cardText}>
             Данное приложение разработано в рамках изучения дисциплины
             "Разработка мобильных приложений" в Северо-Восточном федеральном
             университете имени М.К. Аммосова.
-          </ThemedText>
-        </ThemedView>
+          </Text>
+        </View>
 
         {/* Features */}
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle" style={styles.cardTitle}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
             Функционал
-          </ThemedText>
-          <ThemedView style={styles.featuresList}>
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>🎨</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useState</ThemedText>
-                <ThemedText style={styles.featureDescription}>
+          </Text>
+          <View style={styles.featuresList}>
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>🎨</Text>
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>useState</Text>
+                <Text style={styles.featureDescription}>
                   Интерактивное рисование пальцем с выбором цвета и размера кисти
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
+                </Text>
+              </View>
+            </View>
 
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>🐱</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useEffect</ThemedText>
-                <ThemedText style={styles.featureDescription}>
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>🐱</Text>
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>useEffect</Text>
+                <Text style={styles.featureDescription}>
                   Загрузка случайных фотографий кошек из API в формате 16:9
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
+                </Text>
+              </View>
+            </View>
 
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>📊</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useMemo</ThemedText>
-                <ThemedText style={styles.featureDescription}>
+            <View style={styles.featureItem}>
+              <Text style={styles.featureIcon}>📊</Text>
+              <View style={styles.featureTextContainer}>
+                <Text style={styles.featureTitle}>useMemo</Text>
+                <Text style={styles.featureDescription}>
                   Оптимизация производительности с фильтрацией и сортировкой 500 товаров
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
-            
-          </ThemedView>
-        </ThemedView>
+                </Text>
+              </View>
+            </View>
+
+          </View>
+        </View>
 
         {/* Technologies */}
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle" style={styles.cardTitle}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
             Технологии
-          </ThemedText>
-          <ThemedView style={styles.techGrid}>
+          </Text>
+          <View style={styles.techGrid}>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>React Native</ThemedText>
+              <Text style={styles.techText}>React Native</Text>
             </View>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>TypeScript</ThemedText>
+              <Text style={styles.techText}>TypeScript</Text>
             </View>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>Expo</ThemedText>
+              <Text style={styles.techText}>Expo</Text>
             </View>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>React Hooks</ThemedText>
+              <Text style={styles.techText}>React Hooks</Text>
             </View>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>SVG</ThemedText>
+              <Text style={styles.techText}>SVG</Text>
             </View>
             <View style={styles.techBadge}>
-              <ThemedText style={styles.techText}>Gestures</ThemedText>
+              <Text style={styles.techText}>Gestures</Text>
             </View>
-          </ThemedView>
-        </ThemedView>
+          </View>
+        </View>
 
         {/* Contact */}
-        <ThemedView style={styles.card}>
-          <ThemedText type="subtitle" style={styles.cardTitle}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
             Контакты
-          </ThemedText>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Университет:</ThemedText>
-            <ThemedText style={styles.contactValue}>СВФУ им. М.К. Аммосова</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Факультет:</ThemedText>
-            <ThemedText style={styles.contactValue}>ФИИиТ</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Группа:</ThemedText>
-            <ThemedText style={styles.contactValue}>ФИИТ-22</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Телеграм:</ThemedText>
-            <ThemedText style={styles.contactValue}>https://t.me/DartGrid</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>GitHub:</ThemedText>
-            <ThemedText style={styles.contactValue}>Dartgrid</ThemedText>
-          </ThemedView>
-        </ThemedView>
+          </Text>
+          <View style={styles.contactItem}>
+            <Text style={styles.contactLabel}>Университет:</Text>
+            <Text style={styles.contactValue}>СВФУ им. М.К. Аммосова</Text>
+          </View>
+          <View style={styles.contactItem}>
+            <Text style={styles.contactLabel}>Факультет:</Text>
+            <Text style={styles.contactValue}>ФИИиТ</Text>
+          </View>
+          <View style={styles.contactItem}>
+            <Text style={styles.contactLabel}>Группа:</Text>
+            <Text style={styles.contactValue}>ФИИТ-22</Text>
+          </View>
+          <View style={styles.contactItem}>
+            <Text style={styles.contactLabel}>Телеграм:</Text>
+            <Text style={styles.contactValue}>https://t.me/DartGrid</Text>
+          </View>
+          <View style={styles.contactItem}>
+            <Text style={styles.contactLabel}>GitHub:</Text>
+            <Text style={styles.contactValue}>Dartgrid</Text>
+          </View>
+        </View>
 
         {/* Footer */}
-        <ThemedView style={styles.footer}>
-          <ThemedText style={styles.footerText}>
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
             © 2025 • Разработка мобильных приложений
-          </ThemedText>
-          <ThemedText style={styles.footerSubtext}>
+          </Text>
+          <Text style={styles.footerSubtext}>
             Сделано в Якутске
-          </ThemedText>
-        </ThemedView>
-      </ThemedView>
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }

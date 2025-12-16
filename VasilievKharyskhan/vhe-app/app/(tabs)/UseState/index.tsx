@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import Svg, { Path } from 'react-native-svg';
 import { styles } from "./styles";
 
@@ -83,11 +81,11 @@ export default function DrawingApp() {
     });
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.title}>Рисование пальцем</ThemedText>
-        <ThemedText style={styles.subtitle}>useState для хранения линий</ThemedText>
-      </ThemedView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Рисование пальцем</Text>
+        <Text style={styles.subtitle}>useState для хранения линий</Text>
+      </View>
 
       {/* Canvas */}
       <GestureDetector gesture={pan}>
@@ -121,8 +119,8 @@ export default function DrawingApp() {
       </GestureDetector>
 
       {/* Color Picker */}
-      <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>Цвет</ThemedText>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Цвет</Text>
         <View style={styles.colorPicker}>
           {COLORS.map(color => (
             <TouchableOpacity
@@ -136,13 +134,13 @@ export default function DrawingApp() {
             />
           ))}
         </View>
-      </ThemedView>
+      </View>
 
       {/* Brush Size */}
-      <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
           Размер кисти: {brushSize}px
-        </ThemedText>
+        </Text>
         <View style={styles.brushPicker}>
           {BRUSH_SIZES.map(size => (
             <TouchableOpacity
@@ -166,7 +164,7 @@ export default function DrawingApp() {
             </TouchableOpacity>
           ))}
         </View>
-      </ThemedView>
+      </View>
 
       {/* Controls */}
       <View style={styles.controls}>
@@ -174,25 +172,25 @@ export default function DrawingApp() {
           style={[styles.button, styles.undoButton]}
           onPress={undoLast}
           disabled={paths.length === 0}>
-          <ThemedText style={styles.buttonText}>↶ Отменить</ThemedText>
+          <Text style={styles.buttonText}>↶ Отменить</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.clearButton]}
           onPress={clearCanvas}>
-          <ThemedText style={styles.buttonText}>🗑️ Очистить</ThemedText>
+          <Text style={styles.buttonText}>🗑️ Очистить</Text>
         </TouchableOpacity>
       </View>
 
       {/* Stats */}
-      <ThemedView style={styles.stats}>
-        <ThemedText style={styles.statsText}>
+      <View style={styles.stats}>
+        <Text style={styles.statsText}>
           Линий нарисовано: {paths.length}
-        </ThemedText>
-        <ThemedText style={styles.statsText}>
+        </Text>
+        <Text style={styles.statsText}>
           Точек в текущей линии: {currentPath.length}
-        </ThemedText>
-      </ThemedView>
-    </ThemedView>
+        </Text>
+      </View>
+    </View>
   );
 }
 
