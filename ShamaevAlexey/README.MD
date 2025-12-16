@@ -1,1 +1,1 @@
-Shamaev
+https://www.figma.com/design/7c6KxFvtOP1mTSprb5GLPW/shamaev?node-id=10-236&t=6qeebZYx5LZSnSHy-1
