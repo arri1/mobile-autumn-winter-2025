@@ -73,50 +73,71 @@ const useAuthStore = create((set, get) => ({
   },
 
 // Login user
-login: async (credentials) => {
-  set({ isLoading: true, error: null });
-  try {
-    // Используем метод login
-    const response = await apiService.login(credentials);
-    
-    console.log('Login response:', response);
-    
-    if (response.success) {
-      const { accessToken, refreshToken, user } = response.data;
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await authAPI.login(credentials); // Используем authAPI
       
-      await AsyncStorage.multiSet([
-        ['accessToken', accessToken],
-        ['refreshToken', refreshToken],
-        ['userData', JSON.stringify(user)]
-      ]);
+      console.log('Login response:', response);
+      
+      if (response.success) {
+        const { accessToken, refreshToken, user } = response.data;
+        
+        await AsyncStorage.multiSet([
+          ['accessToken', accessToken],
+          ['refreshToken', refreshToken],
+          ['userData', JSON.stringify(user)]
+        ]);
 
-      set({
-        user,
-        accessToken,
-        refreshToken,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null
-      });
+        set({
+          user,
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null
+        });
 
-      return response;
-    } else {
-      // Если сервер вернул success: false
-      const errorMsg = response.message || 'Ошибка входа';
-      set({ error: errorMsg, isLoading: false });
-      throw new Error(errorMsg);
+        return response;
+      } else {
+        const errorMsg = response.message || 'Ошибка входа';
+        set({ error: errorMsg, isLoading: false });
+        throw new Error(errorMsg);
+      }
+    } catch (error) {
+      console.error('Login error in store:', error.message);
+      const errorMessage = error.message === 'Request failed with status code 401' 
+        ? 'Неверный email или пароль' 
+        : error.message;
+      
+      set({ error: errorMessage, isLoading: false });
+      throw new Error(errorMessage);
     }
-  } catch (error) {
-    console.error('Login error in store:', error.message);
-    // Используем сообщение об ошибке из API или стандартное
-    const errorMessage = error.message === 'Request failed with status code 401' 
-      ? 'Неверный email или пароль' 
-      : error.message;
+  },
+
+  // Get user profile - обновляем
+  getProfile: async () => {
+    const { accessToken } = get();
     
-    set({ error: errorMessage, isLoading: false });
-    throw new Error(errorMessage);
-  }
-},
+    if (!accessToken) {
+      throw new Error('No access token available');
+    }
+    
+    try {
+      const response = await authAPI.getProfile(accessToken);
+      
+      if (response.success) {
+        set({ user: response.data });
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to get profile');
+      }
+    } catch (error) {
+      console.error('Error getting profile:', error);
+      throw error;
+    }
+  },
 
   // Get user profile
   getProfile: async () => {

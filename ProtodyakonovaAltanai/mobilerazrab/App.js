@@ -6,6 +6,7 @@ import RootTabs from './src/navigation/RootTabs';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import useAuthStore from './src/store/authStore';
 import { View, ActivityIndicator } from 'react-native';
+import usePostsStore from './src/store/usePostsStore';
 
 const LoadingContainer = styled.View`
   flex: 1;
@@ -24,7 +25,7 @@ export default function App() {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
-
+  
   // Инициализируем состояние аутентификации при загрузке
   useEffect(() => {
     initializeAuth();

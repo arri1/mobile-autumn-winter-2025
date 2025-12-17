@@ -6,7 +6,9 @@ import {
   Alert,
   Image,
   Switch,
-  ActivityIndicator
+  ActivityIndicator,
+  Text,
+  View
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import styled from 'styled-components/native';

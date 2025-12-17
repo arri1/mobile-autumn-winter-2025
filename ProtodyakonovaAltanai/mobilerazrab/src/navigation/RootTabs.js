@@ -4,6 +4,7 @@ import UseStateScreen from '../screens/UseStateLab/UseStateScreen';
 import UseEffectScreen from '../screens/UseEffectLab/UseEffectScreen';
 import UseMemoScreen from '../screens/UseMemoLab/UseMemoScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import PostsScreen from '../screens/PostsScreen/PostsScreen';
 
 // Создаем экземпляр Tab Navigator для нижней панели вкладок
 const Tab = createBottomTabNavigator();
@@ -60,6 +61,16 @@ export default function RootTabs() {
             <Ionicons name="person-outline" size={size} color={color} />
           ),
           title: 'Профиль',
+        }}
+      />
+      <Tab.Screen 
+        name="Posts" 
+        component={PostsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+          <Ionicons name="newspaper-outline" size={size} color={color} />
+          ),
+          title: 'Посты',
         }}
       />
     </Tab.Navigator>
