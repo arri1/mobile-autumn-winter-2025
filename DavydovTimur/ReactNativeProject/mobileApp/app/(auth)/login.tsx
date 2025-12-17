@@ -23,7 +23,6 @@ export default function Login() {
         email: username,
         password: password,
       };
-      console.log('Auth payload:', payload);
 
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -60,7 +59,6 @@ export default function Login() {
         email: username,
         password: password,
       };
-      console.log('Register payload:', payload);
 
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
