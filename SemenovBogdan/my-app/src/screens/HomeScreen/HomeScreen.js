@@ -11,8 +11,8 @@ import {
     TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../context/AuthContext';
-import { theme } from '../theme/theme';
+import { useAuth } from '../../context/AuthContext';
+import { styles } from './styles'
 
 export default function HomeScreen() {
     const { accessToken, user } = useAuth();
@@ -27,53 +27,35 @@ export default function HomeScreen() {
         try {
             setLoading(true);
 
-            const publicRes = await fetch('https://cloud.kit-imi.info/api/posts?published=true');
+            const publicRes = await fetch('https://cloud.kit-imi.info/api/posts?published=true&limit=1000');
             const publicJson = await publicRes.json();
             if (!publicRes.ok) throw new Error(publicJson.message);
 
             let allPosts = publicJson.data.posts;
 
             if (user && accessToken) {
-                const myRes = await fetch(`https://cloud.kit-imi.info/api/posts?authorId=${user.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
+                const myRes = await fetch(
+                    `https://cloud.kit-imi.info/api/posts?authorId=${user.id}`,
+                    {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    }
+                );
                 const myJson = await myRes.json();
                 if (!myRes.ok) throw new Error(myJson.message);
 
-                const postsMap = {};
+                const map = {};
                 [...allPosts, ...myJson.data.posts].forEach(p => {
-                    postsMap[p.id] = p;
+                    map[p.id] = p;
                 });
-                allPosts = Object.values(postsMap);
+                allPosts = Object.values(map);
             }
 
             allPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
             setPosts(allPosts);
         } catch (e) {
             Alert.alert('Ошибка', e.message);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const publishPost = async (id) => {
-        try {
-            const res = await fetch(`https://cloud.kit-imi.info/api/posts/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({ published: true }),
-            });
-
-            const json = await res.json();
-            if (!res.ok) throw new Error(json.message);
-
-            loadPosts();
-        } catch (e) {
-            Alert.alert('Ошибка', e.message);
         }
     };
 
@@ -85,8 +67,13 @@ export default function HomeScreen() {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
                 },
-                body: JSON.stringify({ title, content, published: false }),
+                body: JSON.stringify({
+                    title,
+                    content,
+                    published: false,
+                }),
             });
+
             const json = await res.json();
             if (!res.ok) throw new Error(json.message);
 
@@ -99,14 +86,55 @@ export default function HomeScreen() {
         }
     };
 
+    const publishPost = async (post) => {
+        try {
+            const createRes = await fetch('https://cloud.kit-imi.info/api/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    title: post.title,
+                    content: post.content,
+                    published: true,
+                }),
+            });
+
+            const createJson = await createRes.json();
+            if (!createRes.ok) throw new Error(createJson.message);
+
+            const deleteRes = await fetch(
+                `https://cloud.kit-imi.info/api/posts/${post.id}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            const deleteJson = await deleteRes.json();
+            if (!deleteRes.ok) throw new Error(deleteJson.message);
+
+            loadPosts();
+        } catch (e) {
+            Alert.alert('Ошибка', e.message);
+        }
+    };
+
     const deletePost = async (id) => {
         try {
             const res = await fetch(`https://cloud.kit-imi.info/api/posts/${id}`, {
                 method: 'DELETE',
-                headers: { Authorization: `Bearer ${accessToken}` },
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
             });
+
             const json = await res.json();
             if (!res.ok) throw new Error(json.message);
+
             loadPosts();
         } catch (e) {
             Alert.alert('Ошибка', e.message);
@@ -117,7 +145,9 @@ export default function HomeScreen() {
         loadPosts();
     }, []);
 
-    if (loading) return <ActivityIndicator style={{ marginTop: 40 }} />;
+    if (loading) {
+        return <ActivityIndicator style={{ marginTop: 40 }} />;
+    }
 
     return (
         <View style={styles.container}>
@@ -131,23 +161,50 @@ export default function HomeScreen() {
                 contentContainerStyle={styles.list}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.author}>{item.author?.name || item.author?.email}</Text>
-                            <Text style={styles.author}>{new Date(item.createdAt).toLocaleString()}</Text>
+                        <View style={styles.header}>
+                            <Text style={styles.author}>
+                                {item.author?.name || item.author?.email}
+                            </Text>
+                            <Text style={styles.author}>
+                                {new Date(item.createdAt).toLocaleString()}
+                            </Text>
                         </View>
+
+                        {item.authorId === user?.id && !item.published && (
+                            <Text style={styles.draft}>Черновик</Text>
+                        )}
+
+                        {item.authorId === user?.id && item.published && (
+                            <Text style={styles.published}>Опубликовано</Text>
+                        )}
+
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.content}>{item.content}</Text>
 
                         {item.authorId === user?.id && (
-                            <TouchableOpacity style={styles.deleteButton} onPress={() => deletePost(item.id)}>
-                                <Ionicons name="trash" size={20} color="#fff" />
-                            </TouchableOpacity>
+                            <View style={styles.actions}>
+                                {!item.published && (
+                                    <TouchableOpacity
+                                        style={styles.publishButton}
+                                        onPress={() => publishPost(item)}
+                                    >
+                                        <Text style={styles.actionText}>Опубликовать</Text>
+                                    </TouchableOpacity>
+                                )}
+
+                                <TouchableOpacity
+                                    style={styles.deleteButton}
+                                    onPress={() => deletePost(item.id)}
+                                >
+                                    <Ionicons name="trash" size={18} color="#fff" />
+                                </TouchableOpacity>
+                            </View>
                         )}
                     </View>
                 )}
             />
 
-            <Modal visible={modalVisible} animationType="slide" transparent>
+            <Modal visible={modalVisible} transparent animationType="slide">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <TextInput
@@ -180,70 +237,3 @@ export default function HomeScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.colors.background,
-    },
-    list: { padding: 16, backgroundColor: theme.colors.background },
-    card: {
-        backgroundColor: theme.colors.card,
-        borderRadius: theme.radius.md,
-        padding: 16,
-        marginBottom: 12,
-        position: 'relative',
-    },
-    title: { fontSize: 16, fontWeight: '600', color: theme.colors.text },
-    content: { marginTop: 6, fontSize: 14, color: theme.colors.muted },
-    author: { marginBottom: 10, fontSize: 12, color: theme.colors.muted },
-    deleteButton: {
-        position: 'absolute',
-        bottom: 12,
-        right: 12,
-        backgroundColor: '#e74c3c',
-        borderRadius: 6,
-        padding: 6,
-    },
-    addButton: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        backgroundColor: theme.colors.primary,
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 100,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        width: '90%',
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 20,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        padding: 12,
-        marginBottom: 12,
-    },
-    modalButtons: { flexDirection: 'row', justifyContent: 'space-between' },
-    modalButton: {
-        flex: 1,
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: theme.colors.primary,
-        alignItems: 'center',
-        marginHorizontal: 4,
-    },
-    modalButtonText: { color: '#fff', fontWeight: '600' },
-});
