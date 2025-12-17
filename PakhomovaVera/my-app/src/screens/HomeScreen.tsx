@@ -56,6 +56,14 @@ export const HomeScreen: React.FC = () => {
       color: '#AF52DE',
       icon: '🏪',
     },
+    {
+      id: 7,
+      title: 'Посты',
+      subtitle: 'Работа с постами через API',
+      screen: 'Posts' as keyof RootStackParamList,
+      color: '#FF3B30',
+      icon: '📝',
+    },
   ];
 
   const handleLabPress = (screen: keyof RootStackParamList) => {
@@ -115,20 +123,13 @@ export const HomeScreen: React.FC = () => {
             </Text>
           )}
         </View>
-        <View style={styles.debugInfo}>
-          <Text style={styles.debugTitle}>Отладка Zustand:</Text>
-          <Text style={styles.debugText}>Пользователь загружен: {user ? 'Да' : 'Нет'}</Text>
-          <Text style={styles.debugText}>Email: {user?.email || 'Не указан'}</Text>
-          <Text style={styles.debugText}>Имя: {user?.name || 'Не указано'}</Text>
-          <Text style={styles.debugText}>ID: {user?.id || 'Не указан'}</Text>
-        </View>
 
         {labs.map((lab) => (
           <TouchableOpacity
             key={lab.id}
             style={[styles.labCard, { borderLeftColor: lab.color }]}
             onPress={() => handleLabPress(lab.screen)}
-            activeOpacity={0.7}
+            activeOpacity={0.8}
           >
             <View style={styles.cardContent}>
               <Text style={styles.icon}>{lab.icon}</Text>

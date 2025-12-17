@@ -3,9 +3,9 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface User {
-  id: number;
+  id: number | string;
   email: string;
-  name?: string;
+  name?: string | null;
   createdAt: string;
 }
 

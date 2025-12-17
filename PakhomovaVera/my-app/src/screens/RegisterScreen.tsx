@@ -69,10 +69,12 @@ export const RegisterScreen: React.FC = () => {
   const handleRegister = async () => {
     if (!validateForm()) return;
 
+    // Only pass name if it's not empty
+    const nameValue = formData.name.trim();
     const result = await register(
       formData.email,
       formData.password,
-      formData.name.trim()
+      nameValue || undefined
     );
 
     if (result.success) {

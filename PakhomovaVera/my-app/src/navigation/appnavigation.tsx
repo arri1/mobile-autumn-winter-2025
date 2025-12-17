@@ -7,6 +7,7 @@ import { TodoAdvancedScreen } from '../screens/UseMemo_Analiz';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { LoginScreen1 } from '../screens/LoginScreen';
 import { LoginScreen } from '../screens/UseState_Login';
+import { PostsScreen } from '../screens/PostsScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -14,6 +15,7 @@ export type RootStackParamList = {
   Advanced: undefined;
   Login: undefined;
   Register: undefined;
+  Posts: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -70,6 +72,11 @@ export const AppNavigator: React.FC = () => {
           name="Register" 
           component={RegisterScreen}
           options={{ title: 'Регистрация' }}
+        />
+        <Stack.Screen 
+          name="Posts" 
+          component={PostsScreen}
+          options={{ title: 'Посты' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
