@@ -1,69 +1,167 @@
 import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiService from './authAPI';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  logout: () => void;
-  clearError: () => void;
-}
-
-const useAuthStore = create<AuthState>((set) => ({
-
+const useAuthStore = create((set, get) => ({
+  // State
   user: null,
-  isAuthenticated: false,
+  accessToken: null,
+  refreshToken: null,
   isLoading: false,
   error: null,
+  isAuthenticated: false,
 
-  login: async (credentials) => {
-    set({ isLoading: true, error: null });
+  // Actions
+  setLoading: (loading) => set({ isLoading: loading }),
+  setError: (error) => set({ error }),
+  clearError: () => set({ error: null }),
+
+  // Initialize auth state from storage
+  initializeAuth: async () => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
-        const mockUser: User = {
-          id: 1,
-          name: 'Administrator',
-          email: credentials.email,
-          role: 'admin',
-        };
+      const [accessToken, refreshToken, userData] = await AsyncStorage.multiGet([
+        'accessToken',
+        'refreshToken',
+        'userData'
+      ]);
 
+      if (accessToken[1] && refreshToken[1]) {
         set({
-          user: mockUser,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
+          accessToken: accessToken[1],
+          refreshToken: refreshToken[1],
+          user: userData[1] ? JSON.parse(userData[1]) : null,
+          isAuthenticated: true
         });
-      } else {
-        throw new Error('Invalid credentials');
       }
     } catch (error) {
-      set({
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Login error',
-      });
+      console.error('Error initializing auth:', error);
+    }
+  },
+
+  // Register user
+  register: async (userData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiService.register(userData);
+      
+      if (response.success) {
+        set({ isLoading: false });
+        return response;
+      } else {
+        set({ error: response.message, isLoading: false });
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
       throw error;
     }
   },
 
-  logout: () => {
-    set({
-      user: null,
-      isAuthenticated: false,
-      error: null,
-    });
+  // Login user
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await apiService.login(credentials);
+      
+      if (response.success) {
+        const { accessToken, refreshToken, user } = response.data;
+        
+        // Store tokens and user data
+        await AsyncStorage.multiSet([
+          ['accessToken', accessToken],
+          ['refreshToken', refreshToken],
+          ['userData', JSON.stringify(user)]
+        ]);
+
+        set({
+          user,
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+          isLoading: false
+        });
+
+        return response;
+      } else {
+        set({ error: response.message, isLoading: false });
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
   },
-  clearError: () => {
-    set({ error: null });
+
+  // Get user profile
+  getProfile: async () => {
+    const { accessToken } = get();
+    
+    if (!accessToken) {
+      throw new Error('No access token available');
+    }
+    
+    try {
+      const response = await apiService.getProfile(accessToken);
+      
+      if (response.success) {
+        set({ user: response.data });
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to get profile');
+      }
+    } catch (error) {
+      console.error('Error getting profile:', error);
+      throw error;
+    }
   },
+
+  // Get users list (Admin only)
+  getUsers: async (params = {}) => {
+    const { accessToken } = get();
+    
+    if (!accessToken) {
+      throw new Error('No access token available');
+    }
+    
+    try {
+      const response = await apiService.getUsers(accessToken, params);
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to get users');
+      }
+    } catch (error) {
+      console.error('Error getting users:', error);
+      throw error;
+    }
+  },
+
+  // Logout user
+  logout: async () => {
+    const { accessToken } = get();
+    
+    try {
+      if (accessToken) {
+        await apiService.logout(accessToken);
+      }
+    } catch (error) {
+      console.error('Logout API error:', error);
+    } finally {
+      // Clear storage and state
+      await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'userData']);
+      set({
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null
+      });
+    }
+  },
+
 }));
 
 export default useAuthStore;
