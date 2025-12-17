@@ -100,7 +100,7 @@ const UseStateScreen = () => {
           placeholderTextColor={themeStyles.secondary}
           style={{
             flex: 1,
-            borderWidth: 1,
+            borderWidth: 3,
             borderColor: themeStyles.border,
             borderRadius: 8,
             padding: 12,
