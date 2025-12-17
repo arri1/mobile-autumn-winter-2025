@@ -44,6 +44,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="Zustand/index"
+        options={{
+          title: 'ZUSTAND',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="z.square.fill" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
