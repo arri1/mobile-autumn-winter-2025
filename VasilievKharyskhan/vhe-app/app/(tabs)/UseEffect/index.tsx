@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, ScrollView, Image as RNImage, Dimensions, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, Image as RNImage, Dimensions } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { styles } from "./styles";
+import { styles } from "./_styles";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 type CatImage = {
   id: string;
   url: string;
@@ -57,35 +59,35 @@ export default function UseEffectExample() {
 
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Пример useEffect: тапалка котейек</Text>
-          <Text style={styles.subtitle}>Загрузка данных из API</Text>
-        </View>
+      <ThemedView style={styles.container}>
+        <ThemedView style={styles.header}>
+          <ThemedText style={styles.title}>Пример useEffect: тапалка котейек</ThemedText>
+          <ThemedText style={styles.subtitle}>Загрузка данных из API</ThemedText>
+        </ThemedView>
 
-        <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Что происходит:</Text>
-          <Text style={styles.infoText}>
+        <ThemedView style={styles.infoBox}>
+          <ThemedText style={styles.infoTitle}>Что происходит:</ThemedText>
+          <ThemedText style={styles.infoText}>
             • useEffect загружает фото при открытии вкладки{'\n'}
             • useState хранит данные и состояние загрузки{'\n'}
             • API: thecatapi.com{'\n'}
             • Загружено фотографий: {fetchCount}
-          </Text>
-        </View>
+          </ThemedText>
+        </ThemedView>
 
-        <View style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
+        <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
           {loading ? (
-            <View style={[styles.loadingContainer, { height: imageHeight }]}>
+            <ThemedView style={[styles.loadingContainer, { height: imageHeight }]}>
               <ActivityIndicator size="large" color="#007AFF" />
-              <Text style={styles.loadingText}>Загрузка котика...</Text>
-            </View>
+              <ThemedText style={styles.loadingText}>Загрузка котика...</ThemedText>
+            </ThemedView>
           ) : error ? (
-            <View style={[styles.errorContainer, { height: imageHeight }]}>
-              <Text style={styles.errorText}>❌ {error}</Text>
+            <ThemedView style={[styles.errorContainer, { height: imageHeight }]}>
+              <ThemedText style={styles.errorText}>❌ {error}</ThemedText>
               <TouchableOpacity style={styles.retryButton} onPress={handleLoadNewCat}>
-                <Text style={styles.buttonText}>Попробовать снова</Text>
+                <ThemedText style={styles.buttonText}>Попробовать снова</ThemedText>
               </TouchableOpacity>
-            </View>
+            </ThemedView>
           ) : catImage ? (
             <TouchableOpacity
               style={styles.catImageWrapper}
@@ -96,25 +98,25 @@ export default function UseEffectExample() {
                 style={[styles.catImage, { width: screenWidth, height: imageHeight }]}
                 resizeMode="contain"
               />
-              <Text style={styles.imageInfo}>
+              <ThemedText style={styles.imageInfo}>
                 ID: {catImage.id.substring(0, 8)}... • Формат 16:9
-              </Text>
-              <View style={styles.tapHint}>
-                <Text style={styles.tapHintText}>👆 Нажми для новой кошки</Text>
-              </View>
+              </ThemedText>
+              <ThemedView style={styles.tapHint}>
+                <ThemedText style={styles.tapHintText}>👆 Нажми для новой кошки</ThemedText>
+              </ThemedView>
             </TouchableOpacity>
           ) : null}
-        </View>
+        </ThemedView>
 
-        <View style={styles.stats}>
-          <Text style={styles.statsText}>
+        <ThemedView style={styles.stats}>
+          <ThemedText style={styles.statsText}>
             Статистика:{'\n'}
             Состояние: {loading ? 'Загрузка' : 'Готово'}{'\n'}
             Ошибок: {error ? '1' : '0'}{'\n'}
             Всего загрузок: {fetchCount}
-          </Text>
-        </View>
-      </View>
+          </ThemedText>
+        </ThemedView>
+      </ThemedView>
     </ScrollView>
   );
 }

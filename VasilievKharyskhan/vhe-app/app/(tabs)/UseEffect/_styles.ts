@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+    padding: 16,
   },
   container: {
     flex: 1,
@@ -15,6 +16,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 4,
+    fontSize: 24,
   },
   subtitle: {
     opacity: 0.7,

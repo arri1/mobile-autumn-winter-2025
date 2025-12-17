@@ -12,10 +12,11 @@ export const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 4,
+    fontSize: 24,
   },
   subtitle: {
     opacity: 0.7,
-    fontSize: 14,
+    fontSize: 24,
   },
   canvas: {
     backgroundColor: '#FFFFFF',

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Svg, { Path } from 'react-native-svg';
-import { styles } from "./styles";
+import { styles } from "./_styles";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 
 type Point = {
   x: number;
@@ -81,15 +83,15 @@ export default function DrawingApp() {
     });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Рисование пальцем</Text>
-        <Text style={styles.subtitle}>useState для хранения линий</Text>
-      </View>
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.header}>
+        <ThemedText style={styles.title}>Рисование пальцем</ThemedText>
+        <ThemedText style={styles.subtitle}>useState для хранения линий</ThemedText>
+      </ThemedView>
 
       {/* Canvas */}
       <GestureDetector gesture={pan}>
-        <View style={[styles.canvas, { height: canvasHeight }]}>
+        <ThemedView style={[styles.canvas, { height: canvasHeight }]}>
           <Svg width="100%" height="100%" style={styles.svg}>
             {/* Отрисовка всех сохраненных путей */}
             {paths.map((path, index) => (
@@ -115,13 +117,13 @@ export default function DrawingApp() {
               />
             )}
           </Svg>
-        </View>
+        </ThemedView>
       </GestureDetector>
 
       {/* Color Picker */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Цвет</Text>
-        <View style={styles.colorPicker}>
+      <ThemedView style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>Цвет</ThemedText>
+        <ThemedView style={styles.colorPicker}>
           {COLORS.map(color => (
             <TouchableOpacity
               key={color}
@@ -133,15 +135,15 @@ export default function DrawingApp() {
               onPress={() => setSelectedColor(color)}
             />
           ))}
-        </View>
-      </View>
+        </ThemedView>
+      </ThemedView>
 
       {/* Brush Size */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>
+      <ThemedView style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>
           Размер кисти: {brushSize}px
-        </Text>
-        <View style={styles.brushPicker}>
+        </ThemedText>
+        <ThemedView style={styles.brushPicker}>
           {BRUSH_SIZES.map(size => (
             <TouchableOpacity
               key={size}
@@ -150,7 +152,7 @@ export default function DrawingApp() {
                 brushSize === size && styles.selectedBrush
               ]}
               onPress={() => setBrushSize(size)}>
-              <View
+              <ThemedView
                 style={[
                   styles.brushPreview,
                   {
@@ -163,34 +165,34 @@ export default function DrawingApp() {
               />
             </TouchableOpacity>
           ))}
-        </View>
-      </View>
+        </ThemedView>
+      </ThemedView>
 
       {/* Controls */}
-      <View style={styles.controls}>
+      <ThemedView style={styles.controls}>
         <TouchableOpacity
           style={[styles.button, styles.undoButton]}
           onPress={undoLast}
           disabled={paths.length === 0}>
-          <Text style={styles.buttonText}>↶ Отменить</Text>
+          <ThemedText style={styles.buttonText}>↶ Отменить</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.clearButton]}
           onPress={clearCanvas}>
-          <Text style={styles.buttonText}>🗑️ Очистить</Text>
+          <ThemedText style={styles.buttonText}>🗑️ Очистить</ThemedText>
         </TouchableOpacity>
-      </View>
+      </ThemedView>
 
       {/* Stats */}
-      <View style={styles.stats}>
-        <Text style={styles.statsText}>
+      <ThemedView style={styles.stats}>
+        <ThemedText style={styles.statsText}>
           Линий нарисовано: {paths.length}
-        </Text>
-        <Text style={styles.statsText}>
+        </ThemedText>
+        <ThemedText style={styles.statsText}>
           Точек в текущей линии: {currentPath.length}
-        </Text>
-      </View>
-    </View>
+        </ThemedText>
+      </ThemedView>
+    </ThemedView>
   );
 }
 

@@ -5,11 +5,9 @@ export const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: "#f4f6f8",
     alignItems: "center",
   },
   card: {
-    backgroundColor: "white",
     borderRadius: 16,
     padding: 20,
     marginBottom: 30,
@@ -25,13 +23,13 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     marginBottom: 12,
-    color: "#333",
   },
   buttonGroup: {
     gap: 10,
     flexDirection: "row",
   },
   input: {
+    color: "#8e7b7bff",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
@@ -44,12 +42,10 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 6,
     fontWeight: "600",
-    color: "#555",
     alignSelf: "flex-start",
   },
   infoText: {
     fontSize: 16,
-    color: "#444",
     marginBottom: 8,
   },
   errorText: {

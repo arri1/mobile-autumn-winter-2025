@@ -1,11 +1,13 @@
 
 import React, { useState } from "react";
-import { View, Text, Button, Alert, TextInput, ScrollView, ActivityIndicator } from "react-native";
-import { styles } from "./styles";
-import useAuthStore from "../../../store/authStore";
+import { Button, Alert, TextInput, ScrollView, ActivityIndicator } from "react-native";
+import { styles } from "./_styles";
+import useAuthZustandStore from "../../../store/authStoreforZustandScreen";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from "@/components/themed-view";
 
 export default function ZustandLab() {
-	const { user, isAuthenticated, login, logout, isLoading, error, clearError } = useAuthStore();
+	const { user, isAuthenticated, login, logout, isLoading, error, clearError } = useAuthZustandStore();
 	const [email, setEmail] = useState("admin@example.com");
 	const [password, setPassword] = useState("admin123");
 
@@ -24,29 +26,29 @@ export default function ZustandLab() {
 	};
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-			<View style={styles.card}>
-				<Text style={styles.sectionTitle}>Состояние аутентификации</Text>
-				<Text style={styles.infoText}>Аутентифицирован: {isAuthenticated ? "Да " : "Нет "}</Text>
+			<ThemedView style={styles.card}>
+				<ThemedText style={styles.sectionTitle}>Состояние аутентификации</ThemedText>
+				<ThemedText style={styles.infoText}>Аутентифицирован: {isAuthenticated ? "Да " : "Нет "}</ThemedText>
 				{user && (
 					<>
-						<Text style={styles.successText}>Пользователь авторизован</Text>
-						<Text style={styles.infoText}>Имя: {user.name}</Text>
-						<Text style={styles.infoText}>Email: {user.email}</Text>
-						<Text style={styles.infoText}>Роль: {user.role}</Text>
+						<ThemedText style={styles.successText}>Пользователь авторизован</ThemedText>
+						<ThemedText style={styles.infoText}>Имя: {user.name}</ThemedText>
+						<ThemedText style={styles.infoText}>Email: {user.email}</ThemedText>
+						<ThemedText style={styles.infoText}>Роль: {user.role}</ThemedText>
 					</>
 				)}
 				{isLoading && (
-					<View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+					<ThemedView style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
 						<ActivityIndicator color="#007AFF" />
-						<Text style={[styles.infoText, { marginLeft: 10, marginBottom: 0 }]}>Загрузка...</Text>
-					</View>
+						<ThemedText style={[styles.infoText, { marginLeft: 10, marginBottom: 0 }]}>Загрузка...</ThemedText>
+					</ThemedView>
 				)}
-				{error && <Text style={styles.errorText}>Ошибка: {error}</Text>}
-			</View>
+				{error && <ThemedText style={styles.errorText}>Ошибка: {error}</ThemedText>}
+			</ThemedView>
 			{!isAuthenticated ? (
-				<View style={styles.card}>
-					<Text style={styles.sectionTitle}>Вход в систему</Text>
-					<Text style={styles.label}>Email</Text>
+				<ThemedView style={styles.card}>
+					<ThemedText style={styles.sectionTitle}>Вход в систему</ThemedText>
+					<ThemedText style={styles.label}>Email</ThemedText>
 					<TextInput
 						style={styles.input}
 						value={email}
@@ -57,7 +59,7 @@ export default function ZustandLab() {
 						autoCapitalize="none"
 						editable={!isLoading}
 					/>
-					<Text style={styles.label}>Пароль</Text>
+					<ThemedText style={styles.label}>Пароль</ThemedText>
 					<TextInput
 						style={styles.input}
 						value={password}
@@ -67,25 +69,25 @@ export default function ZustandLab() {
 						secureTextEntry
 						editable={!isLoading}
 					/>
-					<View style={styles.buttonGroup}>
+					<ThemedView style={styles.buttonGroup}>
 						<Button title={isLoading ? "Вход..." : "Войти"} onPress={handleLogin} disabled={isLoading} />
-					</View>
-				</View>
+					</ThemedView>
+				</ThemedView>
 			) : (
-				<View style={styles.card}>
-					<Text style={styles.sectionTitle}>Действия</Text>
-					<View style={styles.buttonGroup}>
+				<ThemedView style={styles.card}>
+					<ThemedText style={styles.sectionTitle}>Действия</ThemedText>
+					<ThemedView style={styles.buttonGroup}>
 						<Button title="Выйти" onPress={handleLogout} color="#FF3B30" />
-					</View>
-				</View>
+					</ThemedView>
+				</ThemedView>
 			)}
 			{error && (
-				<View style={styles.card}>
-					<Text style={styles.sectionTitle}>Управление ошибками</Text>
-					<View style={styles.buttonGroup}>
+				<ThemedView style={styles.card}>
+					<ThemedText style={styles.sectionTitle}>Управление ошибками</ThemedText>
+					<ThemedView style={styles.buttonGroup}>
 						<Button title="Очистить ошибку" onPress={clearError} color="#FF9500" />
-					</View>
-				</View>
+					</ThemedView>
+				</ThemedView>
 			)}
 		</ScrollView>
 

@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { styles } from "./styles";
-
+import { styles } from "./_styles";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 type Product = {
   id: number;
   name: string;
@@ -114,51 +115,51 @@ export default function UseMemoExample() {
   }, [filteredAndSortedProducts]);
 
   const renderProduct = ({ item }: { item: Product }) => (
-    <View style={[styles.productCard]}>
-      <View style={styles.productHeader}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{item.price} ₽</Text>
-      </View>
-      <View style={styles.productFooter}>
-        <Text style={styles.productCategory}>{item.category}</Text>
-        <Text style={styles.productRating}>⭐ {item.rating}</Text>
-      </View>
-    </View>
+    <ThemedView style={[styles.productCard]}>
+      <ThemedView style={styles.productHeader}>
+        <ThemedText style={styles.productName}>{item.name}</ThemedText>
+        <ThemedText style={styles.productPrice}>{item.price} ₽</ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.productFooter}>
+        <ThemedText style={styles.productCategory}>{item.category}</ThemedText>
+        <ThemedText style={styles.productRating}>⭐ {item.rating}</ThemedText>
+      </ThemedView>
+    </ThemedView>
   );
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</Text>
-          <Text style={styles.subtitle}>Оптимизация вычислений</Text>
-        </View>
+        <ThemedView style={styles.header}>
+          <ThemedText style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</ThemedText>
+          <ThemedText style={styles.subtitle}>Оптимизация вычислений</ThemedText>
+        </ThemedView>
 
-        <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Что происходит:</Text>
-          <Text style={styles.infoText}>
+        <ThemedView style={styles.infoBox}>
+          <ThemedText style={styles.infoTitle}>Что происходит:</ThemedText>
+          <ThemedText style={styles.infoText}>
             • useMemo кэширует результаты фильтрации{'\n'}
             • Пересчет только при изменении зависимостей{'\n'}
             • Всего товаров в базе: {PRODUCTS.length}{'\n'}
-          </Text>
-        </View>
+          </ThemedText>
+        </ThemedView>
 
         {/* Поиск */}
-        <View style={styles.searchSection}>
-          <Text style={styles.sectionTitle}>Поиск:</Text>
+        <ThemedView style={styles.searchSection}>
+          <ThemedText style={styles.sectionTitle}>Поиск:</ThemedText>
           <TextInput
             style={[styles.searchInput]}
             placeholder="Введите название товара..."
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-        </View>
+        </ThemedView>
 
         {/* Категории */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Категория:</Text>
+        <ThemedView style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>Категория:</ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.categoryContainer}>
+            <ThemedView style={styles.categoryContainer}>
               {categories.map(cat => (
                 <TouchableOpacity
                   key={cat}
@@ -167,30 +168,30 @@ export default function UseMemoExample() {
                     selectedCategory === cat && styles.categoryButtonActive
                   ]}
                   onPress={() => setSelectedCategory(cat)}>
-                  <Text
+                  <ThemedText
                     style={[
                       styles.categoryText,
                       selectedCategory === cat && styles.categoryTextActive
                     ]}>
                     {cat}
-                  </Text>
+                  </ThemedText>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ThemedView>
           </ScrollView>
-        </View>
+        </ThemedView>
 
         {/* Сортировка */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Сортировка:</Text>
-          <View style={styles.sortContainer}>
+        <ThemedView style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>Сортировка:</ThemedText>
+          <ThemedView style={styles.sortContainer}>
             <TouchableOpacity
               style={[
                 styles.sortButton,
                 sortBy === 'name' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('name')}>
-              <Text style={styles.sortText}>По имени</Text>
+              <ThemedText style={styles.sortText}>По имени</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -198,7 +199,7 @@ export default function UseMemoExample() {
                 sortBy === 'price' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('price')}>
-              <Text style={styles.sortText}>По цене</Text>
+              <ThemedText style={styles.sortText}>По цене</ThemedText>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -206,54 +207,54 @@ export default function UseMemoExample() {
                 sortBy === 'rating' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('rating')}>
-              <Text style={styles.sortText}>По рейтингу</Text>
+              <ThemedText style={styles.sortText}>По рейтингу</ThemedText>
             </TouchableOpacity>
-          </View>
-        </View>
+          </ThemedView>
+        </ThemedView>
 
         {/* Статистика */}
-        <View style={[styles.statsBox]}>
-          <Text style={styles.statsTitle}>Статистика:</Text>
-          <View style={styles.statsGrid}>
-            <View style={[styles.statItem]}>
-              <Text style={styles.statValue}>{statistics.count}</Text>
-              <Text style={[styles.statLabel]}>Найдено</Text>
-            </View>
-            <View style={[styles.statItem]}>
-              <Text style={styles.statValue}>{statistics.avgPrice} ₽</Text>
-              <Text style={[styles.statLabel]}>Средняя цена</Text>
-            </View>
-            <View style={[styles.statItem]}>
-              <Text style={styles.statValue}>{statistics.maxPrice} ₽</Text>
-              <Text style={[styles.statLabel]}>Макс. цена</Text>
-            </View>
-            <View style={[styles.statItem]}>
-              <Text style={styles.statValue}>⭐ {statistics.avgRating}</Text>
-              <Text style={[styles.statLabel]}>Средний рейтинг</Text>
-            </View>
-          </View>
-        </View>
+        <ThemedView style={[styles.statsBox]}>
+          <ThemedText style={styles.statsTitle}>Статистика:</ThemedText>
+          <ThemedView style={styles.statsGrid}>
+            <ThemedView style={[styles.statItem]}>
+              <ThemedText style={styles.statValue}>{statistics.count}</ThemedText>
+              <ThemedText style={[styles.statLabel]}>Найдено</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
+              <ThemedText style={styles.statValue}>{statistics.avgPrice} ₽</ThemedText>
+              <ThemedText style={[styles.statLabel]}>Средняя цена</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
+              <ThemedText style={styles.statValue}>{statistics.maxPrice} ₽</ThemedText>
+              <ThemedText style={[styles.statLabel]}>Макс. цена</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
+              <ThemedText style={styles.statValue}>⭐ {statistics.avgRating}</ThemedText>
+              <ThemedText style={[styles.statLabel]}>Средний рейтинг</ThemedText>
+            </ThemedView>
+          </ThemedView>
+        </ThemedView>
 
         {/* Список товаров */}
-        <View style={styles.productsSection}>
-          <Text style={styles.sectionTitle}>
+        <ThemedView style={styles.productsSection}>
+          <ThemedText style={styles.sectionTitle}>
             Товары ({filteredAndSortedProducts.length}):
-          </Text>
-          <View style={styles.productsList}>
+          </ThemedText>
+          <ThemedView style={styles.productsList}>
             {filteredAndSortedProducts.slice(0, 50).map(product => (
-              <View key={product.id}>
+              <ThemedView key={product.id}>
                 {renderProduct({ item: product })}
-              </View>
+              </ThemedView>
             ))}
             {filteredAndSortedProducts.length > 50 && (
-              <Text style={styles.moreText}>
+              <ThemedText style={styles.moreText}>
                 ... и еще {filteredAndSortedProducts.length - 50} товаров
-              </Text>
+              </ThemedText>
             )}
-          </View>
-        </View>
+          </ThemedView>
+        </ThemedView>
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 }
 
