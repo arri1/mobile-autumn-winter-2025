@@ -24,7 +24,8 @@ export function AuthGuard({ children }: PropsWithChildren) {
 
   // Signed in: don't allow auth tabs to stay visible/active
   if (user && onAuthTab) {
-    return <Redirect href="/(tabs)/useStateLab" />;
+    // typed-routes may not include newly added routes until regen; cast to avoid blocking builds
+    return <Redirect href={'/(tabs)/posts' as any} />;
   }
 
   return children;

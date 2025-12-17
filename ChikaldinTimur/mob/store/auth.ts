@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 type User = {
+  id?: string;
   name: string;
   email: string;
 };
@@ -28,11 +29,21 @@ const API_BASE = process.env.EXPO_PUBLIC_API_BASE ?? 'https://cloud.kit-imi.info
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
 type ApiAuthResponse = {
-  token?: string;
-  email?: string;
-  name?: string;
+  success?: boolean;
   message?: string;
   error?: string;
+  token?: string; // legacy
+  email?: string; // legacy
+  name?: string; // legacy
+  data?: {
+    user?: {
+      id?: string;
+      email?: string;
+      name?: string | null;
+    };
+    accessToken?: string;
+    refreshToken?: string;
+  };
 };
 
 async function request(path: string, body: Record<string, unknown>) {
@@ -80,9 +91,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         password,
       });
 
+      const accessToken = data.data?.accessToken ?? data.token ?? null;
+      const userFromApi = data.data?.user;
+      const resolvedName = (userFromApi?.name ?? data.name ?? name.trim()) || '';
+      const resolvedEmail = userFromApi?.email ?? data.email ?? normalizedEmail;
+
       set({
-        user: { name: data.name ?? name.trim(), email: data.email ?? normalizedEmail },
-        token: data.token ?? null,
+        user: { id: userFromApi?.id, name: resolvedName, email: resolvedEmail },
+        token: accessToken,
         status: { type: 'success', message: data.message ?? 'Регистрация прошла успешно.' },
         loading: false,
       });
@@ -107,9 +123,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         password,
       });
 
+      const accessToken = data.data?.accessToken ?? data.token ?? null;
+      const userFromApi = data.data?.user;
+      const resolvedName = (userFromApi?.name ?? data.name ?? '') || '';
+      const resolvedEmail = userFromApi?.email ?? data.email ?? normalizedEmail;
+
       set({
-        user: { name: data.name ?? '', email: data.email ?? normalizedEmail },
-        token: data.token ?? null,
+        user: { id: userFromApi?.id, name: resolvedName, email: resolvedEmail },
+        token: accessToken,
         status: { type: 'success', message: data.message ?? 'Вы успешно вошли.' },
         loading: false,
       });

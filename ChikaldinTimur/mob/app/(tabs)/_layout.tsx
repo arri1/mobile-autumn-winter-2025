@@ -84,6 +84,14 @@ export default function TabLayout() {
             ...(!user ? hiddenTab : null),
           }}
         />
+        <Tabs.Screen
+          name="posts"
+          options={{
+            title: 'Посты',
+            tabBarIcon: ({ color }) => <IconSymbol size={28} name="doc.text" color={color} />,
+            ...(!user ? hiddenTab : null),
+          }}
+        />
       </Tabs>
     </AuthGuard>
   );
