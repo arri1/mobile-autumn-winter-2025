@@ -1,9 +1,7 @@
-import { create } from 'zustand';
-import * as Crypto from 'expo-crypto';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const USERS_KEY = 'AUTH_USERS';
-const CURRENT_USER_KEY = 'AUTH_CURRENT_USER';
+import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiService from '../api/api';
 
 const isValidEmail = (value) => {
   const email = String(value).trim();
@@ -11,150 +9,168 @@ const isValidEmail = (value) => {
   return emailRegex.test(email);
 };
 
-export const useAuthStore = create((set, get) => ({
+const useAuthStore = create((set, get) => ({
+  // State
   user: null,
+  accessToken: null,
+  refreshToken: null,
   isLoading: false,
-  isUsersLoading: false,
   error: null,
-  users: [],
-  
-  _getUsers: async () => {
-    const usersJson = await AsyncStorage.getItem(USERS_KEY);
-    return usersJson ? JSON.parse(usersJson) : [];
-  },
-  
-  _setUsers: async (users) => {
-    await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
-  },
-  
-  _loadStateFromStorage: async () => {
+  isAuthenticated: false,
+
+  // Actions
+  setLoading: (loading) => set({ isLoading: loading }),
+  setError: (error) => set({ error }),
+  clearError: () => set({ error: null }),
+
+  // Initialize auth state from storage
+  initializeAuth: async () => {
     try {
-      set({ isLoading: true });
-      
-      const [usersJson, currentUserJson] = await Promise.all([
-        AsyncStorage.getItem(USERS_KEY),
-        AsyncStorage.getItem(CURRENT_USER_KEY),
+      const [accessToken, refreshToken, userData] = await AsyncStorage.multiGet([
+        'accessToken',
+        'refreshToken',
+        'userData'
       ]);
-      
-      if (!usersJson) {
-        await AsyncStorage.setItem(USERS_KEY, JSON.stringify([]));
+
+      if (accessToken[1] && refreshToken[1]) {
+        set({
+          accessToken: accessToken[1],
+          refreshToken: refreshToken[1],
+          user: userData[1] ? JSON.parse(userData[1]) : null,
+          isAuthenticated: true
+        });
       }
-      
-      const users = usersJson ? JSON.parse(usersJson) : [];
-      const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
-      
-      set({ 
-        user: currentUser, 
-        users, 
-        isLoading: false
-      });
     } catch (error) {
-      set({ isLoading: false });
+      console.error('Error initializing auth:', error);
     }
   },
 
-  loadUsers: async () => {
-    set({ isUsersLoading: true, error: null });
+  // Register user
+  register: async (userData) => {
+    set({ isLoading: true, error: null });
     try {
-      const users = await get()._getUsers();
-      set({ users, isUsersLoading: false });
-    } catch (e) {
-      set({ isUsersLoading: false, error: e.message || 'Ошибка загрузки пользователей' });
+      const response = await apiService.register(userData);
+      
+      if (response.success) {
+        set({ isLoading: false });
+        return response;
+      } else {
+        set({ error: response.message, isLoading: false });
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
     }
   },
 
-  deleteUser: async (userId) => {
-    set({ isUsersLoading: true, error: null });
+  // Login user
+  login: async (credentials) => {
+    set({ isLoading: true, error: null });
     try {
-      const users = await get()._getUsers();
-      const updatedUsers = users.filter(user => user.id !== userId);
+      const response = await apiService.login(credentials);
       
-      await get()._setUsers(updatedUsers);
-      set({ users: updatedUsers, isUsersLoading: false });
-      
-      return true;
-    } catch (e) {
-      set({ isUsersLoading: false, error: e.message || 'Ошибка удаления пользователя' });
-      return false;
+      if (response.success) {
+        const { accessToken, refreshToken, user } = response.data;
+        
+        // Store tokens and user data
+        await AsyncStorage.multiSet([
+          ['accessToken', accessToken],
+          ['refreshToken', refreshToken],
+          ['userData', JSON.stringify(user)]
+        ]);
+
+        set({
+          user,
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+          isLoading: false
+        });
+
+        return response;
+      } else {
+        set({ error: response.message, isLoading: false });
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
     }
   },
 
-
-  searchUsers: (query) => {
-    const { users } = get();
-    if (!query.trim()) return users;
+  // Get user profile
+  getProfile: async () => {
+    const { accessToken } = get();
     
-    return users.filter(user =>
-      user.email.toLowerCase().includes(query.toLowerCase())
-    );
-  },
-
-
-  getUsersStats: () => {
-    const { users } = get();
-    return {
-      total: users.length,
-    };
-  },
-
-
-  login: async ({ email, password }) => {
-    set({ isLoading: true, error: null });
+    if (!accessToken) {
+      throw new Error('No access token available');
+    }
+    
     try {
-      if (!email || !password) {
-        throw new Error('Введите email и пароль');
+      const response = await apiService.getProfile(accessToken);
+      
+      if (response.success) {
+        set({ user: response.data });
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data));
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to get profile');
       }
-      if (!isValidEmail(email)) {
-        throw new Error('Неверный формат email');
-      }
-      const normalizedEmail = String(email).trim().toLowerCase();
-      const users = await get()._getUsers();
-      const found = users.find((u) => u.email === normalizedEmail && 
-                                      u.password === password);
-      if (!found) {
-        throw new Error('Неверный email или пароль');
-      }
-      const currentUser = { id: found.id, email: found.email };
-      await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
-      set({ user: currentUser, isLoading: false, error: null });
-    } catch (e) {
-      set({ isLoading: false, error: e.message || 'Ошибка входа' });
+    } catch (error) {
+      console.error('Error getting profile:', error);
+      throw error;
     }
   },
 
-  register: async ({ email, password }) => {
-    set({ isLoading: true, error: null });
+  // Get users list (Admin only)
+  getUsers: async (params = {}) => {
+    const { accessToken } = get();
+    
+    if (!accessToken) {
+      throw new Error('No access token available');
+    }
+    
     try {
-      if (!email || !password) {
-        throw new Error('Заполните все поля');
+      const response = await apiService.getUsers(accessToken, params);
+      
+      if (response.success) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Failed to get users');
       }
-      if (!isValidEmail(email)) {
-        throw new Error('Неверный формат email');
-      }
-      const normalizedEmail = String(email).trim().toLowerCase();
-      const users = await get()._getUsers();
-      const exists = users.some((u) => u.email === normalizedEmail);
-      if (exists) {
-        throw new Error('Пользователь с таким email уже существует');
-      }
-      const newUser = { id: Crypto.randomUUID(), email: normalizedEmail, password };
-      const nextUsers = [...users, newUser];
-      await get()._setUsers(nextUsers);
-      const currentUser = { id: newUser.id, email: newUser.email };
-      await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
-      set({ user: currentUser, users: nextUsers, isLoading: false, error: null });
-    } catch (e) {
-      set({ isLoading: false, error: e.message || 'Ошибка регистрации' });
+    } catch (error) {
+      console.error('Error getting users:', error);
+      throw error;
     }
   },
 
+  // Logout user
   logout: async () => {
+    const { accessToken } = get();
+    
     try {
-      await AsyncStorage.removeItem(CURRENT_USER_KEY);
+      if (accessToken) {
+        await apiService.logout(accessToken);
+      }
+    } catch (error) {
+      console.error('Logout API error:', error);
     } finally {
-      set({ user: null });
+      // Clear storage and state
+      await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'userData']);
+      set({
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null
+      });
     }
   },
+
+  // Clear error
+  clearError: () => set({ error: null }),
 }));
 
-useAuthStore.getState()._loadStateFromStorage();
+export default useAuthStore;
