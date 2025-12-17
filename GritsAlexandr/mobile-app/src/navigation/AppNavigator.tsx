@@ -14,6 +14,7 @@ import ZustandScreen from '../screens/ZustandScreen';
 import UseStateScreen from '../screens/UseStateScreen';
 import UseEffectScreen from '../screens/UseEffectScreen';
 import UseMemoScreen from '../screens/UseMemoScreen';
+import PostsScreen from '../screens/PostsScreen';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -25,8 +26,8 @@ export type MainTabParamList = {
   UseState: undefined;
   UseEffect: undefined;
   UseMemo: undefined;
+  Posts: undefined;
 };
-
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const MainTab = createBottomTabNavigator<MainTabParamList>();
@@ -51,6 +52,8 @@ const TabIconWithText: React.FC<TabIconProps> = ({ focused, routeName }) => {
         return 'E';
       case 'UseMemo':
         return 'M';
+      case 'Posts':
+        return 'P';
       default:
         return '?';
     }
@@ -66,6 +69,8 @@ const TabIconWithText: React.FC<TabIconProps> = ({ focused, routeName }) => {
         return 'Effect';
       case 'UseMemo':
         return 'Memo';
+      case 'Posts':
+        return 'Posts';
       default:
         return route;
     }
@@ -202,6 +207,13 @@ const MainNavigator: React.FC = () => {
         component={UseMemoScreen}
         options={{
           title: 'useMemo',
+        }}
+      />
+      <MainTab.Screen
+        name="Posts"
+        component={PostsScreen}
+        options={{
+          title: 'Посты',
         }}
       />
     </MainTab.Navigator>
