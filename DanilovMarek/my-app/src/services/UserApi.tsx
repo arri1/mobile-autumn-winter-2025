@@ -47,6 +47,7 @@ export async function GetProfile(accessToken: string) {
     const response = await fetch(`${API_URL}/auth/profile`, {
         method: "GET",
         headers: {
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`
         }
     });
@@ -93,6 +94,7 @@ export async function GetUsers(accessToken: string) {
     const response = await fetch(`${API_URL}/auth/users?page=1&limit=100`, {
         method: "GET",
         headers: {
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`
         }
     });
@@ -102,7 +104,7 @@ export async function GetUsers(accessToken: string) {
     if (response.ok) {
         return data.data.users;
     }
-    else if (response.status === 401) {
+    else if (response.status == 401) {
         return null;
     } 
     else {
@@ -118,7 +120,13 @@ export async function Logout(refreshToken: string) {
         },
         body: JSON.stringify({ refreshToken }),
     });
-    if (!response.ok) {
+    if (response.ok) {
+        return "success"; //заглушка
+    }
+    else if (response.status === 401) {
+        return null;
+    }
+    else {
         const data = await response.json();
         throw new Error(data.message);
     }

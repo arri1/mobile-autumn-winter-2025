@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Login, Register, GetProfile, RefreshToken, GetUsers, Logout } from "../services/Api";
+import { Login, Register, GetProfile, RefreshToken, GetUsers, Logout } from "../services/UserApi";
 
 interface User {
     id: string;
@@ -94,7 +94,7 @@ export const useUserStore = create<UseUserState>((set, get) => ({
             let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
 
             let user = await GetProfile(accessToken);
-            if (!user) {
+            if (user == null) {
                 await get().refreshToken();
                 accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
                 user = await GetProfile(accessToken)
@@ -105,8 +105,7 @@ export const useUserStore = create<UseUserState>((set, get) => ({
         }
         catch(error) {
             console.error(error);
-        }
-            
+        }    
     },
 
     // Обновление токена
@@ -115,7 +114,7 @@ export const useUserStore = create<UseUserState>((set, get) => ({
             const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY) as string;
 
             const refreshedTokens = await RefreshToken(refreshToken);
-            if (!refreshedTokens) {
+            if (refreshedTokens == null) {
                 await get().logout();
                 return;
             }
@@ -132,13 +131,13 @@ export const useUserStore = create<UseUserState>((set, get) => ({
     //Получание пользователей
     getUsers: async () => {
         try {
-            const accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
+            let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
 
             let users = await GetUsers(accessToken);
 
-            if (!users) {
+            if (users == null) {
                 await get().refreshToken();
-                const accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
+                accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY) as string;
                 users = await GetUsers(accessToken);
             }
             return users;
@@ -150,9 +149,15 @@ export const useUserStore = create<UseUserState>((set, get) => ({
 
     // Выход
     logout: async () => {
-        const refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY) as string;
+        let refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY) as string;
         
-        await Logout(refreshToken);
+        const response = await Logout(refreshToken);
+
+        if (response == null) {
+            await get().refreshToken();
+            refreshToken = await AsyncStorage.getItem(REFRESH_TOKEN_KEY) as string;
+            await Logout(refreshToken);
+        }
 
         // Очищаем локальное хранилище
         await AsyncStorage.multiRemove([
@@ -169,3 +174,4 @@ export const useUserStore = create<UseUserState>((set, get) => ({
 }));
 
 export type { User };
+export {ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY};
