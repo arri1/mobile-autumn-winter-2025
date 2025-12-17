@@ -14,6 +14,7 @@ import UseStateScreen from './src/screens/useState';
 import UseEffectScreen from './src/screens/useEffect';
 import UseMemoScreen from './src/screens/useMemo';
 import UsersScreen from './src/screens/UsersScreen';
+import PostsScreen from './src/screens/PostsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -66,6 +67,15 @@ function MainTabs() {
         options={{
           title: 'Пользователи',
           tabBarIcon: ({ color, size }) => <Text style={{ color, fontSize: size }}>👥</Text>,
+        }}
+      />
+    
+      <Tab.Screen
+        name="Posts"
+        component={PostsScreen}
+        options={{
+          title: 'Посты',
+          tabBarIcon: ({ color, size }) => <Text style={{ color, fontSize: size }}>📝</Text>,
         }}
       />
     </Tab.Navigator>
