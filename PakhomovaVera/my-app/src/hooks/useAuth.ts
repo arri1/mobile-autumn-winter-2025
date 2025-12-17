@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { database } from '../database/database';
 import { User, AuthState } from '../types';
 import * as Crypto from 'expo-crypto';
+import { useUserStore } from '../store/userStore'; 
 
 const AUTH_STORAGE_KEY = '@auth_data';
 
@@ -14,6 +15,8 @@ export const useAuth = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  const { setUser, clearUser } = useUserStore();
+
   useEffect(() => {
     loadAuthState();
   }, []);
@@ -24,6 +27,7 @@ export const useAuth = () => {
       if (storedAuth) {
         const parsedAuth = JSON.parse(storedAuth);
         setAuthState(parsedAuth);
+        setUser(parsedAuth.user); 
       }
     } catch (error) {
       console.error('Ошибка загрузки состояния аутентификации:', error);
@@ -36,6 +40,7 @@ export const useAuth = () => {
     try {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state));
       setAuthState(state);
+      setUser(state.user); 
     } catch (error) {
       console.error('Ошибка сохранения состояния аутентификации:', error);
     }
@@ -134,6 +139,7 @@ export const useAuth = () => {
       user: null,
       token: null,
     });
+    clearUser();
   };
 
   return {
