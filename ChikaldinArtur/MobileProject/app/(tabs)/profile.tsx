@@ -5,7 +5,12 @@ export default function Profile() {
   const logout = useAuthStore((s) => s.logout);
 
   return (
-    <View>
+    <View style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+      }}>
       <Text>Профиль</Text>
       <Button title="Выйти" onPress={logout} />
     </View>
