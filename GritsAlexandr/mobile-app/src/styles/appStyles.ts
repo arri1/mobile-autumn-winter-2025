@@ -49,6 +49,28 @@ export const appStyles = StyleSheet.create({
   },
 });
 
+export const themeStyles = {
+  background: '#ffffff',
+  text: '#0f172a',
+  card: '#f8fafc',
+  border: '#cbccceff',
+  primary: '#2563eb',
+  secondary: '#747C88',
+  success: '#22c55e',
+  warning: '#f97316',
+  error: '#ef4444',
+
+  borderRadius: 12,
+  padding: 16,
+  margin: 8,
+  
+  shadowColor: '#000',
+  shadowOpacity: 0.08,
+  shadowRadius: 12,
+  shadowOffset: { width: 0, height: 8 },
+};
+
+export const lightThemeStyles = themeStyles
 export const darkThemeStyles = {
   background: '#0f172a',
   text: '#f8fafc',
@@ -56,14 +78,19 @@ export const darkThemeStyles = {
   border: '#334155',
   primary: '#3b82f6',
   secondary: '#94a3b8',
+  success: '#22c55e',
+  warning: '#f97316',
+  error: '#ef4444',
+
+  shadowColor: '#000',
+  shadowOpacity: 0.08,
+  shadowRadius: 12,
+  shadowOffset: { width: 0, height: 8 },
+
+  borderRadius: 12,
+  padding: 16,
+  margin: 8,
+
+
 };
 
-// Стили для светлой темы
-export const lightThemeStyles = {
-  background: '#ffffff',
-  text: '#0f172a',
-  card: '#f8fafc',
-  border: '#e5e7eb',
-  primary: '#2563eb',
-  secondary: '#64748b',
-};

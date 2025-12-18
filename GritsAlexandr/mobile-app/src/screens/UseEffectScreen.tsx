@@ -53,7 +53,6 @@ const UseEffectScreen = () => {
             text: data.content,
             author: data.author || 'Неизвестный автор',
           });
-          incrementCounter('useEffect');
         }
       } catch (error) {
         if (isActive) {
@@ -64,12 +63,13 @@ const UseEffectScreen = () => {
           ];
           const randomFallback = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
           setQuote(randomFallback);
-          incrementCounter('useEffect');
         }
       } finally {
         if (isActive) {
           setIsQuoteLoading(false);
         }
+
+        incrementCounter('useEffect');
       }
     };
 
