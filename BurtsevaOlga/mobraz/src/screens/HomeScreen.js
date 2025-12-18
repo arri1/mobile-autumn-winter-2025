@@ -33,6 +33,21 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.arrow}>→</Text>
             </View>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => navigation.navigate('Posts')}
+          >
+            <View style={styles.buttonContent}>
+              <View style={[styles.icon, { backgroundColor: '#7859e7ff' }]}>
+                <Text style={styles.iconText}>📝</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.buttonTitle}> Посты</Text>
+              </View>
+              <Text style={styles.arrow}>→</Text>
+            </View>
+          </TouchableOpacity>
           
           {/* Карточка с информацией */}
           <View style={styles.infoCard}>
@@ -88,9 +103,6 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.arrow}>→</Text>
             </View>
           </TouchableOpacity>
-
-
-          
 
           {/* Разделитель */}
           <View style={styles.divider} />
