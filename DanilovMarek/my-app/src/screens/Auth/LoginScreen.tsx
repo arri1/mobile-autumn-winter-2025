@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }: any) {
                 secureTextEntry
             />
 
-            <Button title="Войти" onPress={handleLogin} />
+            <Button title="Войти" onPress={handleLogin} color="#00af2cff"/>
             <View style={styles.spacer} />
             <Button
                 title="Регистрация"

@@ -26,7 +26,6 @@ export default function UsersScreen() {
                 posts = await GetPosts(accessToken, postId, onlyMy);
             }
             setPosts(posts);
-            console.log(posts);
         } catch (error) {
             console.error(error);
         }
@@ -93,16 +92,15 @@ export default function UsersScreen() {
     // Рендер элемента списка
     const renderPost = (index: number, post: any) => (
         <View key={index} style={styles.postItem}>
-            <Text>ID: {post.id}</Text>
+            <Text style={styles.metaData} selectable>ID: {post.id}</Text>
             <Text style={styles.postTitle}>{post.title}</Text>
-            <Text>{post.content}</Text>
-            <Text>Автор: {post.author.name}</Text>
-            <Text>Создан: {formatDate(post.createdAt)}</Text>
-            <Text>Опубликовано: {post.published.toString()}</Text>
+            <Text style={styles.postContent}>{post.content}</Text>
+            <Text style={styles.metaData}>Автор: {post.author.name}</Text>
+            <Text style={styles.metaData}>Создан: {formatDate(post.createdAt)}</Text>
             {post.author.id == currentUser?.id ?
                 <View style={styles.buttonsContainer2}>
-                    <Button title='Обновить' onPress={() => handleUpdatePost(post)}></Button>
-                    <Button title='Удалить' onPress={() => handleDeletePost(post.id)}></Button>
+                    <Button title='Обновить' onPress={() => handleUpdatePost(post)} color="#e2c000ff"/>
+                    <Button title='Удалить' onPress={() => handleDeletePost(post.id)} color="#e20000ff"/>
                 </View>
             : null}
         </View>
@@ -119,9 +117,9 @@ export default function UsersScreen() {
                 />
                 <View style={styles.buttonsContainer}>
                     <Button title='Поиск по ID' onPress={handleSearchPosts}/>
-                    <Button title='Все посты' onPress={handleLoadPosts}/>
-                    <Button title='Мои посты' onPress={handleSearchMyPosts}/>
-                    <Button title='Добавить пост' onPress={() => setAddModalVisible(true)}/>
+                    <Button title='Все посты' onPress={handleLoadPosts} color="#8E8E93"/>
+                    <Button title='Мои посты' onPress={handleSearchMyPosts} color="#e20000ff"/>
+                    <Button title='Добавить пост' onPress={() => setAddModalVisible(true)} color="#00af2cff"/>
                 </View>
                 <Text style={styles.title}>Посты</Text>
                 {posts.map((post, index) => renderPost(index, post) )}
@@ -172,10 +170,10 @@ const styles = StyleSheet.create({
         borderColor: '#e0e0e0',
     },
     postTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '600',
         color: '#333',
-        marginBottom: 4,
+        marginVertical: 4,
     },
     input: {
         backgroundColor: 'white',
@@ -193,5 +191,12 @@ const styles = StyleSheet.create({
     buttonsContainer2: {
         marginTop: 10,
         gap: 10
+    },
+    metaData: {
+        color: '#9e9e9eff',
+    },
+    postContent: {
+        marginTop: 5,
+        marginBottom: 12
     }
 });

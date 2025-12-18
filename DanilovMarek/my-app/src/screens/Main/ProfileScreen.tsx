@@ -50,7 +50,7 @@ export default function ProfileScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.profileContainer}>
-                <Text style={styles.title}>Текущая сессия</Text>
+                <Text style={styles.title}>Мой профиль</Text>
 
                 <View style={styles.infoContainer}>
                     <Text style={styles.label}>Имя:</Text>
@@ -73,7 +73,7 @@ export default function ProfileScreen() {
                 </View>
 
                 <View style={styles.buttonsContainer}>
-                    <Button title="Выйти из аккаунта" onPress={logout} />
+                    <Button title="Выйти из аккаунта" onPress={logout} color="#e20000ff"/>
                 </View>
             </View>
             <View style={styles.spacer} />

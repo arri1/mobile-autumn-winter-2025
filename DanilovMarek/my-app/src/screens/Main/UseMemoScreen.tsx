@@ -44,7 +44,7 @@ export default function UseMemoScreen() {
     }
     
     return (
-        <View>
+        <View style={styles.container}>
             <Timer />
             <Text style={styles.numbersCounterName}>Количество чисел:</Text>
             <View style={styles.numbersCounter}>
@@ -66,54 +66,97 @@ export default function UseMemoScreen() {
                         setNumbersCounterValue((value) => value + 10)
                 }}/>
             </View>
-            <Button title="Пересортировать" onPress={ HandlerButton } />
+            <View style={styles.buttonWrapper}>
+                <Button title="Пересортировать" onPress={ HandlerButton } />
+            </View>
             {
             !sortingLoading ?
-                <ScrollView>
+                <ScrollView style={styles.scrollContainer}>
                     <Text style={styles.numbersListName}>Отсортированные числа:</Text>
-                    <Text style={styles.numbersList}>
-                        {sortedNumbers.map(number => (
-                            number + "  "
+                     <View style={styles.numbersGrid}>
+                        {sortedNumbers.map((number, index) => (
+                            <View key={index} style={styles.numberCard}>
+                                <Text style={styles.numberText}>{number}</Text>
+                            </View>
                         ))}
-                    </Text>
+                    </View>
                 </ScrollView>
-            : <Text style={styles.numbersListPlaceHolder}>Конец сортировки</Text>
+            : <View style={styles.placeholderContainer}>
+                <Text style={styles.numbersListPlaceHolder}>Конец сортировки</Text>
+            </View>
             }
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+        paddingHorizontal: 15,
+    },
     numbersCounterName: {
         alignSelf: 'center',
-        fontSize: 20
+        fontSize: 20,
+        fontWeight: '600',
+        marginVertical: 10,
     },
     numbersCounter: {
         flexDirection: "row",
         justifyContent: "center",
-        alignContent: "center",
-        padding: 5,
-        gap: 10,
+        alignItems: "center",
+        padding: 12,
+        marginBottom: 15,
+        gap: 10
     },
     numbersCounterText: {
-        fontSize: 30,
-        marginHorizontal: 15
+        fontSize: 28,
+        fontWeight: 'bold',
+        marginHorizontal: 20,
+        minWidth: 40,
+        textAlign: 'center',
     },
-    numbersList: {
-        flexDirection: 'column',
-        gap: 50,
-        margin: 10,
-        paddingBottom: 160,
-        fontSize: 25
+    buttonWrapper: {
+        marginBottom: 20,
     },
-    numbersListPlaceHolder: {
-        fontSize: 50,
-        marginTop: 250,
-        marginLeft: 90,
-        justifyContent: 'center'
+    scrollContainer: {
+        flex: 1,
     },
     numbersListName: {
-        alignSelf: 'center',
-        fontSize: 30
+        textAlign: 'center',
+        fontSize: 22,
+        fontWeight: '700',
+        color: '#333',
+        marginBottom: 15,
+        paddingTop: 10,
+    },
+    numbersGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        paddingBottom: 30,
+    },
+    numberCard: {
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        margin: 4,
+        minWidth: 60,
+        alignItems: 'center',
+    },
+    numberText: {
+        fontSize: 20,
+        fontWeight: '500',
+    },
+    placeholderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 100,
+    },
+    numbersListPlaceHolder: {
+        fontSize: 32,
+        fontWeight: '600',
+        color: '#888',
+        textAlign: 'center',
     }
 });

@@ -48,6 +48,7 @@ export default function RegisterScreen({ navigation }: any) {
             <Button
                 title="Назад"
                 onPress={() => navigation.navigate("Login")}
+                color="#8E8E93"
             />
         </View>
     );

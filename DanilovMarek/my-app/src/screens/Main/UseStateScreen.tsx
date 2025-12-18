@@ -9,8 +9,8 @@ export default function UseStateScreen() {
     <View style={styles.view1}>
         <Timer />
         <View style={styles.view2}>
-            <Text>UseState</Text>
-            <Text>Динамичная длина строки:</Text>
+            <Text style={styles.textStyle1}>UseState</Text>
+            <Text style={styles.textStyle2}>Динамичная длина строки:</Text>
             <TextInput
                 placeholder="Введите что-то"
                 onChangeText= {(value) => {
@@ -24,7 +24,8 @@ export default function UseStateScreen() {
             <Button title="Очистить" onPress={() => {
                 setStr('');
                 setStrLen(0)
-            }}/>
+            }}
+            />
             <Text>Длина строки: {strLen}</Text>
         </View>
     </View>
@@ -43,6 +44,13 @@ const styles = StyleSheet.create({
     },
     textInputStyle: {
         borderWidth: 1,
-        borderColor: 'black'
+        borderColor: 'black',
+        fontSize: 17
+    },
+    textStyle1: {
+        fontSize: 23
+    },
+    textStyle2: {
+        fontSize: 17
     }
 });
