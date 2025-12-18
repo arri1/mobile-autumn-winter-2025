@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Container, Button, Card, H2, H3, Body, Caption } from '@/components/ui';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import usePostStore from '@/store/postStore';
 import useAuthStore from '@/store/authStore';
 import useThemeStore from '@/store/themeStore';
+import { Post } from '@/types';
 
 export default function MyPostsScreen() {
   const { colors } = useThemeStore();
   const { user, isAuthenticated } = useAuthStore();
-  const { myPosts, createPost, isLoading } = usePostStore();
+  const { myPosts, createPost, updatePost, deletePost, isLoading } = usePostStore();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -29,6 +32,60 @@ export default function MyPostsScreen() {
     } catch (error) {
       Alert.alert('Ошибка', 'Не удалось создать пост');
     }
+  };
+
+  const handleEditPost = (post: Post) => {
+    setEditingPost(post);
+    setTitle(post.title);
+    setDescription(post.description);
+    setShowCreateForm(false);
+  };
+
+  const handleUpdatePost = async () => {
+    if (!editingPost) return;
+
+    if (!title.trim() || !description.trim()) {
+      Alert.alert('Ошибка', 'Заполните все поля');
+      return;
+    }
+
+    try {
+      await updatePost(editingPost.id, { title, description });
+      setTitle('');
+      setDescription('');
+      setEditingPost(null);
+      Alert.alert('Успех', 'Пост обновлен');
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось обновить пост');
+    }
+  };
+
+  const handleDeletePost = (postId: string) => {
+    Alert.alert(
+      'Удаление поста',
+      'Вы уверены, что хотите удалить этот пост?',
+      [
+        { text: 'Отмена', style: 'cancel' },
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deletePost(postId);
+              Alert.alert('Успех', 'Пост удален');
+            } catch (error) {
+              Alert.alert('Ошибка', 'Не удалось удалить пост');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPost(null);
+    setTitle('');
+    setDescription('');
   };
 
   if (!isAuthenticated) {
@@ -50,16 +107,15 @@ export default function MyPostsScreen() {
         <H2 style={{ color: colors.textPrimary }}>Мои посты</H2>
         <Button
           variant="primary"
+          title={showCreateForm ? 'Отмена' : 'Создать пост'}
           onPress={() => setShowCreateForm(!showCreateForm)}
-        >
-          {showCreateForm ? 'Отмена' : 'Создать пост'}
-        </Button>
+        />
       </View>
 
-      {showCreateForm && (
+      {(showCreateForm || editingPost) && (
         <Card variant="outlined" style={styles.createForm}>
           <H3 style={{ color: colors.textPrimary, marginBottom: 16 }}>
-            Новый пост
+            {editingPost ? 'Редактирование поста' : 'Новый пост'}
           </H3>
 
           <Body style={{ color: colors.textSecondary, marginBottom: 8 }}>
@@ -101,14 +157,31 @@ export default function MyPostsScreen() {
             numberOfLines={4}
           />
 
-          <Button
-            variant="primary"
-            onPress={handleCreatePost}
-            disabled={isLoading}
-            style={{ marginTop: 16 }}
-          >
-            {isLoading ? 'Создание...' : 'Опубликовать'}
-          </Button>
+          <View style={styles.formButtons}>
+            {editingPost && (
+              <Button
+                variant="outline"
+                title="Отмена"
+                onPress={handleCancelEdit}
+                style={{ flex: 1 }}
+              />
+            )}
+            <Button
+              variant="primary"
+              title={
+                isLoading
+                  ? editingPost
+                    ? 'Сохранение...'
+                    : 'Создание...'
+                  : editingPost
+                  ? 'Сохранить'
+                  : 'Опубликовать'
+              }
+              onPress={editingPost ? handleUpdatePost : handleCreatePost}
+              disabled={isLoading}
+              style={{ flex: 1 }}
+            />
+          </View>
         </Card>
       )}
 
@@ -122,7 +195,17 @@ export default function MyPostsScreen() {
         ) : (
           myPosts.map((post) => (
             <Card key={post.id} variant="outlined" style={styles.postCard}>
-              <H3 style={{ color: colors.textPrimary }}>{post.title}</H3>
+              <View style={styles.postHeader}>
+                <H3 style={{ color: colors.textPrimary, flex: 1 }}>{post.title}</H3>
+                <View style={styles.postActions}>
+                  <TouchableOpacity onPress={() => handleEditPost(post)}>
+                    <IconSymbol name="pencil" size={20} color={colors.textSecondary} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDeletePost(post.id)}>
+                    <IconSymbol name="trash" size={20} color={colors.textSecondary} />
+                  </TouchableOpacity>
+                </View>
+              </View>
               <Body style={{ color: colors.textSecondary, marginTop: 8 }}>
                 {post.description}
               </Body>
@@ -169,5 +252,19 @@ const styles = StyleSheet.create({
   },
   postCard: {
     marginBottom: 16,
+  },
+  postHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  postActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  formButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 16,
   },
 });
