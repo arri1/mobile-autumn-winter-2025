@@ -8,19 +8,19 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  const { register, isLoading, error, clearError } = useAuthStore();
+  const { register, isLoading, error, clearError , setValidationError} = useAuthStore();
 
   const handleRegister = async () => {
     clearError();
     
     if (password !== confirmPassword) {
-      useAuthStore.setState({ error: 'Пароли не совпадают' });
-      return;
+      setValidationError('Password error')
+    return;
     } 
     
     const result = await register(name, email, password);
     if (result.success) {
-      // Навигация произойдет автоматически
+      navigation.replace('Profile');
     }
   };
 

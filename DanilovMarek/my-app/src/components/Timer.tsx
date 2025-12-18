@@ -47,11 +47,12 @@ export default function Timer() {
                 <Button
                     title={isRunning ? "Стоп" : "Старт"}
                     onPress={controlTimer}
+                    color={isRunning ? "#e2a600ff" : "#00af2cff"}
                 />
                 <Text style={styles.timerStyle}>
                     {formatTime(minutes)}:{formatTime(seconds)}
                 </Text>
-                <Button title="Сброс" onPress={resetTimer} />
+                <Button title="Сброс" onPress={resetTimer} color="#e20000ff"/>
             </View>
         </View>
     );
@@ -61,14 +62,16 @@ const styles = StyleSheet.create({
     view1: {
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "gray",
+        backgroundColor: "#8E8E93",
         padding: 5,
     },
     text1: {
         fontSize: 20,
         color: "white",
+        paddingBottom: 5
     },
     timerBlockStyle: {
+        alignItems: "center",
         flexDirection: "row",
         gap: 15,
     },

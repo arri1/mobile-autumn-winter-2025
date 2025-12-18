@@ -1,37 +1,71 @@
 import styled from 'styled-components/native';
 
 
-export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
-  flex: 1;
-`;
-
-export const ScrollView = styled.ScrollView`
-  flex: 1;
-`;
-
-
 export const Container = styled.View`
   flex: 1;
-  background-color: #ffffff;
+`;
+
+export const SafeArea = styled.ScrollView`
+  flex: 1;
+  padding: 24px;
+  padding-top: 60px;
+  background-color: #0f2042ff;
 `;
 
 export const CenterContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #0f2042ff;
   padding: 20px;
 `;
 
-export const LoadingText = styled.Text`
-  margin-top: 20px;
-  font-size: 16px;
-  color: #666;
+export const Header = styled.View`
+  margin-bottom: 16px;
+  align-items: center;
+  text-align: center;
 `;
 
-export const Header = styled.View`
+export const Title = styled.Text`
+  font-size: 28px;
+  font-weight: 700;
+  color: #e6e9ef;
+  margin-bottom: 6px;
+`;
+
+export const SubTitle = styled.Text`
+  color: #9aa4b2;
+`;
+
+export const Card = styled.View`
+  background-color: #0c0f14;
+  border: 1px solid #1c2230;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+`;
+
+export const CardHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  padding: 40px 20px 30px;
+`;
+
+export const CardTitle = styled.Text`
+  color: #e6e9ef;
+  font-weight: 700;
+`;
+
+export const Divider = styled.View`
+  height: 1px;
+  background-color: #1c2230;
+  margin: 12px 0;
+`;
+
+// Стили для профиля
+export const ProfileContainer = styled.View`
+  align-items: center;
+  padding: 16px 0;
 `;
 
 export const ProfileImage = styled.Image`
@@ -40,217 +74,137 @@ export const ProfileImage = styled.Image`
   border-radius: 60px;
   margin-bottom: 20px;
   border-width: 3px;
-  border-color: #007AFF;
+  border-color: #4b87a2ff;
 `;
 
 export const UserName = styled.Text`
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
+  font-size: 24px;
+  font-weight: 700;
+  color: #e6e9ef;
   margin-bottom: 5px;
 `;
 
 export const UserEmail = styled.Text`
   font-size: 16px;
-  color: #666;
+  color: #9aa4b2;
   margin-bottom: 10px;
 `;
 
 export const MemberSince = styled.Text`
   font-size: 14px;
-  color: #888;
-`;
-
-export const Section = styled.View`
-  padding: 0 20px;
-  margin-bottom: 30px;
-`;
-
-export const SectionTitle = styled.Text`
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 15px;
-`;
-
-export const InfoCard = styled.View`
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  border-width: 1px;
-  border-color: #e9ecef;
+  color: #889096;
 `;
 
 export const InfoRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-vertical: 10px;
+  padding: 12px 0;
 `;
 
 export const InfoLabel = styled.Text`
   font-size: 16px;
-  color: #666;
+  color: #9aa4b2;
 `;
 
 export const InfoValue = styled.Text`
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: #e6e9ef;
 `;
 
-export const Divider = styled.View`
-  height: 1px;
-  background-color: #e9ecef;
-  margin-vertical: 5px;
-`;
-
-export const ActionButton = styled.TouchableOpacity`
-  background-color: ${props => props.danger ? '#dc3545' : '#007AFF'};
-  border-radius: 10px;
-  padding: 16px;
+export const LogoutButton = styled.TouchableOpacity`
+  background-color: #dc595bff;
+  padding: 12px;
+  border-radius: 12px;
   align-items: center;
-  margin-bottom: 12px;
 `;
 
-export const ActionButtonText = styled.Text`
-  color: white;
+export const BtnText = styled.Text`
+  color: #052925;
+  font-weight: 700;
+`;
+
+export const LoadingText = styled.Text`
+  color: #e6e9ef;
+  text-align: center;
   font-size: 16px;
-  font-weight: 600;
 `;
 
-export const DemoNote = styled.View`
-  background-color: #fff3cd;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 20px;
-  border-width: 1px;
-  border-color: #ffeaa7;
-`;
-
-export const DemoNoteText = styled.Text`
-  color: #856404;
-  font-size: 14px;
-  text-align: center;
-`;
-
-// Стили для формы авторизации
-export const WelcomeTitle = styled.Text`
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-  margin-bottom: 10px;
-`;
-
-export const WelcomeSubtitle = styled.Text`
-  font-size: 16px;
-  color: #666;
-  text-align: center;
-  padding-horizontal: 20px;
-`;
-
+// Стили для формы
 export const ErrorContainer = styled.View`
-  background-color: #f8d7da;
+  background-color: #552525;
+  border: 1px solid #dc595bff;
   border-radius: 8px;
-  padding: 15px;
-  margin: 0 20px 20px;
-  border-width: 1px;
-  border-color: #f5c6cb;
+  padding: 12px;
+  margin-bottom: 16px;
 `;
 
 export const ErrorText = styled.Text`
-  color: #721c24;
+  color: #dc595bff;
   font-size: 14px;
   text-align: center;
 `;
 
-export const Form = styled.View`
-  padding: 0 20px;
-  margin-bottom: 30px;
-`;
-
 export const Input = styled.TextInput`
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  padding: 15px;
-  font-size: 16px;
-  border-width: 1px;
-  border-color: #e9ecef;
-  color: #333;
+  background-color: #0f1218;
+  border: 1px solid #1c2230;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #e6e9ef;
 `;
 
 export const InputSpacer = styled.View`
-  height: 15px;
+  height: 12px;
 `;
 
 export const ForgotPassword = styled.TouchableOpacity`
   align-items: flex-end;
-  margin-top: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
 `;
 
 export const ForgotPasswordText = styled.Text`
-  color: #007AFF;
+  color: #4b87a2ff;
   font-size: 14px;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`
-  background-color: #007AFF;
-  border-radius: 10px;
-  padding: 18px;
-  margin: 0 20px;
+  background-color: #4b87a2ff;
+  border-radius: 12px;
+  padding: 12px;
   align-items: center;
   opacity: ${props => props.disabled ? 0.7 : 1};
-`;
-
-export const SubmitButtonText = styled.Text`
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
 `;
 
 export const SwitchModeContainer = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 30px;
-  padding-horizontal: 20px;
 `;
 
 export const SwitchModeText = styled.Text`
-  color: #666;
+  color: #9aa4b2;
   font-size: 16px;
-  margin-right: 5px;
+  margin-right: 8px;
 `;
 
 export const SwitchModeButton = styled.TouchableOpacity`
-  padding: 5px;
+  padding: 8px;
 `;
 
 export const SwitchModeButtonText = styled.Text`
-  color: #007AFF;
+  color: #4b87a2ff;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
-export const DemoCredentials = styled.View`
-  background-color: #e7f5ff;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 30px 20px 0;
-  border-width: 1px;
-  border-color: #c5e6ff;
-`;
-
-export const DemoTitle = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  color: #0056b3;
-  margin-bottom: 10px;
-`;
-
-export const DemoText = styled.Text`
+export const Helper = styled.Text`
+  color: #9aa4b2;
   font-size: 14px;
-  color: #0056b3;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
+`;
+
+export const BottomSpacer = styled.View`
+  height: 24px;
 `;

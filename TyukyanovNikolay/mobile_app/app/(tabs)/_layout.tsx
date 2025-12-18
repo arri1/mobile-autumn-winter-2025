@@ -1,18 +1,48 @@
 import { Tabs } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
+  //   <Drawer>
+  //     <Drawer.Screen
+  //       name="index"
+  //       options={{
+  //         drawerLabel: 'Home',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="explore"
+  //       options={{
+  //         drawerLabel: 'Explore',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useStateLab"
+  //       options={{
+  //         drawerLabel: 'useStateLab',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useEffectLab"
+  //       options={{
+  //         drawerLabel: 'useEffectLab',
+  //       }}
+  //     />
+  //     <Drawer.Screen
+  //       name="useMemoLab"
+  //       options={{
+  //         drawerLabel: 'useMemoLab',
+  //       }}
+  //     />
+  //   </Drawer>
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        // tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
       }}>
@@ -42,6 +72,20 @@ export default function TabLayout() {
         options={{
           title: 'useEffectLab',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="useMemoLab"
+        options={{
+          title: 'useMemoLab',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profileScreen"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
     </Tabs>

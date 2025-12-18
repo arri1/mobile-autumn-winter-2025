@@ -4,10 +4,9 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
 } from 'react-native';
 import useAuthStore from '../store/authStore';
-import * as S from './ProfileStyle';
+import * as Style from './ProfileStyle';
 
 const ProfileScreen = ({ navigation }) => {
   const {
@@ -94,168 +93,182 @@ const ProfileScreen = ({ navigation }) => {
   
   if (isLoading) {
     return (
-      <S.CenterContainer>
+      <Style.CenterContainer>
         <ActivityIndicator size="large" color="#007AFF" />
-        <S.LoadingText>
+        <Style.LoadingText>
           {isLoginMode ? 'Вход...' : 'Регистрация...'}
-        </S.LoadingText>
-      </S.CenterContainer>
+        </Style.LoadingText>
+      </Style.CenterContainer>
     );
   }
   
-  // Если пользователь авторизован - показываем профиль
   if (isAuthenticated && user) {
     return (
-      <S.Container>
-        <ScrollView>
-          <S.Header>
-            <S.ProfileImage 
-              source={{ 
-                uri: user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=007AFF&color=fff`
-              }} 
-            />
-            <S.UserName>{user.name || user.email}</S.UserName>
-            <S.UserEmail>{user.email}</S.UserEmail>
-            {user.createdAt && (
-              <S.MemberSince>
-                Участник с: {new Date(user.createdAt).toLocaleDateString()}
-              </S.MemberSince>
-            )}
-          </S.Header>
-          
-          <S.Section>
-            <S.SectionTitle>Информация профиля</S.SectionTitle>
-            
-            <S.InfoCard>
-              <S.InfoRow>
-                <S.InfoLabel>Имя:</S.InfoLabel>
-                <S.InfoValue>{user.name || 'Не указано'}</S.InfoValue>
-              </S.InfoRow>
-              
-              <S.Divider />
-              
-              <S.InfoRow>
-                <S.InfoLabel>Email:</S.InfoLabel>
-                <S.InfoValue>{user.email}</S.InfoValue>
-              </S.InfoRow>
-              
-              <S.Divider />
-              
-              <S.InfoRow>
-                <S.InfoLabel>Роль:</S.InfoLabel>
-                <S.InfoValue>{user.role || 'USER'}</S.InfoValue>
-              </S.InfoRow>
-              
-              {user.id && (
-                <>
-                  <S.Divider />
-                  <S.InfoRow>
-                    <S.InfoLabel>ID:</S.InfoLabel>
-                    <S.InfoValue>{user.id.substring(0, 8)}...</S.InfoValue>
-                  </S.InfoRow>
-                </>
+      <Style.Container>
+        <Style.SafeArea>
+          <Style.Header>
+            <Style.Title>Профиль</Style.Title>
+            <Style.SubTitle>Информация о пользователе</Style.SubTitle>
+          </Style.Header>
+
+          <Style.Card>
+            <Style.CardHeader>
+              <Style.CardTitle>Профиль пользователя</Style.CardTitle>
+            </Style.CardHeader>
+            <Style.Divider />
+            <Style.ProfileContainer>
+              <Style.ProfileImage 
+                source={{ 
+                  uri: user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4b87a2&color=fff`
+                }} 
+              />
+              <Style.UserName>{user.name || user.email}</Style.UserName>
+              <Style.UserEmail>{user.email}</Style.UserEmail>
+              {user.createdAt && (
+                <Style.MemberSince>
+                  Участник с: {new Date(user.createdAt).toLocaleDateString()}
+                </Style.MemberSince>
               )}
-            </S.InfoCard>
-          </S.Section>
-          
-          <S.Section>
-            <S.SectionTitle>Действия</S.SectionTitle>
-            
-            <S.ActionButton onPress={handleLogout} danger>
-              <S.ActionButtonText>Выйти из аккаунта</S.ActionButtonText>
-            </S.ActionButton>
-          </S.Section>
-          
-          
-        </ScrollView>
-      </S.Container>
+            </Style.ProfileContainer>
+          </Style.Card>
+
+          <Style.Card>
+            <Style.CardHeader>
+              <Style.CardTitle>Информация профиля</Style.CardTitle>
+            </Style.CardHeader>
+            <Style.Divider />
+            <Style.InfoRow>
+              <Style.InfoLabel>Имя:</Style.InfoLabel>
+              <Style.InfoValue>{user.name || 'Не указано'}</Style.InfoValue>
+            </Style.InfoRow>
+            <Style.Divider />
+            <Style.InfoRow>
+              <Style.InfoLabel>Email:</Style.InfoLabel>
+              <Style.InfoValue>{user.email}</Style.InfoValue>
+            </Style.InfoRow>
+            <Style.Divider />
+            <Style.InfoRow>
+              <Style.InfoLabel>Роль:</Style.InfoLabel>
+              <Style.InfoValue>{user.role || 'USER'}</Style.InfoValue>
+            </Style.InfoRow>
+            {user.id && (
+              <>
+                <Style.Divider />
+                <Style.InfoRow>
+                  <Style.InfoLabel>ID:</Style.InfoLabel>
+                  <Style.InfoValue>{user.id.substring(0, 8)}...</Style.InfoValue>
+                </Style.InfoRow>
+              </>
+            )}
+          </Style.Card>
+
+          <Style.Card>
+            <Style.CardHeader>
+              <Style.CardTitle>Действия</Style.CardTitle>
+            </Style.CardHeader>
+            <Style.Divider />
+            <Style.LogoutButton onPress={handleLogout}>
+              <Style.BtnText>Выйти из аккаунта</Style.BtnText>
+            </Style.LogoutButton>
+          </Style.Card>
+
+          <Style.BottomSpacer />
+        </Style.SafeArea>
+      </Style.Container>
     );
   }
   
-  // Если не авторизован - показываем форму входа/регистрации
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <S.Container>
-        <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
-          <S.Header>
-            <S.WelcomeTitle>
-              {isLoginMode ? 'Добро пожаловать!' : 'Создайте аккаунт'}
-            </S.WelcomeTitle>
-            <S.WelcomeSubtitle>
-              {isLoginMode 
-                ? 'Войдите в свой аккаунт' 
-                : 'Зарегистрируйтесь для доступа ко всем функциям'
-              }
-            </S.WelcomeSubtitle>
-          </S.Header>
-          
-          {error && (
-            <S.ErrorContainer>
-              <S.ErrorText>{error}</S.ErrorText>
-            </S.ErrorContainer>
-          )}
-          
-          <S.Form>
+      <Style.Container>
+        <Style.SafeArea>
+          <Style.Header>
+            <Style.Title>Профиль</Style.Title>
+            <Style.SubTitle>Аутентификация</Style.SubTitle>
+          </Style.Header>
+
+          <Style.Card>
+            <Style.CardHeader>
+              <Style.CardTitle>
+                {isLoginMode ? 'Вход в аккаунт' : 'Регистрация'}
+              </Style.CardTitle>
+            </Style.CardHeader>
+            <Style.Divider />
+            
+            {error && (
+              <Style.ErrorContainer>
+                <Style.ErrorText>{error}</Style.ErrorText>
+              </Style.ErrorContainer>
+            )}
+            
             {!isLoginMode && (
               <>
-                <S.Input
+                <Style.Input
                   placeholder="Имя"
                   value={formData.name}
                   onChangeText={(text) => handleInputChange('name', text)}
                   autoCapitalize="words"
+                  placeholderTextColor="#889096"
                 />
-                <S.InputSpacer />
+                <Style.InputSpacer />
               </>
             )}
             
-            <S.Input
+            <Style.Input
               placeholder="Email"
               value={formData.email}
               onChangeText={(text) => handleInputChange('email', text)}
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              placeholderTextColor="#889096"
             />
-            <S.InputSpacer />
+            <Style.InputSpacer />
             
-            <S.Input
+            <Style.Input
               placeholder="Пароль"
               value={formData.password}
               onChangeText={(text) => handleInputChange('password', text)}
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
+              placeholderTextColor="#889096"
             />
             
             {isLoginMode && (
-              <S.ForgotPassword>
-                <S.ForgotPasswordText>Забыли пароль?</S.ForgotPasswordText>
-              </S.ForgotPassword>
+              <Style.ForgotPassword>
+                <Style.ForgotPasswordText>Забыли пароль?</Style.ForgotPasswordText>
+              </Style.ForgotPassword>
             )}
-          </S.Form>
-          
-          <S.SubmitButton onPress={handleSubmit} disabled={isLoading}>
-            <S.SubmitButtonText>
-              {isLoginMode ? 'Войти' : 'Зарегистрироваться'}
-            </S.SubmitButtonText>
-          </S.SubmitButton>
-          
-          <S.SwitchModeContainer>
-            <S.SwitchModeText>
-              {isLoginMode ? 'Ещё нет аккаунта?' : 'Уже есть аккаунт?'}
-            </S.SwitchModeText>
-            <S.SwitchModeButton onPress={() => setIsLoginMode(!isLoginMode)}>
-              <S.SwitchModeButtonText>
-                {isLoginMode ? 'Зарегистрироваться' : 'Войти'}
-              </S.SwitchModeButtonText>
-            </S.SwitchModeButton>
-          </S.SwitchModeContainer>
-          
-        </ScrollView>
-      </S.Container>
+            
+            <Style.Divider />
+            
+            <Style.SubmitButton onPress={handleSubmit} disabled={isLoading}>
+              <Style.BtnText>
+                {isLoginMode ? 'Войти' : 'Зарегистрироваться'}
+              </Style.BtnText>
+            </Style.SubmitButton>
+          </Style.Card>
+
+          <Style.Card>
+            <Style.SwitchModeContainer>
+              <Style.SwitchModeText>
+                {isLoginMode ? 'Ещё нет аккаунта?' : 'Уже есть аккаунт?'}
+              </Style.SwitchModeText>
+              <Style.SwitchModeButton onPress={() => setIsLoginMode(!isLoginMode)}>
+                <Style.SwitchModeButtonText>
+                  {isLoginMode ? 'Зарегистрироваться' : 'Войти'}
+                </Style.SwitchModeButtonText>
+              </Style.SwitchModeButton>
+            </Style.SwitchModeContainer>
+          </Style.Card>
+
+          <Style.BottomSpacer />
+        </Style.SafeArea>
+      </Style.Container>
     </KeyboardAvoidingView>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 export const useUserState = () => {
     const [name, setName] = useState('');
@@ -17,16 +17,19 @@ export const useUserState = () => {
     }, [name, age]);
 
     useEffect(() => {
-    console.log(`Статус подписки: ${isSubscribed ? 'активна' : 'неактивна'}`);
+    console.log(`Статус кнопки: ${isSubscribed ? 'активна' : 'неактивна'}`);
     }, [isSubscribed]);
 
-    const addHobby = (hobby) => {
-    if (!hobbies.includes(hobby)) {
-        setHobbies([...hobbies, hobby]);
-    }
-    };
+    const addHobby = useCallback((hobby) => {
+    setHobbies(prev => {
+        if (!prev.includes(hobby)) {
+        return [...prev, hobby];
+        }
+        return prev;
+    });
+    }, []);
 
-    return {
+    return useMemo(() => ({
     name,
     setName,
     age,
@@ -35,5 +38,5 @@ export const useUserState = () => {
     setIsSubscribed,
     hobbies,
     addHobby,
-    };
+    }), [name, age, isSubscribed, hobbies, addHobby]);
 };

@@ -4,19 +4,21 @@ import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/appnavigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '../hooks/useAuth';
+import { useUserStore } from '../store/userStore'; 
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { authState, logout } = useAuth();
+  const { user } = useUserStore();
 
   const labs = [
     {
       id: 0,
       title: authState.isAuthenticated ? ' Профиль' : ' Авторизация',
       subtitle: authState.isAuthenticated 
-        ? `Вы вошли как ${authState.user?.email}` 
+        ? `Вы вошли как ${user?.email}` 
         : 'Вход или регистрация в системе',
       screen: authState.isAuthenticated ? 'Home' : 'Login' as keyof RootStackParamList,
       color: authState.isAuthenticated ? '#28a745' : '#dc3545',
@@ -53,6 +55,14 @@ export const HomeScreen: React.FC = () => {
       screen: 'ZustandLab' as keyof RootStackParamList,
       color: '#AF52DE',
       icon: '🏪',
+    },
+    {
+      id: 7,
+      title: 'Посты',
+      subtitle: 'Работа с постами через API',
+      screen: 'Posts' as keyof RootStackParamList,
+      color: '#FF3B30',
+      icon: '📝',
     },
   ];
 
@@ -98,12 +108,19 @@ export const HomeScreen: React.FC = () => {
           </Text>
           <Text style={styles.infoText}>
             {authState.isAuthenticated 
-              ? `Вы вошли как: ${authState.user?.email}`
+              ? `Вы вошли как: ${user?.email}`
               : 'Для доступа к некоторым функциям требуется войти в систему'
             }
-          </Text>
-          {authState.isAuthenticated && authState.user?.name && (
-            <Text style={styles.infoText}>Имя: {authState.user.name}</Text>
+           </Text>
+          {authState.isAuthenticated && user?.name && (
+            <Text style={styles.infoText}>
+              Имя: <Text style={styles.userName}>{user.name}</Text>
+            </Text>
+          )}
+          {authState.isAuthenticated && !user?.name && (
+            <Text style={[styles.infoText, styles.warningText]}>
+              Имя не указано. Вы можете добавить его в профиле.
+            </Text>
           )}
         </View>
 
@@ -112,7 +129,7 @@ export const HomeScreen: React.FC = () => {
             key={lab.id}
             style={[styles.labCard, { borderLeftColor: lab.color }]}
             onPress={() => handleLabPress(lab.screen)}
-            activeOpacity={0.7}
+            activeOpacity={0.8}
           >
             <View style={styles.cardContent}>
               <Text style={styles.icon}>{lab.icon}</Text>
@@ -220,6 +237,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: '#ffc107',
+  },
+  userName: {
+    fontWeight: 'bold',
+    color: '#28a745',
+  },
+  warningText: {
+    color: '#856404',
+    fontStyle: 'italic',
   },
   debugTitle: {
     fontSize: 14,

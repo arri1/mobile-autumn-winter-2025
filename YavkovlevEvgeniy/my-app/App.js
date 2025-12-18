@@ -1,44 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet } from 'react-native';
-import { useUserState } from './hooks/useUserState';
-import NameInput from './components/NameInput';
-import AgeInput from './components/AgeInput';
-import SubscriptionToggle from './components/SubscriptionToggle';
-import HobbyButtons from './components/HobbyButtons';
-import UserInfoDisplay from './components/UserInfoDisplay';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useAuthStore } from './hooks/useAuthStore';
+import RegisterScreen from './components/RegisterScreen';
+import LoginScreen from './components/LoginScreen';
+import MainScreen from './components/MainScreen';
+import UseStateEffect from './components/useStateEffect';
+import UseMemo from './components/UseMemo';
 
 export default function App() {
-  const {
-    name,
-    setName,
-    age,
-    setAge,
-    isSubscribed,
-    setIsSubscribed,
-    hobbies,
-    addHobby
-  } = useUserState();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const [route, setRoute] = useState(isAuthenticated ? 'main' : 'login');
 
-  return (
-    <View style={styles.container}>
-      <NameInput value={name} onChangeText={setName}/>
-      <AgeInput value={age} onChangeText={setAge}/>
-      <SubscriptionToggle value={isSubscribed} onValueChange={setIsSubscribed}/>
-      <HobbyButtons onAddHobby={addHobby}/>
-      <UserInfoDisplay
-        name={name}
-        age={age}
-        isSubscribed={isSubscribed}
-        hobbies={hobbies}
-      />
-    </View>
-  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      setRoute((r) => (r === 'login' || r === 'register' ? 'main' : r));
+    } else {
+      setRoute('login');
+    }
+  }, [isAuthenticated]);
+
+  const navigate = useCallback((to) => setRoute(to), []);
+
+  const screen = useMemo(() => {
+    if (!isAuthenticated) {
+      if (route === 'register') return <RegisterScreen navigate={navigate} />;
+      return <LoginScreen navigate={navigate} />;
+    }
+
+    switch (route) {
+      case 'main':
+        return <MainScreen navigate={navigate} />;
+      case 'useStateEffect':
+        return <UseStateEffect navigate={navigate} />;
+      case 'useMemo':
+        return <UseMemo navigate={navigate} />;
+      default:
+        return <MainScreen navigate={navigate} />;
+    }
+  }, [isAuthenticated, route, navigate]);
+
+  return <View style={styles.container}>{screen}</View>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent:'center'
+    justifyContent: 'center',
   },
 });
