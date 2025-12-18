@@ -9,6 +9,8 @@ import UseEffectLab from './screens/UseEffect';
 import UseMemoLab from './screens/UseMemo';
 import LoginScreen from './screens/Login';
 import RegisterScreen from './screens/Register';
+import ZustandEditScreen from './screens/ZustandEdit';
+import ZustandViewScreen from './screens/ZustandView';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -72,6 +74,22 @@ function MainTabs() {
         options={{ 
           title: 'UseMemo Lab',
           tabBarLabel: 'UseMemo',
+        }}
+      />
+      <Tab.Screen 
+        name="ZustandEdit" 
+        component={ZustandEditScreen}
+        options={{ 
+          title: 'Zustand Edit',
+          tabBarLabel: 'Zustand Edit',
+        }}
+      />
+      <Tab.Screen 
+        name="ZustandView" 
+        component={ZustandViewScreen}
+        options={{ 
+          title: 'Zustand View',
+          tabBarLabel: 'Zustand View',
         }}
       />
     </Tab.Navigator>
