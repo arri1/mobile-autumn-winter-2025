@@ -1,32 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useAuthStore } from './hooks/useAuthStore';
 import RegisterScreen from './components/RegisterScreen';
 import LoginScreen from './components/LoginScreen';
 import MainScreen from './components/MainScreen';
+import UseStateEffect from './components/useStateEffect';
+import UseMemo from './components/UseMemo';
 
 export default function App() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [route, setRoute] = useState('login');
+  const [route, setRoute] = useState(isAuthenticated ? 'main' : 'login');
 
-  if (isAuthenticated) {
-    return <MainScreen />;
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      setRoute((r) => (r === 'login' || r === 'register' ? 'main' : r));
+    } else {
+      setRoute('login');
+    }
+  }, [isAuthenticated]);
 
-  const navigate = (to) => setRoute(to);
+  const navigate = useCallback((to) => setRoute(to), []);
 
-  return (
-    <View style={styles.container}>
-      {route === 'login' && <LoginScreen navigate={navigate} />}
-      {route === 'register' && <RegisterScreen navigate={navigate} />}
-    </View>
-  );
+  const screen = useMemo(() => {
+    if (!isAuthenticated) {
+      if (route === 'register') return <RegisterScreen navigate={navigate} />;
+      return <LoginScreen navigate={navigate} />;
+    }
+
+    switch (route) {
+      case 'main':
+        return <MainScreen navigate={navigate} />;
+      case 'useStateEffect':
+        return <UseStateEffect navigate={navigate} />;
+      case 'useMemo':
+        return <UseMemo navigate={navigate} />;
+      default:
+        return <MainScreen navigate={navigate} />;
+    }
+  }, [isAuthenticated, route, navigate]);
+
+  return <View style={styles.container}>{screen}</View>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent:'center'
+    justifyContent: 'center',
   },
 });
