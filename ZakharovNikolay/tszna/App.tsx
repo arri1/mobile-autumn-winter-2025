@@ -1,19 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UseStateLab from './screens/UseState';
+import UseEffectLab from './screens/UseEffect';
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function HomeScreen({ navigation }: any) {
+function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Главная страница</Text>
-      <Button
-        title="Перейти к UseState"
-        onPress={() => navigation.navigate('UseState')}
-      />
+      <Text style={styles.subtitle}>Используйте нижнее меню для навигации</Text>
       <StatusBar style="auto" />
     </View>
   );
@@ -22,18 +20,40 @@ function HomeScreen({ navigation }: any) {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen 
+      <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: '#0000ff',
+          tabBarInactiveTintColor: '#666',
+          headerStyle: {
+            backgroundColor: '#f5f5f5',
+          },
+        }}
+      >
+        <Tab.Screen 
           name="Home" 
           component={HomeScreen}
-          options={{ title: 'Главная' }}
+          options={{ 
+            title: 'Главная',
+            tabBarLabel: 'Главная',
+          }}
         />
-        <Stack.Screen 
+        <Tab.Screen 
           name="UseState" 
           component={UseStateLab}
-          options={{ title: 'UseState Lab' }}
+          options={{ 
+            title: 'UseState Lab',
+            tabBarLabel: 'UseState',
+          }}
         />
-      </Stack.Navigator>
+        <Tab.Screen 
+          name="UseEffect" 
+          component={UseEffectLab}
+          options={{ 
+            title: 'UseEffect Lab',
+            tabBarLabel: 'UseEffect',
+          }}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
@@ -48,5 +68,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
 });
