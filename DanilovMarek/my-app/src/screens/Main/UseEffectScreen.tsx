@@ -19,9 +19,9 @@ export default function UseEffectScreen() {
     <View style={styles.view2}>
         <Timer />
         <View style={styles.view1}>
-            <Text>UseEffect</Text>
-            <Text>Приветствие:</Text>
-            <Text>{str}</Text>
+            <Text style={styles.textStyle1}>UseEffect</Text>
+            <Text style={styles.textStyle2}>Приветствие:</Text>
+            <Text style={styles.textStyle2}>{str}</Text>
             <Button title="Другое имя" onPress={() => {setNameLoad(true)}} />
         </View>
     </View>
@@ -41,5 +41,11 @@ const styles = StyleSheet.create({
     textInputStyle: {
         borderWidth: 1,
         borderColor: 'black'
+    },
+    textStyle1: {
+        fontSize: 23
+    },
+    textStyle2: {
+        fontSize: 17
     }
 });

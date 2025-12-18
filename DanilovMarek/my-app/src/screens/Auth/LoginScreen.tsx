@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useUserStore } from "../../store/useUserStore";
 
 export default function LoginScreen({ navigation }: any) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login, isLoading } = useAuthStore();
+    const { login } = useUserStore();
 
 
     const handleLogin = async () => {
@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }: any) {
                 secureTextEntry
             />
 
-            <Button title="Войти" onPress={handleLogin} />
+            <Button title="Войти" onPress={handleLogin} color="#00af2cff"/>
             <View style={styles.spacer} />
             <Button
                 title="Регистрация"
