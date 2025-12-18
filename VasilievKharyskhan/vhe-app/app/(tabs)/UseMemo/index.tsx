@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { styles } from "./_styles";
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useThemeColor } from '@/hooks/use-theme-color';
-
 type Product = {
   id: number;
   name: string;
@@ -52,13 +52,6 @@ export default function UseMemoExample() {
   const [renderCount, setRenderCount] = useState(0);
 
   // Получаем цвета для текущей темы
-  const backgroundColor = useThemeColor({}, 'background');
-  const textColor = useThemeColor({}, 'text');
-  const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
-  const borderColor = useThemeColor({ light: '#ddd', dark: '#38383A' }, 'background');
-  const inputBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
-  const buttonBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
-  const secondaryText = useThemeColor({ light: '#666', dark: '#999' }, 'text');
 
  
 
@@ -122,28 +115,28 @@ export default function UseMemoExample() {
   }, [filteredAndSortedProducts]);
 
   const renderProduct = ({ item }: { item: Product }) => (
-    <View style={[styles.productCard, { backgroundColor: cardBg, borderColor }]}>
-      <View style={styles.productHeader}>
+    <ThemedView style={[styles.productCard]}>
+      <ThemedView style={styles.productHeader}>
         <ThemedText style={styles.productName}>{item.name}</ThemedText>
         <ThemedText style={styles.productPrice}>{item.price} ₽</ThemedText>
-      </View>
-      <View style={styles.productFooter}>
+      </ThemedView>
+      <ThemedView style={styles.productFooter}>
         <ThemedText style={styles.productCategory}>{item.category}</ThemedText>
         <ThemedText style={styles.productRating}>⭐ {item.rating}</ThemedText>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 
   return (
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <ThemedView style={styles.header}>
-          <ThemedText type="title" style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</ThemedText>
+          <ThemedText style={styles.title}>Пример useMemo: супер стандартный список товаров с статистикой и сортировкой</ThemedText>
           <ThemedText style={styles.subtitle}>Оптимизация вычислений</ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.infoBox}>
-          <ThemedText type="subtitle" style={styles.infoTitle}>Что происходит:</ThemedText>
+          <ThemedText style={styles.infoTitle}>Что происходит:</ThemedText>
           <ThemedText style={styles.infoText}>
             • useMemo кэширует результаты фильтрации{'\n'}
             • Пересчет только при изменении зависимостей{'\n'}
@@ -155,9 +148,8 @@ export default function UseMemoExample() {
         <ThemedView style={styles.searchSection}>
           <ThemedText style={styles.sectionTitle}>Поиск:</ThemedText>
           <TextInput
-            style={[styles.searchInput, { backgroundColor: inputBg, borderColor, color: textColor }]}
+            style={[styles.searchInput]}
             placeholder="Введите название товара..."
-            placeholderTextColor={secondaryText}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -167,13 +159,12 @@ export default function UseMemoExample() {
         <ThemedView style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Категория:</ThemedText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.categoryContainer}>
+            <ThemedView style={styles.categoryContainer}>
               {categories.map(cat => (
                 <TouchableOpacity
                   key={cat}
                   style={[
                     styles.categoryButton,
-                    { backgroundColor: buttonBg, borderColor },
                     selectedCategory === cat && styles.categoryButtonActive
                   ]}
                   onPress={() => setSelectedCategory(cat)}>
@@ -186,18 +177,17 @@ export default function UseMemoExample() {
                   </ThemedText>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ThemedView>
           </ScrollView>
         </ThemedView>
 
         {/* Сортировка */}
         <ThemedView style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Сортировка:</ThemedText>
-          <View style={styles.sortContainer}>
+          <ThemedView style={styles.sortContainer}>
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'name' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('name')}>
@@ -206,7 +196,6 @@ export default function UseMemoExample() {
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'price' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('price')}>
@@ -215,36 +204,35 @@ export default function UseMemoExample() {
             <TouchableOpacity
               style={[
                 styles.sortButton,
-                { backgroundColor: buttonBg, borderColor },
                 sortBy === 'rating' && styles.sortButtonActive
               ]}
               onPress={() => setSortBy('rating')}>
               <ThemedText style={styles.sortText}>По рейтингу</ThemedText>
             </TouchableOpacity>
-          </View>
+          </ThemedView>
         </ThemedView>
 
         {/* Статистика */}
-        <ThemedView style={[styles.statsBox, { borderColor }]}>
-          <ThemedText type="subtitle" style={styles.statsTitle}>Статистика:</ThemedText>
-          <View style={styles.statsGrid}>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
+        <ThemedView style={[styles.statsBox]}>
+          <ThemedText style={styles.statsTitle}>Статистика:</ThemedText>
+          <ThemedView style={styles.statsGrid}>
+            <ThemedView style={[styles.statItem]}>
               <ThemedText style={styles.statValue}>{statistics.count}</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Найдено</ThemedText>
-            </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
+              <ThemedText style={[styles.statLabel]}>Найдено</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
               <ThemedText style={styles.statValue}>{statistics.avgPrice} ₽</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Средняя цена</ThemedText>
-            </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
+              <ThemedText style={[styles.statLabel]}>Средняя цена</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
               <ThemedText style={styles.statValue}>{statistics.maxPrice} ₽</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Макс. цена</ThemedText>
-            </View>
-            <View style={[styles.statItem, { backgroundColor: cardBg, borderColor }]}>
+              <ThemedText style={[styles.statLabel]}>Макс. цена</ThemedText>
+            </ThemedView>
+            <ThemedView style={[styles.statItem]}>
               <ThemedText style={styles.statValue}>⭐ {statistics.avgRating}</ThemedText>
-              <ThemedText style={[styles.statLabel, { color: secondaryText }]}>Средний рейтинг</ThemedText>
-            </View>
-          </View>
+              <ThemedText style={[styles.statLabel]}>Средний рейтинг</ThemedText>
+            </ThemedView>
+          </ThemedView>
         </ThemedView>
 
         {/* Список товаров */}
@@ -252,190 +240,21 @@ export default function UseMemoExample() {
           <ThemedText style={styles.sectionTitle}>
             Товары ({filteredAndSortedProducts.length}):
           </ThemedText>
-          <View style={styles.productsList}>
+          <ThemedView style={styles.productsList}>
             {filteredAndSortedProducts.slice(0, 50).map(product => (
-              <View key={product.id}>
+              <ThemedView key={product.id}>
                 {renderProduct({ item: product })}
-              </View>
+              </ThemedView>
             ))}
             {filteredAndSortedProducts.length > 50 && (
               <ThemedText style={styles.moreText}>
                 ... и еще {filteredAndSortedProducts.length - 50} товаров
               </ThemedText>
             )}
-          </View>
+          </ThemedView>
         </ThemedView>
       </ScrollView>
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  title: {
-    marginBottom: 4,
-  },
-  subtitle: {
-    opacity: 0.7,
-    fontSize: 14,
-  },
-  infoBox: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    marginBottom: 16,
-  },
-  infoTitle: {
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  infoText: {
-    fontSize: 14, 
-    lineHeight: 22,
-  },
-  searchSection: {
-    marginBottom: 16,
-  },
-  section: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  searchInput: {
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    borderWidth: 1,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  categoryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  categoryButtonActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  categoryText: {
-    fontSize: 14,
-  },
-  categoryTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  sortContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  sortButton: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  sortButtonActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  sortText: {
-    fontSize: 14,
-  },
-  statsBox: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  statsTitle: {
-    marginBottom: 12,
-    fontSize: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  statItem: {
-    flex: 1,
-    minWidth: '45%',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-  },
-  productsSection: {
-    marginBottom: 20,
-  },
-  productsList: {
-    gap: 8,
-  },
-  productCard: {
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  productHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: '600',
-    flex: 1,
-  },
-  productPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-  productFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  productCategory: {
-    fontSize: 12,
-    opacity: 0.6,
-  },
-  productRating: {
-    fontSize: 12,
-  },
-  moreText: {
-    textAlign: 'center',
-    opacity: 0.6,
-    marginTop: 12,
-    fontSize: 14,
-  },
-});

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Svg, { Path } from 'react-native-svg';
+import { styles } from "./_styles";
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import Svg, { Path } from 'react-native-svg';
 
 type Point = {
   x: number;
@@ -84,13 +85,13 @@ export default function DrawingApp() {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.header}>
-        <ThemedText type="title" style={styles.title}>Рисование пальцем</ThemedText>
+        <ThemedText style={styles.title}>Рисование пальцем</ThemedText>
         <ThemedText style={styles.subtitle}>useState для хранения линий</ThemedText>
       </ThemedView>
 
       {/* Canvas */}
       <GestureDetector gesture={pan}>
-        <View style={[styles.canvas, { height: canvasHeight }]}>
+        <ThemedView style={[styles.canvas, { height: canvasHeight }]}>
           <Svg width="100%" height="100%" style={styles.svg}>
             {/* Отрисовка всех сохраненных путей */}
             {paths.map((path, index) => (
@@ -116,13 +117,13 @@ export default function DrawingApp() {
               />
             )}
           </Svg>
-        </View>
+        </ThemedView>
       </GestureDetector>
 
       {/* Color Picker */}
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>Цвет</ThemedText>
-        <View style={styles.colorPicker}>
+        <ThemedText style={styles.sectionTitle}>Цвет</ThemedText>
+        <ThemedView style={styles.colorPicker}>
           {COLORS.map(color => (
             <TouchableOpacity
               key={color}
@@ -134,15 +135,15 @@ export default function DrawingApp() {
               onPress={() => setSelectedColor(color)}
             />
           ))}
-        </View>
+        </ThemedView>
       </ThemedView>
 
       {/* Brush Size */}
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>
+        <ThemedText style={styles.sectionTitle}>
           Размер кисти: {brushSize}px
         </ThemedText>
-        <View style={styles.brushPicker}>
+        <ThemedView style={styles.brushPicker}>
           {BRUSH_SIZES.map(size => (
             <TouchableOpacity
               key={size}
@@ -151,7 +152,7 @@ export default function DrawingApp() {
                 brushSize === size && styles.selectedBrush
               ]}
               onPress={() => setBrushSize(size)}>
-              <View
+              <ThemedView
                 style={[
                   styles.brushPreview,
                   {
@@ -164,11 +165,11 @@ export default function DrawingApp() {
               />
             </TouchableOpacity>
           ))}
-        </View>
+        </ThemedView>
       </ThemedView>
 
       {/* Controls */}
-      <View style={styles.controls}>
+      <ThemedView style={styles.controls}>
         <TouchableOpacity
           style={[styles.button, styles.undoButton]}
           onPress={undoLast}
@@ -180,7 +181,7 @@ export default function DrawingApp() {
           onPress={clearCanvas}>
           <ThemedText style={styles.buttonText}>🗑️ Очистить</ThemedText>
         </TouchableOpacity>
-      </View>
+      </ThemedView>
 
       {/* Stats */}
       <ThemedView style={styles.stats}>
@@ -195,112 +196,3 @@ export default function DrawingApp() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    marginBottom: 16,
-    alignItems: 'center',
-  },
-  title: {
-    marginBottom: 4,
-  },
-  subtitle: {
-    opacity: 0.7,
-    fontSize: 14,
-  },
-  canvas: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  svg: {
-    backgroundColor: '#FFFFFF',
-  },
-  section: {
-    marginBottom: 16,
-    padding: 12,
-    borderRadius: 8,
-  },
-  sectionTitle: {
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  colorPicker: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  colorButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#ccc',
-  },
-  selectedColor: {
-    borderColor: '#007AFF',
-    borderWidth: 4,
-    transform: [{ scale: 1.1 }],
-  },
-  brushPicker: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    gap: 8,
-  },
-  brushButton: {
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#ccc',
-  },
-  selectedBrush: {
-    borderColor: '#007AFF',
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-  },
-  brushPreview: {
-    backgroundColor: '#000',
-  },
-  controls: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  undoButton: {
-    backgroundColor: '#FF9500',
-  },
-  clearButton: {
-    backgroundColor: '#FF3B30',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  stats: {
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  statsText: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-});

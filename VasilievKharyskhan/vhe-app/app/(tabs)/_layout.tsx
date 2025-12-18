@@ -24,24 +24,31 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="useState"
+        name="UseState/index"
         options={{
           title: 'useState',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="sparkles" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="useEffect"
+        name="UseEffect/index"
         options={{
           title: 'useEffect',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="photo.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="useMemo"
+        name="UseMemo/index"
         options={{
           title: 'useMemo',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="Zustand/index"
+        options={{
+          title: 'ZUSTAND',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="z.square.fill" color={color} />,
         }}
       />
     </Tabs>
