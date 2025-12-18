@@ -9,14 +9,13 @@ import {
     TouchableOpacity,
     ActivityIndicator 
 } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     
-    // Получаем функцию login из store
     const login = useAuthStore((state) => state.login);
 
     const handleLogin = async () => {
@@ -25,7 +24,6 @@ export default function LoginScreen({ navigation }) {
             return;
         }
 
-        // Простая валидация email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             Alert.alert("Ошибка", "Введите корректный email");
@@ -40,7 +38,6 @@ export default function LoginScreen({ navigation }) {
             if (!result.success) {
                 Alert.alert("Ошибка", result.error || "Неверный email или пароль");
             }
-            // При успешном входе автоматически произойдет редирект через изменение isAuthenticated
         } catch (error) {
             Alert.alert("Ошибка", "Что-то пошло не так. Попробуйте снова.");
             console.error("Login error:", error);
@@ -85,15 +82,6 @@ export default function LoginScreen({ navigation }) {
                         onPress={handleLogin} 
                         disabled={isLoading}
                     />
-                    
-                    <TouchableOpacity 
-                        onPress={handleRegisterNavigation}
-                        style={styles.registerButton}
-                    >
-                        <Text style={styles.registerText}>
-                            Нет аккаунта? Зарегистрироваться
-                        </Text>
-                    </TouchableOpacity>
                 </>
             )}
         </View>

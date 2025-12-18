@@ -9,38 +9,28 @@ import {
     TouchableOpacity,
     ActivityIndicator 
 } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export default function RegisterScreen({ navigation }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState(""); // Изменено с username на email
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     
     const register = useAuthStore((state) => state.register);
     const login = useAuthStore((state) => state.login);
 
     const handleRegister = async () => {
-        // Валидация полей
-        if (!name || !email || !password || !confirmPassword) {
+        if (!name || !email || !password) {
             Alert.alert("Ошибка", "Заполните все поля");
             return;
         }
 
-        // Проверка совпадения паролей
-        if (password !== confirmPassword) {
-            Alert.alert("Ошибка", "Пароли не совпадают");
-            return;
-        }
-
-        // Проверка минимальной длины пароля
         if (password.length < 6) {
             Alert.alert("Ошибка", "Пароль должен быть не менее 6 символов");
             return;
         }
 
-        // Валидация email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             Alert.alert("Ошибка", "Введите корректный email");
@@ -50,15 +40,12 @@ export default function RegisterScreen({ navigation }) {
         setIsLoading(true);
         
         try {
-            // Регистрируем пользователя
             const registerResult = await register(name, email, password);
             
             if (registerResult.success) {
-                // Автоматически логинимся после успешной регистрации
                 const loginResult = await login(email, password);
                 
                 if (loginResult.success) {
-                    // Успешная регистрация и вход - навигация произойдет автоматически
                     Alert.alert("Успешно!", "Регистрация прошла успешно");
                 } else {
                     Alert.alert("Ошибка", "Регистрация прошла, но не удалось войти");
@@ -98,18 +85,9 @@ export default function RegisterScreen({ navigation }) {
 
             <TextInput
                 style={styles.input}
-                placeholder="Пароль (мин. 6 символов)"
+                placeholder="Пароль"
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
-                autoComplete="password-new"
-            />
-
-            <TextInput
-                style={styles.input}
-                placeholder="Подтвердите пароль"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
                 secureTextEntry
                 autoComplete="password-new"
             />
@@ -123,15 +101,6 @@ export default function RegisterScreen({ navigation }) {
                     disabled={isLoading}
                 />
             )}
-
-            <TouchableOpacity 
-                onPress={() => navigation.navigate("Login")}
-                style={styles.loginLink}
-            >
-                <Text style={styles.loginText}>
-                    Уже есть аккаунт? Войти
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 }
