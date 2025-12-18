@@ -7,4 +7,12 @@ module.exports = defineConfig([
   {
     ignores: ['dist/*'],
   },
+  {
+    files: ['app/**', 'components/**'],
+    rules: {
+      // В шаблонных файлах Expo Router отключаем проверку нерешённых alias-импортов,
+      // чтобы не получать ошибки вида import/no-unresolved для "@/..."
+      'import/no-unresolved': 'off',
+    },
+  },
 ]);

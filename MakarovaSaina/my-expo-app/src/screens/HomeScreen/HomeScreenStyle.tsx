@@ -60,4 +60,18 @@ export const HomeStyles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 16,
   },
+  logoutButton: {
+    backgroundColor: '#FF6B6B',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  
+  logoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });

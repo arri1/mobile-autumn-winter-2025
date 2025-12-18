@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Text, View, SafeAreaView, TouchableOpacity, TextInput, Alert, ScrollView, FlatList } from 'react-native';
-import { useCounterStore } from '../../store/useCounterStore';
 import { useUserStore } from '../../store/useUserStore';
 import { ZustandStyles } from './ZustandStyle';
 
@@ -13,7 +12,6 @@ export default function ZustandLab({ navigation }: any) {
         <View style={ZustandStyles.content}>
           <Text style={ZustandStyles.title}>Zustand</Text>
 
-          <CounterExample />
           <UserManagementExample />
 
           <View style={ZustandStyles.navigationButtons}>
@@ -35,60 +33,10 @@ export default function ZustandLab({ navigation }: any) {
   );
 }
 
-function CounterExample() {
-  const { count, increment, decrement, reset, setCount } = useCounterStore();
-  const [customValue, setCustomValue] = useState('');
-
-  const handleSetCustomValue = () => {
-    const num = parseInt(customValue);
-    if (!isNaN(num)) {
-      setCount(num);
-      setCustomValue('');
-    }
-  };
-
-  return (
-    <View style={ZustandStyles.exampleContainer}>
-      <Text style={ZustandStyles.exampleTitle}>🔢 Счетчик с Zustand</Text>
-      <Text style={ZustandStyles.exampleDescription}>Состояние сохраняется между перезагрузками приложения</Text>
-      
-      <View style={ZustandStyles.counterDisplay}>
-        <Text style={ZustandStyles.counterValue}>{count}</Text>
-      </View>
-
-      <View style={ZustandStyles.counterButtons}>
-        <TouchableOpacity style={ZustandStyles.counterButton} onPress={decrement}>
-          <Text style={ZustandStyles.counterButtonText}>-1</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={ZustandStyles.counterButton} onPress={reset}>
-          <Text style={ZustandStyles.counterButtonText}>Сбросить</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={ZustandStyles.counterButton} onPress={increment}>
-          <Text style={ZustandStyles.counterButtonText}>+1</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={ZustandStyles.customInputContainer}>
-        <TextInput
-          style={ZustandStyles.customInput}
-          placeholder="Установить значение..."
-          placeholderTextColor="#C5C6C7"
-          value={customValue}
-          onChangeText={setCustomValue}
-          keyboardType="numeric"
-        />
-        <TouchableOpacity style={ZustandStyles.setButton} onPress={handleSetCustomValue}>
-          <Text style={ZustandStyles.setButtonText}>Установить</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+ 
 
 function UserManagementExample() {
-  const { users, addUser, removeUser, currentUser, setCurrentUser } = useUserStore();
+  const { users, addUser, removeUser, currentUser, setCurrentUser } = useUserStore(); 
   const [newUserName, setNewUserName] = useState('');
   const [newUserUsername, setNewUserUsername] = useState('');
 
@@ -117,8 +65,8 @@ function UserManagementExample() {
 
   return (
     <View style={ZustandStyles.exampleContainer}>
-      <Text style={ZustandStyles.exampleTitle}>👥 Управление пользователями</Text>
-      <Text style={ZustandStyles.exampleDescription}>Состояние пользователей</Text>
+      <Text style={ZustandStyles.exampleTitle}>👥 Управление пользователями (локальное)</Text>
+      <Text style={ZustandStyles.exampleDescription}>Локальное состояние в Zustand (не связано с API)</Text>
 
       {currentUser && (
         <View style={ZustandStyles.currentUserContainer}>

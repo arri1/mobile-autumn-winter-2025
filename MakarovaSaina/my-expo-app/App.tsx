@@ -1,21 +1,19 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-import AuthNavigator from './src/navigation/AuthNavigator';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from './src/contexts/AuthContext';
 import AppNavigator from './src/navigation/AppNavigator';
-
-function RootNavigator() {
-  const { user } = useAuth();
-
-  return user ? <AppNavigator /> : <AuthNavigator />;
-}
+import { StatusBar } from 'react-native';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="light-content" backgroundColor="#0B0C10" />
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

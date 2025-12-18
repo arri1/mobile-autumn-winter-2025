@@ -128,28 +128,47 @@ export default function UseMemoLab({ navigation }: any) {
     Alert.alert('Успех', `Данные пользователя обновлены!`);
   };
 
-  const UserItem = React.memo(({ user, onEdit, onDelete, onPress }: { 
-    user: User; 
+  const UserItemComponent = ({
+    user,
+    onEdit,
+    onDelete,
+    onPress,
+  }: {
+    user: User;
     onEdit: (user: User) => void;
     onDelete: (user: User) => void;
     onPress: (user: User) => void;
   }) => (
-    <TouchableOpacity style={UseMemoStyles.userCard} onPress={() => onPress(user)} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={UseMemoStyles.userCard}
+      onPress={() => onPress(user)}
+      activeOpacity={0.7}
+    >
       <View style={UseMemoStyles.userInfo}>
         <Text style={UseMemoStyles.userName}>{user.name}</Text>
         <Text style={UseMemoStyles.userDetails}>Возраст: {user.age}</Text>
         <Text style={UseMemoStyles.userDetails}>Отдел: {user.department}</Text>
       </View>
       <View style={UseMemoStyles.userActions}>
-        <TouchableOpacity style={[UseMemoStyles.actionButton, UseMemoStyles.editButton]} onPress={() => onEdit(user)}>
+        <TouchableOpacity
+          style={[UseMemoStyles.actionButton, UseMemoStyles.editButton]}
+          onPress={() => onEdit(user)}
+        >
           <Text style={UseMemoStyles.actionButtonText}>✏️</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[UseMemoStyles.actionButton, UseMemoStyles.deleteButton]} onPress={() => onDelete(user)}>
+        <TouchableOpacity
+          style={[UseMemoStyles.actionButton, UseMemoStyles.deleteButton]}
+          onPress={() => onDelete(user)}
+        >
           <Text style={UseMemoStyles.actionButtonText}>🗑️</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
-  ));
+  );
+
+  UserItemComponent.displayName = 'UserItem';
+
+  const UserItem = React.memo(UserItemComponent);
 
   const showUserDetails = (user: User) => {
     Alert.alert(user.name, `Возраст: ${user.age}\nОтдел: ${user.department}\nID: ${user.id}`, [

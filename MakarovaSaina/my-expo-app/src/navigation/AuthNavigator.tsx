@@ -13,6 +13,7 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 export default function AuthNavigator() {
   return (
     <Stack.Navigator
+      id="AuthStack" 
       initialRouteName="Login"
       screenOptions={{
         headerStyle: {
@@ -32,7 +33,7 @@ export default function AuthNavigator() {
         component={LoginScreen}
         options={{
           title: 'Вход в систему',
-          headerShown: false,
+          headerShown: true, 
         }}
       />
       <Stack.Screen 
@@ -40,7 +41,7 @@ export default function AuthNavigator() {
         component={RegisterScreen}
         options={{
           title: 'Регистрация',
-          headerShown: false,
+          headerShown: true, 
         }}
       />
     </Stack.Navigator>

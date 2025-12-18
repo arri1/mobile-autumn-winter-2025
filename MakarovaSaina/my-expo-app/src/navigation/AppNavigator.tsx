@@ -1,4 +1,5 @@
 import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,7 +8,13 @@ import UseEffectScreen from '../screens/useEffect/UseEffectScreen';
 import UseMemoScreen from '../screens/useMemo/UseMemoScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ZustandScreen from '../screens/Zustand/ZustandScreen';
+import LoginScreen from '../screens/LoginScreen/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen/RegistrerScreen';
+import UsersScreen from '../screens/UserScreen/UserScreen'; 
+import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
+import PostsScreen from '../screens/PostsScreen/PostsScreen';
 
+const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props: any) {
@@ -15,20 +22,31 @@ function CustomDrawerContent(props: any) {
 
   const menuItems = [
     { label: 'Главная', screen: 'Home' },
+    { label: 'Посты', screen: 'Posts' },
+    { label: 'Профиль', screen: 'Profile' },
+    { label: 'Пользователи', screen: 'Users' },
     { label: 'useState', screen: 'UseState' },
     { label: 'useEffect', screen: 'UseEffect' },
     { label: 'useMemo', screen: 'UseMemo' },
     { label: 'Zustand', screen: 'Zustand' },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2833' }}>
       <View style={{ padding: 20, backgroundColor: '#0B0C10', borderBottomWidth: 1, borderBottomColor: '#45A29E' }}>
         <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', marginBottom: 4 }}>
-          {user?.name}
+          {user?.name || user?.email}
         </Text>
         <Text style={{ color: '#C5C6C7', fontSize: 14 }}>
-          @{user?.username}
+          {user?.username ? `@${user.username}` : user?.email}
         </Text>
       </View>
       
@@ -69,7 +87,7 @@ function CustomDrawerContent(props: any) {
           justifyContent: 'center',
           gap: 8,
         }}
-        onPress={logout}
+        onPress={handleLogout}
       >
         <Text style={{ color: '#0B0C10', fontWeight: '600', fontSize: 16 }}>
           🚪 Выйти
@@ -79,9 +97,10 @@ function CustomDrawerContent(props: any) {
   );
 }
 
-export default function AppNavigator() {
+function MainDrawer() {
   return (
     <Drawer.Navigator 
+      id='MainDrawer'
       initialRouteName="Home"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
@@ -107,6 +126,14 @@ export default function AppNavigator() {
         options={{
           title: 'Главная',
           drawerLabel: 'Главная',
+        }}
+      />
+      <Drawer.Screen 
+        name="Users" 
+        component={UsersScreen}
+        options={{
+          title: 'Пользователи',
+          drawerLabel: 'Пользователи',
         }}
       />
       <Drawer.Screen 
@@ -141,6 +168,66 @@ export default function AppNavigator() {
           drawerLabel: 'Zustand'
         }}
       />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Профиль',
+          drawerLabel: 'Профиль',
+        }}
+      />
+      <Drawer.Screen
+        name="Posts"
+        component={PostsScreen}
+        options={{
+          title: 'Посты',
+          drawerLabel: 'Посты',
+        }}
+      />
     </Drawer.Navigator>
+  );
+}
+
+export default function AppNavigator() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return null;
+  }
+
+  return (
+    <Stack.Navigator 
+      id="RootStack"  
+      screenOptions={{ headerShown: false }}
+    >
+      {user ? (
+        <Stack.Screen name="Main" component={MainDrawer} />
+      ) : (
+        <>
+          <Stack.Screen 
+            name="Login" 
+            component={LoginScreen}
+            options={{
+              headerShown: true,
+              title: 'Вход',
+              headerStyle: { backgroundColor: '#1F2833' },
+              headerTintColor: '#66FCF1',
+              headerTitleStyle: { fontWeight: 'bold' }
+            }}
+          />
+          <Stack.Screen 
+            name="Register" 
+            component={RegisterScreen}
+            options={{
+              headerShown: true,
+              title: 'Регистрация',
+              headerStyle: { backgroundColor: '#1F2833' },
+              headerTintColor: '#66FCF1',
+              headerTitleStyle: { fontWeight: 'bold' }
+            }}
+          />
+        </>
+      )}
+    </Stack.Navigator>
   );
 }
