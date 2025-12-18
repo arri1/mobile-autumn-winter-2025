@@ -1,177 +1,287 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useAuthStore } from '../../auth/auth';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import styled from 'styled-components/native';
+import useAuthStore from '../../auth/auth';
 
-export default function LoginScreen({ navigation }) {
-  const {login, isLoading, error} = useAuthStore();
+const Container = styled.View`
+  flex: 1;
+  background-color: #121212;
+  padding: 20px;
+`;
+
+const Header = styled.View`
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: 40px;
+`;
+
+const Title = styled.Text`
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 8px;
+`;
+
+const Subtitle = styled.Text`
+  font-size: 16px;
+  color: #9aa4b2;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const Form = styled.View`
+  margin-bottom: 30px;
+`;
+
+const InputContainer = styled.View`
+  margin-bottom: 20px;
+`;
+
+const Label = styled.Text`
+  font-size: 16px;
+  color: #e6e9ef;
+  margin-bottom: 8px;
+  font-weight: 500;
+`;
+
+const Input = styled.TextInput`
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  color: #ffffff;
+  border: 1px solid #3a3a3a;
+`;
+
+const RegisterButton = styled.TouchableOpacity`
+  background-color: #00ff00ff;
+  border-radius: 12px;
+  padding: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+`;
+
+const RegisterButtonText = styled.Text`
+  color: #000000ff;
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+const DemoButton = styled.TouchableOpacity`
+  background-color: transparent;
+  border: 1px solid #00ff00ff;
+  border-radius: 12px;
+  padding: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const DemoButtonText = styled.Text`
+  color: #00ff00ff;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const ErrorText = styled.Text`
+  color: #ff0000ff;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: 8px;
+`;
+
+const LinkText = styled.Text`
+  color: #00ff00ff;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration-line: underline;
+`;
+
+const Footer = styled.View`
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const FooterText = styled.Text`
+  color: #9aa4b2;
+  font-size: 16px;
+  margin-right: 8px;
+`;
+
+export default function RegisterScreen({ navigation }) {
+  // Получаем методы из хранилища
+  const register = useAuthStore((state) => state.register);
+  const login = useAuthStore((state) => state.login);
+  
+  // Получаем состояние загрузки и ошибки из хранилища
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const error = useAuthStore((state) => state.error);
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogin = () => {
-    login({ email, password });
+  const handleRegister = async () => {
+    // Валидация полей
+    if (!name.trim()) {
+      Alert.alert('Ошибка', 'Введите имя');
+      return;
+    }
+    
+    if (!email.trim()) {
+      Alert.alert('Ошибка', 'Введите email');
+      return;
+    }
+    
+    if (!password.trim()) {
+      Alert.alert('Ошибка', 'Введите пароль');
+      return;
+    }
+    
+    if (!confirmPassword.trim()) {
+      Alert.alert('Ошибка', 'Подтвердите пароль');
+      return;
+    }
+    
+    if (name.length < 2) {
+      Alert.alert('Ошибка', 'Имя должно содержать минимум 2 символа');
+      return;
+    }
+    
+    if (!email.includes('@')) {
+      Alert.alert('Ошибка', 'Введите корректный email');
+      return;
+    }
+    
+    if (password.length < 6) {
+      Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
+      return;
+    }
+    
+    if (password !== confirmPassword) {
+      Alert.alert('Ошибка', 'Пароли не совпадают');
+      return;
+    }
+
+    try {
+      // Регистрируем пользователя с именем
+      await register({  email, password,name });
+      
+      // Автоматически входим после успешной регистрации
+      await login({ email, password });
+      
+      //Alert.alert('Успех', 'Регистрация прошла успешно!');
+      // Можно добавить навигацию на главный экран
+      // navigation.navigate('Main');
+    } catch (error) {
+      // Ошибка обрабатывается в хранилище и отображается через состояние error
+      console.error('Registration error:', error);
+    }
   };
-
-  const currentTheme = {
-    background: '#121212',
-    text: '#FFFFFF',
-    card: '#1E1E1E',
-    border: '#333333',
-    button: '#00ff00ff',
-    inputBackground: '#2D2D2D',
-  };
-
-
-  const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: currentTheme.background,
-        padding: 20,
-      },
-      header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: currentTheme.text,
-        textAlign: 'center',
-      },
-      card: {
-        backgroundColor: currentTheme.card,
-        padding: 20,
-        borderRadius: 10,
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: currentTheme.border,
-      },
-      input: {
-        backgroundColor: currentTheme.inputBackground,
-        borderWidth: 1,
-        borderColor: currentTheme.border,
-        borderRadius: 8,
-        padding: 12,
-        fontSize: 16,
-        color: currentTheme.text,
-        marginBottom: 15,
-      },
-      error: {
-        marginTop: 12,
-        alignItems: 'center',
-        color: '#ff0000ff',
-        marginBottom: 12,
-        fontSize: 20,
-      },
-      inputLabel: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: currentTheme.text,
-        marginBottom: 8,
-      },
-      statsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 15,
-      },
-      statItem: {
-        alignItems: 'center',
-        flex: 1,
-      },
-      statValue: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#00ff00ff',
-        marginBottom: 4,
-      },
-      statLabel: {
-        fontSize: 12,
-        color: currentTheme.text,
-        textAlign: 'center',
-      },
-      subsetItem: {
-        flexDirection: 'row',
-        backgroundColor: currentTheme.inputBackground,
-        padding: 12,
-        borderRadius: 8,
-        marginBottom: 8,
-        borderWidth: 1,
-        borderColor: currentTheme.border,
-        alignItems: 'center',
-        minHeight: 50,
-      },
-      subsetIndex: {
-        fontSize: 14,
-        color: '#888',
-        marginRight: 10,
-        minWidth: 30,
-      },
-      scrollContent: {
-        flexGrow: 1,
-        alignItems: 'center',
-      },
-      subsetText: {
-        fontSize: 16,
-        color: '#00ff00ff',
-        flex: 1,
-      },
-    title: {
-      marginTop: 12,
-      alignItems: 'center',
-      color: '#ffffffff',
-      marginBottom: 12,
-    },
-    link: {
-      marginTop: 12,
-      alignItems: 'center',
-      color: '#ffffffff',
-    },
-    linkWrap: {
-      color: '#00ff00ff',
-      fontSize: 14,
-    },
-    Button: {
-      padding: 8,
-      marginRight: 5,
-      backgroundColor: '#00ff00ff',
-      borderRadius: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      minWidth: 60,
-    },
-    ButtonText: {
-      fontSize: 18,
-      color: '#000000ff',
-      fontWeight: 'bold',
-    },
-    });
-  
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Вход</Text>
-      {!!error && <Text style={styles.error}>{error}</Text>}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Пароль"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <TouchableOpacity style={styles.Button} onPress={handleLogin}>
-          <Text style={styles.ButtonText}>Войти</Text>
-        </TouchableOpacity>
-      )}
-      <TouchableOpacity  onPress={() => navigation.navigate('Register')} style={styles.ButtonText}>
-        <Text style={styles.link}>Зарегистрироваться</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <Container>
+          <Header>
+            <Title>Регистрация</Title>
+            <Subtitle>Создайте новый аккаунт</Subtitle>
+          </Header>
+
+          <Form>
+            {error ? <ErrorText>{error}</ErrorText> : null}
+
+            <InputContainer>
+              <Label>Имя</Label>
+              <Input
+                placeholder="Введите ваше имя"
+                placeholderTextColor="#6b7280"
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="words"
+                autoCorrect={false}
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <Label>Email</Label>
+              <Input
+                placeholder="Введите email"
+                placeholderTextColor="#6b7280"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <Label>Пароль</Label>
+              <Input
+                placeholder="Введите пароль"
+                placeholderTextColor="#6b7280"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <Label>Подтвердите пароль</Label>
+              <Input
+                placeholder="Повторите пароль"
+                placeholderTextColor="#6b7280"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry
+              />
+            </InputContainer>
+
+            <RegisterButton 
+              onPress={handleRegister}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#000000ff" />
+              ) : (
+                <RegisterButtonText>Создать аккаунт</RegisterButtonText>
+              )}
+            </RegisterButton>
+          </Form>
+
+          <Footer>
+            <FooterText>
+              Уже есть аккаунт?
+            </FooterText>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <LinkText>Войти</LinkText>
+            </TouchableOpacity>
+          </Footer>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
