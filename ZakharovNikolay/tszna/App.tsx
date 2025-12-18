@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UseStateLab from './screens/UseState';
 import UseEffectLab from './screens/UseEffect';
+import UseMemoLab from './screens/UseMemo';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +25,7 @@ export default function App() {
         screenOptions={{
           tabBarActiveTintColor: '#0000ff',
           tabBarInactiveTintColor: '#666',
+          tabBarIcon: () => null,
           headerStyle: {
             backgroundColor: '#f5f5f5',
           },
@@ -51,6 +53,14 @@ export default function App() {
           options={{ 
             title: 'UseEffect Lab',
             tabBarLabel: 'UseEffect',
+          }}
+        />
+        <Tab.Screen 
+          name="UseMemo" 
+          component={UseMemoLab}
+          options={{ 
+            title: 'UseMemo Lab',
+            tabBarLabel: 'UseMemo',
           }}
         />
       </Tab.Navigator>
