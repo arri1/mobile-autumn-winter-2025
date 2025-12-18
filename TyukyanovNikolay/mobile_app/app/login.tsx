@@ -14,12 +14,20 @@ import {
 import {useAuthStore} from '../store/authStore';
 
 const login = () => {
-  const [name, setName] = useState('mockUser');
-  const [password, setPassword] = useState('mockPass');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login, isLoading } = useAuthStore();
 
   const handleLogin = async () => {
-    await login(name, password);
+    if (!email || !password) {
+      Alert.alert('Ошибка', 'Все поля обязательны для заполнения');
+      return;
+    }
+    if (password.length<6) {
+      Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
+      return;
+    }
+    await login(email, password);
   };
 
   return (
@@ -33,9 +41,9 @@ const login = () => {
           
           <TextInput
             style={styles.input}
-            placeholder="Имя"
-            value={name}
-            onChangeText={setName}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
             autoCapitalize="none"
             keyboardType="email-address"
           />

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 export default function RootLayout() {
-  const { user, isLoading, checkAuth } = useAuthStore();
+  const { isAuthericated, isLoading, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -18,7 +18,7 @@ export default function RootLayout() {
     );
   }
 
-  if (!user) {
+  if (!isAuthericated) {
     return (
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="login" />

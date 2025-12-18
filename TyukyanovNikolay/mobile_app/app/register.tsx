@@ -24,6 +24,15 @@ const register = () => {
       Alert.alert('Ошибка', 'Все поля обязательны для заполнения');
       return;
     }
+    // if (password.length<6) {
+    //   Alert.alert('Ошибка', 'Пароль должен содержать минимум 6 символов');
+    //   return;
+    // }
+    if (name.length<2 || name.length>50) {
+      if(name.length<2) Alert.alert('Ошибка', 'Имя пользователя слишком короткая');
+      else Alert.alert('Ошибка', 'Имя пользователя слишком длинная');
+      return;
+    }
     await register(name, email, password);
   };
 
@@ -101,6 +110,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   formContainer: {
+    alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
@@ -124,6 +134,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     fontSize: 16,
+    width: 300,
   },
   button: {
     backgroundColor: '#007AFF',
@@ -131,6 +142,7 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: 'center',
     marginTop: 10,
+    width: 300,
   },
   buttonText: {
     color: '#fff',
