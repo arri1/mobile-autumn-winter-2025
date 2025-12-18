@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, Keyboard } from "react-native";
 
 const AgeInput = ({value, onChangeText}) => (
     <TextInput
@@ -7,7 +7,9 @@ const AgeInput = ({value, onChangeText}) => (
         placeholder = "Введите возраст"
         value = {value.toString()}
         onChangeText = {(text) => onChangeText(Number(text)||0)}
-        keyboardType="numeric"    
+        keyboardType="numeric"  
+        returnKeyType="done"  
+        onSubmitEditing={() => Keyboard.dismiss()}
     />
 );
 
