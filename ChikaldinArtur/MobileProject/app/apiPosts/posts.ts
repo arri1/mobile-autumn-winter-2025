@@ -1,4 +1,3 @@
-// app/lib/posts.ts
 import api from './http';
 
 export type Post = {
@@ -27,7 +26,7 @@ export type PaginatedPosts = {
   };
 };
 
-// GET /posts — все посты (с пагинацией)
+// GET /posts
 export const fetchPosts = async (page = 1, limit = 10) => {
   const res = await api.get<{ success: true; data: PaginatedPosts }>('/posts', {
     params: { page, limit },
@@ -35,7 +34,7 @@ export const fetchPosts = async (page = 1, limit = 10) => {
   return res.data.data;
 };
 
-// GET /posts/my — мои посты
+// GET /posts/my
 export const fetchMyPosts = async (page = 1, limit = 10) => {
   const res = await api.get<{ success: true; data: PaginatedPosts }>('/posts/my', {
     params: { page, limit },

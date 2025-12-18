@@ -1,4 +1,3 @@
-// app/(tabs)/posts.tsx
 import { useState, useEffect } from 'react';
 import { FlatList, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
 import { fetchPosts } from '../apiPosts/posts';

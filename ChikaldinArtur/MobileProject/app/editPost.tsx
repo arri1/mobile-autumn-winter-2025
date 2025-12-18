@@ -1,4 +1,3 @@
-// app/editPost.tsx
 import { useState, useEffect } from 'react';
 import {
   View,

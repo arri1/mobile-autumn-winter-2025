@@ -1,4 +1,3 @@
-// app/post/[id].tsx
 import { useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, Button } from 'react-native';
