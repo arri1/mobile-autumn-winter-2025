@@ -1,20 +1,146 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StatusBar, 
+  SafeAreaView,
+  ScrollView,
+  Dimensions
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import UseStateScreen from './src/screens/UseStateScreen';
+import { AppStyles } from './src/styles/AppStyles';
+
+const { width, height } = Dimensions.get('window');
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+  const [activeScreen, setActiveScreen] = useState('home');
+  const [user] = useState({
+    name: 'Demo User',
+    username: 'demo',
+    role: 'user'
+  });
+
+  const renderScreen = () => {
+    switch (activeScreen) {
+      case 'usestate':
+        return <UseStateScreen />;
+      default:
+        return renderHome();
+    }
+  };
+
+  const renderHome = () => (
+    <View style={AppStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
+      <SafeAreaView style={AppStyles.safeArea}>
+        <ScrollView showsVerticalScrollIndicator={false} style={AppStyles.scrollView}>
+          {/* Хедер с информацией */}
+          <View style={AppStyles.header}>
+            <View style={AppStyles.systemInfo}>
+              <Text style={AppStyles.systemTitle}>REACT NATIVE HOOKS</Text>
+              <Text style={AppStyles.systemSubtitle}>v2.0.5 | Demo Mode</Text>
+            </View>
+            <View style={[AppStyles.systemStatus, { flexDirection: 'row', alignItems: 'center' }]}>
+              <View style={AppStyles.statusDot}></View>
+              <Text style={AppStyles.statusText}>USER</Text>
+              <Ionicons name="person" size={16} color="#00d4ff" style={{ marginLeft: 8 }} />
+            </View>
+          </View>
+
+          {/* Приветствие */}
+          <View style={{ paddingHorizontal: 24, marginTop: 20 }}>
+            <View style={{ 
+              backgroundColor: 'rgba(0, 212, 255, 0.05)', 
+              borderRadius: 16, 
+              padding: 20,
+              borderWidth: 1,
+              borderColor: 'rgba(0, 212, 255, 0.1)',
+              marginBottom: 30 
+            }}>
+              <Text style={{ 
+                color: '#00d4ff', 
+                fontSize: 18, 
+                fontWeight: 'bold',
+                marginBottom: 8 
+              }}>
+                Welcome to React Native Hooks
+              </Text>
+              <Text style={{ 
+                color: 'rgba(255, 255, 255, 0.7)', 
+                fontSize: 14, 
+                lineHeight: 20 
+              }}>
+                Демонстрационный интерфейс для изучения React Hooks. Доступен только хук useState:
+              </Text>
+            </View>
+          </View>
+
+          {/* useState хук */}
+          <View style={{ paddingHorizontal: 24 }}>
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('usestate')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="git-branch" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>useState</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Управление состоянием компонентов</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Пробел для нижней навигации */}
+          <View style={AppStyles.bottomSpacer}></View>
+        </ScrollView>
+      </SafeAreaView>
+
+      {/* Нижняя док-панель */}
+      <View style={AppStyles.dockContainer}>
+        <View style={AppStyles.dock}>
+          {/* Главный экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('home')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="home" size={24} color={activeScreen === 'home' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'home' && AppStyles.dockTextActive]}>
+              Home
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useState экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('usestate')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="git-branch" size={24} color={activeScreen === 'usestate' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usestate' && AppStyles.dockTextActive]}>
+              useState
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  return renderScreen();
+}
