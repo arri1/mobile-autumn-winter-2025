@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { database } from '../database/database';
 import { User, AuthState } from '../types';
-import * as Crypto from 'expo-crypto';
+import { useUserStore } from '../store/userStore';
+import { authApi } from '../services/authApi';
 
 const AUTH_STORAGE_KEY = '@auth_data';
 
@@ -14,6 +14,8 @@ export const useAuth = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  const { setUser, clearUser } = useUserStore();
+
   useEffect(() => {
     loadAuthState();
   }, []);
@@ -24,6 +26,7 @@ export const useAuth = () => {
       if (storedAuth) {
         const parsedAuth = JSON.parse(storedAuth);
         setAuthState(parsedAuth);
+        setUser(parsedAuth.user);
       }
     } catch (error) {
       console.error('Ошибка загрузки состояния аутентификации:', error);
@@ -36,16 +39,10 @@ export const useAuth = () => {
     try {
       await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state));
       setAuthState(state);
+      setUser(state.user);
     } catch (error) {
       console.error('Ошибка сохранения состояния аутентификации:', error);
     }
-  };
-
-  const hashPassword = async (password: string): Promise<string> => {
-    return await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      password
-    );
   };
 
   const register = async (
@@ -53,41 +50,51 @@ export const useAuth = () => {
     password: string,
     name?: string
   ): Promise<{ success: boolean; error?: string }> => {
-    try {      
-      const existingUser = await database.getUserByEmail(email);
-      if (existingUser) {
-        return { success: false, error: 'Пользователь с таким email уже существует' };
-      }
-      
-      const hashedPassword = await hashPassword(password);
-      
-      const userId = await database.createUser(email, hashedPassword, name);
-      
-      if (userId) {
-        const user = await database.getUserById(userId);
-        if (user) {          
-          const token = await hashPassword(`${email}${Date.now()}`);
-          
-          const newAuthState: AuthState = {
-            isAuthenticated: true,
-            user: {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              createdAt: user.createdAt,
-            },
-            token,
-          };
+    try {
+      const response = await authApi.register(email, password, name);
 
-          await saveAuthState(newAuthState);
-          return { success: true };
+      if (response.success && response.data) {
+        const newAuthState: AuthState = {
+          isAuthenticated: true,
+          user: {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            name: response.data.user.name || undefined,
+            createdAt: response.data.user.createdAt,
+          },
+          token: response.data.accessToken,
+        };
+
+        await saveAuthState(newAuthState);
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: response.message || 'Ошибка при регистрации',
+        };
+      }
+    } catch (error: any) {
+      console.error('Ошибка регистрации:', error);
+      
+      // Handle validation errors with detailed messages
+      let errorMessage = 'Ошибка при регистрации';
+      
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        
+        // Check for validation errors array
+        if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+          // Extract first validation error message
+          const firstError = errorData.errors[0];
+          errorMessage = firstError.msg || errorData.message || errorMessage;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
         }
+      } else if (error.message) {
+        errorMessage = error.message;
       }
-
-      return { success: false, error: 'Ошибка при создании пользователя' };
-    } catch (error) {
-      console.error(' Ошибка регистрации:', error);
-      return { success: false, error: 'Ошибка при регистрации' };
+      
+      return { success: false, error: errorMessage };
     }
   };
 
@@ -95,35 +102,34 @@ export const useAuth = () => {
     email: string,
     password: string
   ): Promise<{ success: boolean; error?: string }> => {
-    try {      
-      const user = await database.getUserByEmail(email);
-      if (!user) {
-        return { success: false, error: 'Пользователь не найден' };
-      }
-      
-      const hashedPassword = await hashPassword(password);
-      if (user.password !== hashedPassword) {
-        return { success: false, error: 'Неверный пароль' };
-      }
-      
-      const token = await hashPassword(`${email}${Date.now()}`);
-      
-      const newAuthState: AuthState = {
-        isAuthenticated: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          createdAt: user.createdAt,
-        },
-        token,
-      };
+    try {
+      const response = await authApi.login(email, password);
 
-      await saveAuthState(newAuthState);
-      return { success: true };
-    } catch (error) {
+      if (response.success && response.data) {
+        const newAuthState: AuthState = {
+          isAuthenticated: true,
+          user: {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            name: response.data.user.name || undefined,
+            createdAt: response.data.user.createdAt,
+          },
+          token: response.data.accessToken,
+        };
+
+        await saveAuthState(newAuthState);
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: response.message || 'Ошибка при входе',
+        };
+      }
+    } catch (error: any) {
       console.error('Ошибка входа:', error);
-      return { success: false, error: 'Ошибка при входе' };
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Ошибка при входе';
+      return { success: false, error: errorMessage };
     }
   };
   
@@ -134,6 +140,7 @@ export const useAuth = () => {
       user: null,
       token: null,
     });
+    clearUser();
   };
 
   return {

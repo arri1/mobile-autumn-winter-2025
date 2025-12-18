@@ -6,9 +6,9 @@ export interface Task {
 }
 
 export interface User {
-  id: number;
+  id: number | string;
   email: string;
-  name?: string;
+  name?: string | null;
   createdAt: string;
 }
 
@@ -27,4 +27,29 @@ export interface RegisterData {
 export interface LoginData {
   email: string;
   password: string;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+  published: boolean;
+  author?: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePostData {
+  title: string;
+  content: string;
+}
+
+export interface UpdatePostData {
+  title?: string;
+  content?: string;
 }
