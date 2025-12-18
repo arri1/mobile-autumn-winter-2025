@@ -1,13 +1,13 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import UseStateContainer from "@/screens/UseState/UseStateContainer";
+import PostsContainer from "@/screens/Posts/PostsContainer";
+import ProfileContainer from "@/screens/Profile/ProfileContainer";
 import UseEffectContainer from "@/screens/UseEffect/UseEffectContainer";
 import UseMemoContainer from "@/screens/UseMemo/UseMemoContainer";
+import UseStateContainer from "@/screens/UseState/UseStateContainer";
 import ZustandControlContainer from "@/screens/ZustandControl/ZustandControlContainer";
 import ZustandHistoryContainer from "@/screens/ZustandHistory/ZustandHistoryContainer";
-import ProfileContainer from "@/screens/Profile/ProfileContainer";
 
 const Tab = createBottomTabNavigator();
 
@@ -64,6 +64,17 @@ export default function AppTabs() {
           ),
         }}
       />
+      <Tab.Screen
+        name="Posts"
+        component={PostsContainer}
+        options={{
+          title: "Посты",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="post" color={color} size={size} />
+          ),
+        }}
+      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileContainer}
