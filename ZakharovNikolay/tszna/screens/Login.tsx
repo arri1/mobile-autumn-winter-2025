@@ -13,11 +13,11 @@ export default function LoginScreen({ navigation }: any) {
       return;
     }
 
-    const success = await login(email, password);
-    if (success) {
+    const { ok, error } = await login(email, password);
+    if (ok) {
       Alert.alert('Успех', 'Вы успешно вошли');
     } else {
-      Alert.alert('Ошибка', 'Неверный email или пароль');
+      Alert.alert('Ошибка', error || 'Не удалось войти');
     }
   };
 

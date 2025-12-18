@@ -19,11 +19,11 @@ export default function RegisterScreen({ navigation }: any) {
       return;
     }
 
-    const success = await register(email, password, name);
-    if (success) {
+    const { ok, error } = await register(email, password, name);
+    if (ok) {
       Alert.alert('Успех', 'Вы успешно зарегистрированы');
     } else {
-      Alert.alert('Ошибка', 'Ошибка регистрации');
+      Alert.alert('Ошибка', error || 'Ошибка регистрации');
     }
   };
 
