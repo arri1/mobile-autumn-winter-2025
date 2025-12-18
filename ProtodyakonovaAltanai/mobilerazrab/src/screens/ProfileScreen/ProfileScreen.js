@@ -1,21 +1,30 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  View,
-  Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
   Image,
-  Switch
+  Switch,
+  ActivityIndicator,
+  Text,
+  View
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
+import useAuthStore from '../../store/authStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 
-const ProfileScreen = ({ onLogout }) => {
-  // Основная информация пользователя
+/**
+ * Компонент экрана профиля пользователя
+ * Демонстрирует работу с пользовательскими данными, настройками и статистикой
+ */
+const ProfileScreen = () => {
+  // Получаем данные из хранилища аутентификации (Zustand)
+  const { user: authUser, logout, getProfile, isLoading: authLoading } = useAuthStore();
+  
+   // Состояние данных пользователя
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -24,7 +33,7 @@ const ProfileScreen = ({ onLogout }) => {
     avatar: null,
   });
 
-  // Настройки пользователя
+   // Состояние настроек приложения
   const [settings, setSettings] = useState({
     notifications: true,
     darkMode: true,
@@ -32,61 +41,84 @@ const ProfileScreen = ({ onLogout }) => {
     language: 'ru',
   });
 
-  // Статистика
+   // Состояние статистики пользователя
   const [stats, setStats] = useState({
     joinedDate: '',
     screensVisited: 0,
     totalTime: 0,
   });
 
+  // Режим редактирования профиля
   const [isEditing, setIsEditing] = useState(false);
+  // Состояние загрузки данных
   const [loading, setLoading] = useState(true);
 
-  // Загрузка данных пользователя при монтировании
+  /**
+   * Основной эффект при монтировании компонента
+   * Загружает данные и запрашивает разрешения
+   */
   useEffect(() => {
-    loadUserData();
-    loadUserStats();
+    loadUserData(); // Загрузка данных пользователя
+    loadUserStats();  // Загрузка статистики
     
-    // Запрашиваем разрешение на доступ к галерее
+     // Асинхронная функция для запроса разрешений
     (async () => {
+      // Запрашиваем разрешение на доступ к галерее
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Разрешение на доступ к галерее необходимо для выбора аватара');
       }
     })();
-  }, []);
+  }, []); // Пустой массив зависимостей = выполняется один раз при монтировании
 
-  // useMemo для вычисления дней с регистрации
+  /**
+   * Вычисляет количество дней с момента регистрации
+   * Оптимизировано с useMemo для избежания лишних вычислений
+   */
   const daysSinceRegistration = useMemo(() => {
     if (!stats.joinedDate) return 0;
     const joined = new Date(stats.joinedDate);
     const today = new Date();
     const diffTime = Math.abs(today - joined);
     return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  }, [stats.joinedDate]);
+  }, [stats.joinedDate]); // Пересчитывается только при изменении даты регистрации
 
-  // useMemo для проверки заполненности профиля
+   /**
+   * Вычисляет процент заполненности профиля
+   * Используется для отображения прогресса
+   */
   const profileCompletion = useMemo(() => {
     let completion = 0;
+    // Каждое поле добавляет определенный процент
     if (user.name) completion += 25;
     if (user.email) completion += 25;
     if (user.phone) completion += 25;
     if (user.bio) completion += 15;
     if (user.avatar) completion += 10;
-    return Math.min(completion, 100);
-  }, [user]);
+    return Math.min(completion, 100); // Ограничиваем 100%
+  }, [user]); // Зависит от всех полей пользователя
 
+
+   /**
+   * Загружает данные пользователя из асинхронного хранилища и стора
+   */
   const loadUserData = async () => {
     try {
       setLoading(true);
-      // Загружаем данные из AsyncStorage
-      const storedUser = await AsyncStorage.getItem('userProfile');
-      const storedSettings = await AsyncStorage.getItem('userSettings');
       
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+       // Если пользователь авторизован в сторе, заполняем данные
+      if (authUser) {
+        setUser({
+          name: authUser.name || '',
+          email: authUser.email || '',
+          phone: authUser.phone || '',
+          bio: authUser.bio || '',
+          avatar: authUser.avatar || null,
+        });
       }
-      
+
+       // Загружаем сохраненные настройки из AsyncStorage
+      const storedSettings = await AsyncStorage.getItem('userSettings');
       if (storedSettings) {
         setSettings(JSON.parse(storedSettings));
       }
@@ -97,13 +129,19 @@ const ProfileScreen = ({ onLogout }) => {
     }
   };
 
+
+  /**
+   * Загружает статистику пользователя из AsyncStorage
+   */
   const loadUserStats = async () => {
     try {
+       // Получаем данные статистики
       const joined = await AsyncStorage.getItem('userJoinedDate');
       const screens = await AsyncStorage.getItem('screensVisited');
       const time = await AsyncStorage.getItem('totalTime');
       
-      if (!joined) {
+       // Если дата регистрации не сохранена, устанавливаем текущую дату
+      if (!joined && authUser) {
         const today = new Date().toISOString();
         await AsyncStorage.setItem('userJoinedDate', today);
         setStats(prev => ({ ...prev, joinedDate: today }));
@@ -111,6 +149,7 @@ const ProfileScreen = ({ onLogout }) => {
         setStats(prev => ({ ...prev, joinedDate: joined }));
       }
       
+       // Обновляем статистику
       setStats(prev => ({
         ...prev,
         screensVisited: parseInt(screens) || 0,
@@ -121,53 +160,78 @@ const ProfileScreen = ({ onLogout }) => {
     }
   };
 
+
+   /**
+   * Сохраняет данные пользователя и настройки в AsyncStorage
+   */
   const saveUserData = async () => {
     try {
+      // Сохраняем профиль и настройки
       await AsyncStorage.setItem('userProfile', JSON.stringify(user));
       await AsyncStorage.setItem('userSettings', JSON.stringify(settings));
       Alert.alert('Успех', 'Данные сохранены!');
+       // Выходим из режима редактирования
       setIsEditing(false);
     } catch (error) {
       Alert.alert('Ошибка', 'Не удалось сохранить данные');
     }
   };
 
-  const pickImage = async () => {
-    if (!isEditing) return;
-    
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      setUser({ ...user, avatar: result.assets[0].uri });
-    }
-  };
-
+  /**
+   * Обработчик выхода из аккаунта с подтверждением
+   */
   const handleLogout = () => {
     Alert.alert(
       'Выход',
       'Вы уверены, что хотите выйти?',
       [
         { text: 'Отмена', style: 'cancel' },
-        { text: 'Выйти', style: 'destructive', onPress: onLogout }
+        { text: 'Выйти', style: 'destructive', onPress: logout }
       ]
     );
   };
 
+   /**
+   * Обновляет конкретную настройку
+   */
   const updateSetting = (key, value) => {
     setSettings({ ...settings, [key]: value });
   };
 
+   /**
+   * Изменяет язык интерфейса
+   */
   const handleLanguageChange = (newLanguage) => {
     updateSetting('language', newLanguage);
     Alert.alert('Язык изменен', `Язык изменен на ${newLanguage === 'ru' ? 'Русский' : 'English'}`);
   };
 
-  if (loading) {
+   /**
+   * Обновляет профиль из сервера/стора
+   */
+  const refreshProfile = async () => {
+    try {
+      setLoading(true);
+      const profileData = await getProfile();
+      if (profileData) {
+        setUser({
+          name: profileData.name || '',
+          email: profileData.email || '',
+          phone: profileData.phone || '',
+          bio: profileData.bio || '',
+          avatar: profileData.avatar || null,
+        });
+        Alert.alert('Успех', 'Профиль обновлен!');
+      }
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось обновить профиль');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+   // ЗАГРУЗОЧНОЕ СОСТОЯНИЕ
+  if (loading || authLoading) {
     return (
       <SafeArea>
         <Container>
@@ -177,19 +241,22 @@ const ProfileScreen = ({ onLogout }) => {
     );
   }
 
+   // RENDER UI
   return (
     <SafeArea>
       <Container>
         <Header>
+           {/* ЗАГОЛОВОК ЭКРАНА */}
           <Emoji>👤</Emoji>
           <Title>Личный кабинет</Title>
           <SubTitle>Управление профилем и настройками</SubTitle>
         </Header>
 
-        {/* Карточка профиля */}
+        {/* КАРТОЧКА ПРОФИЛЯ */}
         <Card>
           <CardHeader>
             <CardTitle>Профиль</CardTitle>
+             {/* Индикатор заполненности профиля */}
             <Pill tone={profileCompletion === 100 ? 'success' : 'warning'}>
               {profileCompletion}% заполнено
             </Pill>
@@ -197,7 +264,9 @@ const ProfileScreen = ({ onLogout }) => {
           
           <Divider />
           
+           {/* СЕКЦИЯ С АВАТАРОМ И ОСНОВНОЙ ИНФОРМАЦИЕЙ */}
           <ProfileSection>
+            {/* КОНТЕЙНЕР АВАТАРА */}
             <AvatarContainer onPress={isEditing ? pickImage : null} disabled={!isEditing}>
               {user.avatar ? (
                 <AvatarImage source={{ uri: user.avatar }} />
@@ -213,8 +282,10 @@ const ProfileScreen = ({ onLogout }) => {
               )}
             </AvatarContainer>
             
+             {/* ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ */}
             <ProfileInfo>
               {isEditing ? (
+                 /* В режиме редактирования - поля ввода */
                 <>
                   <Input
                     value={user.name}
@@ -231,6 +302,7 @@ const ProfileScreen = ({ onLogout }) => {
                   />
                 </>
               ) : (
+                  /* В режиме просмотра - текстовые поля */
                 <>
                   <UserName>{user.name || 'Без имени'}</UserName>
                   <UserEmail>{user.email || 'email@example.com'}</UserEmail>
@@ -239,6 +311,7 @@ const ProfileScreen = ({ onLogout }) => {
             </ProfileInfo>
           </ProfileSection>
 
+           {/* ФОРМА ПРОФИЛЯ */}
           <Column>
             <InputContainer>
               <Label>Телефон</Label>
@@ -261,11 +334,15 @@ const ProfileScreen = ({ onLogout }) => {
                 placeholderTextColor="#889096"
                 multiline
                 numberOfLines={3}
-                editable={isEditing}
+                editable={isEditing} // Редактируемо только в режиме редактирования
               />
             </InputContainer>
 
+            
+            
+            {/* КНОПКИ УПРАВЛЕНИЯ */}
             {isEditing ? (
+               /* Кнопки в режиме редактирования */
               <Row space>
                 <SaveButton onPress={saveUserData}>
                   <ButtonText>Сохранить</ButtonText>
@@ -275,19 +352,26 @@ const ProfileScreen = ({ onLogout }) => {
                 </CancelButton>
               </Row>
             ) : (
-              <EditButton onPress={() => setIsEditing(true)}>
-                <ButtonText>Редактировать профиль</ButtonText>
-              </EditButton>
+               /* Кнопки в режиме просмотра */
+              <>
+                <EditButton onPress={() => setIsEditing(true)}>
+                  <ButtonText>Редактировать профиль</ButtonText>
+                </EditButton>
+                <RefreshButton onPress={refreshProfile}>
+                  <ButtonText>Обновить данные</ButtonText>
+                </RefreshButton>
+              </>
             )}
           </Column>
         </Card>
 
-        {/* Статистика */}
+        {/* КАРТОЧКА СТАТИСТИКИ */}
         <Card>
           <CardHeader>
             <CardTitle>📊 Статистика</CardTitle>
           </CardHeader>
           <Divider />
+           {/* СЕТКА СТАТИСТИКИ */}
           <StatsGrid>
             <StatItem>
               <StatValue>{daysSinceRegistration}</StatValue>
@@ -308,13 +392,14 @@ const ProfileScreen = ({ onLogout }) => {
           </StatsGrid>
         </Card>
 
-        {/* Настройки */}
+        {/* КАРТОЧКА НАСТРОЕК */}
         <Card>
           <CardHeader>
             <CardTitle>⚙️ Настройки</CardTitle>
           </CardHeader>
           <Divider />
           <Column>
+           {/* НАСТРОЙКА УВЕДОМЛЕНИЙ */}
             <SettingRow>
               <SettingInfo>
                 <SettingName>Уведомления</SettingName>
@@ -328,6 +413,7 @@ const ProfileScreen = ({ onLogout }) => {
               />
             </SettingRow>
 
+               {/* НАСТРОЙКА ТЕМЫ */}
             <SettingRow>
               <SettingInfo>
                 <SettingName>Темная тема</SettingName>
@@ -340,7 +426,7 @@ const ProfileScreen = ({ onLogout }) => {
                 thumbColor={settings.darkMode ? '#052925' : '#f4f3f4'}
               />
             </SettingRow>
-
+             {/* НАСТРОЙКА АВТОСОХРАНЕНИЯ */}
             <SettingRow>
               <SettingInfo>
                 <SettingName>Автосохранение</SettingName>
@@ -353,7 +439,7 @@ const ProfileScreen = ({ onLogout }) => {
                 thumbColor={settings.autoSave ? '#052925' : '#f4f3f4'}
               />
             </SettingRow>
-
+              {/* НАСТРОЙКА ЯЗЫКА */}
             <SettingRow>
               <SettingInfo>
                 <SettingName>Язык интерфейса</SettingName>
@@ -381,7 +467,6 @@ const ProfileScreen = ({ onLogout }) => {
           </Column>
         </Card>
 
-        {/* Действия */}
         <ActionsCard>
           <ActionButton onPress={saveUserData}>
             <ActionEmoji>💾</ActionEmoji>
@@ -432,7 +517,7 @@ const ProfileScreen = ({ onLogout }) => {
   );
 };
 
-// Стили
+// Стили 
 const SafeArea = styled.SafeAreaView`
   flex: 1;
   background-color: #0a0c10;
@@ -448,12 +533,12 @@ const Header = styled.View`
   align-items: center;
 `;
 
-const Emoji = styled(Text)`
+const Emoji = styled.Text`
   font-size: 48px;
   margin-bottom: 12px;
 `;
 
-const Title = styled(Text)`
+const Title = styled.Text`
   font-size: 32px;
   font-weight: 700;
   color: #e6e9ef;
@@ -461,13 +546,13 @@ const Title = styled(Text)`
   text-align: center;
 `;
 
-const SubTitle = styled(Text)`
+const SubTitle = styled.Text`
   color: #9aa4b2;
   font-size: 16px;
   text-align: center;
 `;
 
-const LoadingText = styled(Text)`
+const LoadingText = styled.Text`
   color: #9aa4b2;
   font-size: 18px;
   text-align: center;
@@ -489,13 +574,13 @@ const CardHeader = styled.View`
   margin-bottom: 8px;
 `;
 
-const CardTitle = styled(Text)`
+const CardTitle = styled.Text`
   color: #e6e9ef;
   font-weight: 700;
   font-size: 18px;
 `;
 
-const Pill = styled(Text)`
+const Pill = styled.Text`
   color: ${(p) => {
     if (p.tone === 'success') return '#5eead4';
     if (p.tone === 'warning') return '#f39c12';
@@ -551,7 +636,7 @@ const AvatarPlaceholder = styled.View`
   border: 2px solid #5eead4;
 `;
 
-const AvatarText = styled(Text)`
+const AvatarText = styled.Text`
   color: #5eead4;
   font-size: 32px;
   font-weight: bold;
@@ -575,14 +660,14 @@ const ProfileInfo = styled.View`
   margin-left: 16px;
 `;
 
-const UserName = styled(Text)`
+const UserName = styled.Text`
   color: #e6e9ef;
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 4px;
 `;
 
-const UserEmail = styled(Text)`
+const UserEmail = styled.Text`
   color: #9aa4b2;
   font-size: 14px;
 `;
@@ -595,14 +680,14 @@ const InputContainer = styled.View`
   gap: 4px;
 `;
 
-const Label = styled(Text)`
+const Label = styled.Text`
   color: #b3b8c3;
   font-size: 14px;
   font-weight: 600;
   margin-left: 4px;
 `;
 
-const Input = styled(TextInput)`
+const Input = styled.TextInput`
   background-color: #0f1218;
   border: 1px solid #1c2230;
   border-radius: 12px;
@@ -611,7 +696,7 @@ const Input = styled(TextInput)`
   font-size: 16px;
 `;
 
-const BioInput = styled(TextInput)`
+const BioInput = styled.TextInput`
   background-color: #0f1218;
   border: 1px solid #1c2230;
   border-radius: 12px;
@@ -648,13 +733,13 @@ const CancelButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const ButtonText = styled(Text)`
+const ButtonText = styled.Text`
   color: #052925;
   font-weight: 700;
   font-size: 16px;
 `;
 
-const CancelButtonText = styled(Text)`
+const CancelButtonText = styled.Text`
   color: #9aa4b2;
   font-weight: 700;
   font-size: 16px;
@@ -662,6 +747,13 @@ const CancelButtonText = styled(Text)`
 
 const EditButton = styled.TouchableOpacity`
   background-color: #3498db;
+  padding: 14px 24px;
+  border-radius: 12px;
+  align-items: center;
+`;
+
+const RefreshButton = styled.TouchableOpacity`
+  background-color: #2ecc71;
   padding: 14px 24px;
   border-radius: 12px;
   align-items: center;
@@ -683,14 +775,14 @@ const StatItem = styled.View`
   margin-bottom: 12px;
 `;
 
-const StatValue = styled(Text)`
+const StatValue = styled.Text`
   color: ${(p) => (p.tone === 'success' ? '#5eead4' : '#e6e9ef')};
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 4px;
 `;
 
-const StatLabel = styled(Text)`
+const StatLabel = styled.Text`
   color: #9aa4b2;
   font-size: 12px;
   text-align: center;
@@ -707,14 +799,14 @@ const SettingInfo = styled.View`
   flex: 1;
 `;
 
-const SettingName = styled(Text)`
+const SettingName = styled.Text`
   color: #e6e9ef;
   font-weight: 600;
   font-size: 15px;
   margin-bottom: 2px;
 `;
 
-const SettingDesc = styled(Text)`
+const SettingDesc = styled.Text`
   color: #9aa4b2;
   font-size: 13px;
 `;
@@ -733,7 +825,7 @@ const LanguageButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-const LanguageButtonText = styled(Text)`
+const LanguageButtonText = styled.Text`
   color: ${(p) => (p.active ? '#5eead4' : '#9aa4b2')};
   font-weight: 600;
   font-size: 14px;
@@ -754,12 +846,12 @@ const ActionButton = styled.TouchableOpacity`
   border: ${(p) => (p.danger ? '1px solid #7a2a1f' : 'none')};
 `;
 
-const ActionEmoji = styled(Text)`
+const ActionEmoji = styled.Text`
   font-size: 20px;
   margin-right: 12px;
 `;
 
-const ActionText = styled(Text)`
+const ActionText = styled.Text`
   color: ${(p) => (p.danger ? '#e74c3c' : '#e6e9ef')};
   font-weight: 600;
   font-size: 16px;
@@ -771,7 +863,7 @@ const InfoCard = styled(Card)`
   border-color: #9b59b6;
 `;
 
-const InfoTitle = styled(Text)`
+const InfoTitle = styled.Text`
   color: #9b59b6;
   font-weight: 700;
   font-size: 16px;
@@ -783,7 +875,7 @@ const InfoRow = styled.View`
   padding: 12px 0;
 `;
 
-const HookEmoji = styled(Text)`
+const HookEmoji = styled.Text`
   font-size: 24px;
   margin-right: 12px;
 `;
@@ -792,13 +884,13 @@ const HookInfo = styled.View`
   flex: 1;
 `;
 
-const HookName = styled(Text)`
+const HookName = styled.Text`
   color: #e6e9ef;
   font-weight: 600;
   font-size: 15px;
 `;
 
-const HookDesc = styled(Text)`
+const HookDesc = styled.Text`
   color: #9aa4b2;
   font-size: 13px;
 `;

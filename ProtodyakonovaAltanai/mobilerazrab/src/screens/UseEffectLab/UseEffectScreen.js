@@ -1,25 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
+
+/**
+ * Компонент для демонстрации работы React хука useEffect
+ * Показывает три основных сценария использования:
+ * 1. Fetch запросы с cleanup
+ * 2. Работа с интервалами
+ * 3. Зависимые эффекты
+ */
 const UseEffectScreen = () => {
-  // Fetch demo - Кошачьи факты
+  // Состояние для хранения факта о котиках
   const [catFact, setCatFact] = useState(null);
+  // Состояние загрузки
   const [loading, setLoading] = useState(false);
+  // Ref для хранения AbortController (для отмены fetch запроса)
   const abortRef = useRef(null);
 
+   /**
+   * Функция для получения случайного факта о котиках
+   * Демонстрирует работу с fetch API и обработку ошибок
+   */
   const fetchCatFact = async () => {
     try {
       setLoading(true);
+       // Создаем AbortController для возможности отмены запроса
       const controller = new AbortController();
       abortRef.current = controller;
+      // Выполняем fetch запрос с сигналом для отмены
       const res = await fetch('https://catfact.ninja/fact', {
         signal: controller.signal,
       });
       const json = await res.json();
       setCatFact(json);
     } catch (e) {
+      // Обрабатываем ошибку, но игнорируем если это отмена запроса
       if (!e.name === 'AbortError') {
         setCatFact({fact: 'Ошибка загрузки факта о котиках 😿', length: 0});
       }
@@ -28,30 +45,45 @@ const UseEffectScreen = () => {
     }
   };
 
+   /**
+   * useEffect для начальной загрузки факта
+   * И cleanup функция для отмены запроса при размонтировании
+   */
   useEffect(() => {
+     // Загружаем факт при монтировании компонента
     fetchCatFact();
+    // Cleanup функция - выполняется при размонтировании компонента
     return () => {
       if (abortRef.current) abortRef.current.abort();
     };
-  }, []);
+  }, []); // Пустой массив зависимостей = выполняется один раз
 
-  // Interval demo
+  // Счетчик секунд
   const [seconds, setSeconds] = useState(0);
+  // Состояние активности таймера
   const [running, setRunning] = useState(true);
 
+   /**
+   * useEffect для работы с интервалами
+   * Демонстрирует создание и очистку интервалов
+   */
   useEffect(() => {
+    // Если таймер не активен - не создаем интервал
     if (!running) return;
+     // Создаем интервал который увеличивает счетчик каждую секунду
     const id = setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => clearInterval(id);
   }, [running]);
 
-  // Dependent effect
+   // Имя пользователя
   const [name, setName] = useState('');
+  // Приветствие, которое зависит от имени
   const [greeting, setGreeting] = useState('Привет, гость!');
   
   useEffect(() => {
+    // Обновляем приветствие при изменении имени
     setGreeting(`Привет, ${name || 'гость'}!`);
-  }, [name]);
+  }, [name]); // Зависит от состояния name
 
   return (
     <SafeArea>

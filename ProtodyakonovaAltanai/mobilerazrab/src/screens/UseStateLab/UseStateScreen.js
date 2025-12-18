@@ -1,21 +1,38 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Switch, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
+/**
+ * Компонент для демонстрации работы React хука useState
+ * Показывает три основных сценария использования:
+ * 1. Числовое состояние (счетчик)
+ * 2. Текстовое состояние (управляемый ввод)
+ * 3. Логическое состояние (переключатель)
+ */
 const UseStateScreen = () => {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('');
-  const [enabled, setEnabled] = useState(false);
+  const [count, setCount] = useState(0);  // 1. Числовое состояние - счетчик
+  const [name, setName] = useState('');  // 2. Текстовое состояние - имя пользователя
+  const [enabled, setEnabled] = useState(false);   // 3. Логическое состояние - включен/выключен
 
+  /**
+   * Увеличивает счетчик на 1
+   * Демонстрирует обновление состояния на основе предыдущего значения
+   */
   const increment = () => {
     setCount(count + 1);
   };
 
+  /**
+   * Уменьшает счетчик на 1
+   */
   const decrement = () => {
     setCount(count - 1);
   };
 
+  /**
+   * Сбрасывает счетчик в 0
+   */
   const reset = () => {
     setCount(0);
   };
