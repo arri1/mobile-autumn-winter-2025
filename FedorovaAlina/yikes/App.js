@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -6,43 +6,49 @@ import {
   StatusBar, 
   SafeAreaView,
   ScrollView,
-  Dimensions,
+  Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthStore } from './src/store/authStore';
 import UseStateScreen from './src/screens/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectScreen';
 import UseMemoScreen from './src/screens/UseMemoScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import { AppStyles } from './src/styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState('home');
-  const [user] = useState({ name: 'User', role: 'user' });
+  const { 
+    user, 
+    isAuthenticated, 
+    activeScreen,
+    setActiveScreen,
+    initialize
+  } = useAuthStore();
 
+  // Проверка авторизации при загрузке
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  // Если пользователь не авторизован, показываем экран логина
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
+  // Функция рендеринга экрана
   const renderScreen = () => {
     switch (activeScreen) {
       case 'usestate':
-        return (
-          <UseStateScreen 
-            activeScreen={activeScreen}
-            onNavigate={setActiveScreen}
-          />
-        );
+        return <UseStateScreen />;
       case 'useeffect':
-        return (
-          <UseEffectScreen 
-            activeScreen={activeScreen}
-            onNavigate={setActiveScreen}
-          />
-        );
+        return <UseEffectScreen />;
       case 'usememo':
-        return (
-          <UseMemoScreen 
-            activeScreen={activeScreen}
-            onNavigate={setActiveScreen}
-          />
-        );
+        return <UseMemoScreen />;
+      case 'profile':
+        return <ProfileScreen />;
       default:
         return renderHome();
     }
@@ -57,10 +63,11 @@ export default function App() {
           <View style={AppStyles.header}>
             <View style={AppStyles.systemInfo}>
               <Text style={AppStyles.systemTitle}>REACT NATIVE HOOKS</Text>
-              <Text style={AppStyles.systemSubtitle}>v2.0.5 | {user?.name || 'User'}</Text>
+              <Text style={AppStyles.systemSubtitle}>v2.0.5 | {user?.name || user?.username || 'User'}</Text>
             </View>
             <TouchableOpacity 
               style={[AppStyles.systemStatus, { flexDirection: 'row', alignItems: 'center' }]}
+              onPress={() => setActiveScreen('profile')}
               activeOpacity={0.7}
             >
               <View style={AppStyles.statusDot}></View>
@@ -85,7 +92,7 @@ export default function App() {
                 fontWeight: 'bold',
                 marginBottom: 8 
               }}>
-                Welcome, {user?.name}!
+                Welcome, {user?.name || user?.username}!
               </Text>
               <Text style={{ 
                 color: 'rgba(255, 255, 255, 0.7)', 
@@ -152,6 +159,26 @@ export default function App() {
               <View style={{ marginLeft: 20, flex: 1 }}>
                 <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>useMemo</Text>
                 <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Оптимизация вычислений и кэширование</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+
+            {/* Профиль пользователя */}
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginTop: 20
+              }]}
+              onPress={() => setActiveScreen('profile')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>Profile</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Управление аккаунтом и настройки</Text>
               </View>
               <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
             </TouchableOpacity>
@@ -224,6 +251,22 @@ export default function App() {
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
               useMemo
+            </Text>
+          </TouchableOpacity>
+
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Profile экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('profile')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="person" size={24} color={activeScreen === 'profile' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
+              Profile
             </Text>
           </TouchableOpacity>
         </View>

@@ -10,12 +10,14 @@ import {
   Dimensions
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { useAuthStore } from '../store/authStore';
 import { UseMemoStyles } from '../styles/UseMemoStyles';
 import { AppStyles } from '../styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
 
-export default function UseMemoScreen({ activeScreen, onNavigate }) {
+export default function UseMemoScreen() {
+  const { setActiveScreen, activeScreen } = useAuthStore();
   const [sortingLoading, setSortingLoading] = useState(false);
   const [usersCount, setUsersCount] = useState(50);
   const [tempUsersCount, setTempUsersCount] = useState(usersCount);
@@ -365,7 +367,7 @@ export default function UseMemoScreen({ activeScreen, onNavigate }) {
           {/* Главный экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
-            onPress={() => onNavigate('home')}
+            onPress={() => setActiveScreen('home')}
             activeOpacity={0.7}
           >
             <View style={AppStyles.dockIcon}>
@@ -381,7 +383,7 @@ export default function UseMemoScreen({ activeScreen, onNavigate }) {
           {/* useState экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
-            onPress={() => onNavigate('usestate')}
+            onPress={() => setActiveScreen('usestate')}
             activeOpacity={0.7}
           >
             <View style={AppStyles.dockIcon}>
@@ -397,7 +399,7 @@ export default function UseMemoScreen({ activeScreen, onNavigate }) {
           {/* useEffect экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
-            onPress={() => onNavigate('useeffect')}
+            onPress={() => setActiveScreen('useeffect')}
             activeOpacity={0.7}
           >
             <View style={AppStyles.dockIcon}>
@@ -413,7 +415,7 @@ export default function UseMemoScreen({ activeScreen, onNavigate }) {
           {/* useMemo экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
-            onPress={() => onNavigate('usememo')}
+            onPress={() => setActiveScreen('usememo')}
             activeOpacity={0.7}
           >
             <View style={AppStyles.dockIcon}>
@@ -421,6 +423,22 @@ export default function UseMemoScreen({ activeScreen, onNavigate }) {
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
               useMemo
+            </Text>
+          </TouchableOpacity>
+
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Profile экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('profile')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="person" size={24} color={activeScreen === 'profile' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
+              Profile
             </Text>
           </TouchableOpacity>
         </View>
