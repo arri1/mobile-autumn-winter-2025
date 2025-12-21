@@ -372,41 +372,6 @@ export default function UseEffectScreen({ activeScreen, onNavigate }) {
             </View>
           </View>
 
-          {/* Navigation Card */}
-          <View style={UseEffectStyles.cardWrapper}>
-            <View style={[UseEffectStyles.card, { borderColor: 'rgba(0, 212, 255, 0.3)' }]}>
-              <View style={UseEffectStyles.cardHeader}>
-                <View style={UseEffectStyles.cardIcon}>
-                  <Ionicons name="swap-horizontal" size={24} color="#00d4ff" />
-                </View>
-                <View style={UseEffectStyles.cardTitleContainer}>
-                  <Text style={UseEffectStyles.cardTitle}>EXPLORE OTHER HOOKS</Text>
-                  <Text style={UseEffectStyles.cardDescription}>Navigate between different React hooks</Text>
-                </View>
-              </View>
-              
-              <View style={UseEffectStyles.buttonGroup}>
-                <TouchableOpacity 
-                  style={UseEffectStyles.actionButton}
-                  onPress={() => onNavigate('home')}
-                  activeOpacity={0.8}
-                >
-                  <Ionicons name="home" size={16} color="#00d4ff" />
-                  <Text style={UseEffectStyles.actionButtonText}>HOME</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={UseEffectStyles.actionButton}
-                  onPress={() => onNavigate('usestate')}
-                  activeOpacity={0.8}
-                >
-                  <Ionicons name="git-branch" size={16} color="#00d4ff" />
-                  <Text style={UseEffectStyles.actionButtonText}>useState</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-
           {/* Пробел для нижней навигации */}
           <View style={AppStyles.bottomSpacer}></View>
         </ScrollView>
@@ -458,6 +423,21 @@ export default function UseEffectScreen({ activeScreen, onNavigate }) {
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'useeffect' && AppStyles.dockTextActive]}>
               useEffect
+            </Text>
+          </TouchableOpacity>
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useMemo экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => onNavigate('usememo')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="flash" size={24} color={activeScreen === 'usememo' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
+              useMemo
             </Text>
           </TouchableOpacity>
         </View>

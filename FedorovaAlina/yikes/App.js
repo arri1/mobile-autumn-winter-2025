@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import UseStateScreen from './src/screens/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectScreen';
+import UseMemoScreen from './src/screens/UseMemoScreen';
 import { AppStyles } from './src/styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
@@ -31,6 +32,13 @@ export default function App() {
       case 'useeffect':
         return (
           <UseEffectScreen 
+            activeScreen={activeScreen}
+            onNavigate={setActiveScreen}
+          />
+        );
+      case 'usememo':
+        return (
+          <UseMemoScreen 
             activeScreen={activeScreen}
             onNavigate={setActiveScreen}
           />
@@ -128,6 +136,25 @@ export default function App() {
               </View>
               <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('usememo')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="flash" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>useMemo</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Оптимизация вычислений и кэширование</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
           </View>
 
           {/* Пробел для нижней навигации */}
@@ -181,6 +208,22 @@ export default function App() {
             </View>
             <Text style={[AppStyles.dockText, activeScreen === 'useeffect' && AppStyles.dockTextActive]}>
               useEffect
+            </Text>
+          </TouchableOpacity>
+
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useMemo экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('usememo')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="flash" size={24} color={activeScreen === 'usememo' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
+              useMemo
             </Text>
           </TouchableOpacity>
         </View>
