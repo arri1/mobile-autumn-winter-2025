@@ -11,15 +11,15 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/AppStore';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store/authStore'; // Добавляем
 import { UseMemoStyles } from '../styles/UseMemoStyles';
 import { AppStyles } from '../styles/AppStyles';
 
 const { width, height } = Dimensions.get('window');
 
 export default function UseMemoScreen() {
-  const { activeScreen } = useAppStore();
-  const { setActiveScreen } = useAuthStore();
+  const { activeScreen } = useAppStore(); // Для подсветки
+  const { setActiveScreen } = useAuthStore(); // Для навигации
   
   const [sortingLoading, setSortingLoading] = useState(false);
   const [usersCount, setUsersCount] = useState(50);
@@ -358,6 +358,71 @@ export default function UseMemoScreen() {
               </View>
             </View>
           )}
+
+          {/* Demo Panel: Navigation to other hooks */}
+          <View style={UseMemoStyles.cardWrapper}>
+            <View style={[UseMemoStyles.card, { borderColor: 'rgba(0, 212, 255, 0.3)' }]}>
+              <View style={UseMemoStyles.cardHeader}>
+                <View style={UseMemoStyles.cardIcon}>
+                  <Ionicons name="swap-horizontal" size={24} color="#00d4ff" />
+                </View>
+                <View style={UseMemoStyles.cardTitleContainer}>
+                  <Text style={UseMemoStyles.cardTitle}>EXPLORE OTHER HOOKS</Text>
+                  <Text style={UseMemoStyles.cardDescription}>Navigate between different React hooks</Text>
+                </View>
+              </View>
+              
+              <View style={UseMemoStyles.buttonGroup}>
+                <TouchableOpacity 
+                  style={UseMemoStyles.actionButton}
+                  onPress={() => setActiveScreen('home')}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="home" size={16} color="#00d4ff" />
+                  <Text style={UseMemoStyles.actionButtonText}>HOME</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={UseMemoStyles.actionButton}
+                  onPress={() => setActiveScreen('usestate')}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="git-branch" size={16} color="#00d4ff" />
+                  <Text style={UseMemoStyles.actionButtonText}>useState</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={UseMemoStyles.actionButton}
+                  onPress={() => setActiveScreen('useeffect')}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="infinite" size={16} color="#00d4ff" />
+                  <Text style={UseMemoStyles.actionButtonText}>useEffect</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          {/* Terminal Output */}
+          <View style={UseMemoStyles.terminalOutput}>
+            <View style={UseMemoStyles.terminalLine}>
+              <Text style={UseMemoStyles.terminalPrompt}>$</Text>
+              <Text style={UseMemoStyles.terminalText}>useMemo hook initialized</Text>
+            </View>
+            <View style={UseMemoStyles.terminalLine}>
+              <Text style={UseMemoStyles.terminalPrompt}>{'>'}</Text>
+              <Text style={UseMemoStyles.terminalText}>dataset_size: {usersCount}</Text>
+            </View>
+            <View style={UseMemoStyles.terminalLine}>
+              <Text style={UseMemoStyles.terminalPrompt}>{'>'}</Text>
+              <Text style={UseMemoStyles.terminalText}>sorted_entries: {sortedUsers.length}</Text>
+            </View>
+            <View style={UseMemoStyles.terminalLine}>
+              <Text style={UseMemoStyles.terminalPrompt}>#</Text>
+              <Text style={UseMemoStyles.terminalText}>computation optimization active</Text>
+            </View>
+          </View>
+
           {/* Пробел для нижней навигации */}
           <View style={AppStyles.bottomSpacer}></View>
         </ScrollView>
@@ -430,8 +495,23 @@ export default function UseMemoScreen() {
               useMemo
             </Text>
           </TouchableOpacity>
+{/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
 
-          {/* Разделитель */}
+          {/* Посты экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('posts')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="document-text" size={24} color={activeScreen === 'posts' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'posts' && AppStyles.dockTextActive]}>
+              Посты
+            </Text>
+          </TouchableOpacity> 
+{/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* Profile экран */}

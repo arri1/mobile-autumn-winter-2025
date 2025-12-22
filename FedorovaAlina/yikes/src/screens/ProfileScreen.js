@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../store/authStore';
-import { useAppStore } from '../store/AppStore';
+import { useAppStore } from '../store/AppStore'; // Добавляем для подсветки
 import { ProfileStyles } from '../styles/ProfileStyles';
 import { AppStyles } from '../styles/AppStyles';
 
@@ -28,7 +28,7 @@ export default function ProfileScreen({ onLogout }) {
   const [loading, setLoading] = useState(false);
   
   const { user, isAuthenticated, logout, getProfile, setActiveScreen } = useAuthStore();
-  const { activeScreen } = useAppStore();
+  const { activeScreen } = useAppStore(); // Для подсветки
 
   // Загружаем актуальный профиль при открытии экрана
   useEffect(() => {
@@ -469,7 +469,21 @@ export default function ProfileScreen({ onLogout }) {
 
           {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
-
+                  {/* Посты экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('posts')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="document-text" size={24} color={activeScreen === 'posts' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'posts' && AppStyles.dockTextActive]}>
+              Посты
+            </Text>
+          </TouchableOpacity>
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
           {/* Profile экран */}
           <TouchableOpacity 
             style={AppStyles.dockItem}
@@ -483,6 +497,8 @@ export default function ProfileScreen({ onLogout }) {
               Profile
             </Text>
           </TouchableOpacity>
+{/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
         </View>
       </View>
     </View>
