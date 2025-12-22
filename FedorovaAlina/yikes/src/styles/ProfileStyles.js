@@ -3,7 +3,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 export const ProfileStyles = StyleSheet.create({
-  // Контейнеры
   container: {
     flex: 1,
     backgroundColor: '#0a0a0a',
@@ -14,100 +13,141 @@ export const ProfileStyles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  
-  // Хедер
   header: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 212, 255, 0.1)',
   },
-  headerBadge: {
+  headerCenter: {
+    alignItems: 'center',
+  },
+  titleBadge: {
     backgroundColor: 'rgba(0, 212, 255, 0.1)',
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(0, 212, 255, 0.3)',
+    marginBottom: 8,
   },
-  headerBadgeText: {
+  titleBadgeText: {
     color: '#00d4ff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     letterSpacing: 1,
   },
   headerSubtitle: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 12,
-    marginTop: 8,
-    letterSpacing: 2,
-    textAlign: 'center',
+    fontWeight: '500',
+    letterSpacing: 1,
   },
-  
-  // Разделительная линия
-  divider: {
+  cyberLine: {
     height: 1,
     backgroundColor: 'rgba(0, 212, 255, 0.2)',
-    marginHorizontal: 24,
     marginVertical: 20,
+    marginHorizontal: 24,
   },
-  
-  // Карточки
   cardWrapper: {
-    paddingHorizontal: 24,
+    marginHorizontal: 24,
     marginBottom: 20,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(20, 20, 20, 0.8)',
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(0, 212, 255, 0.2)',
+    borderColor: 'rgba(0, 212, 255, 0.1)',
+    shadowColor: '#00d4ff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  
-  // Аватар и профиль
-  avatarContainer: {
+  cardHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  cardIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(0, 212, 255, 0.3)',
-    marginBottom: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 255, 0.2)',
+    marginRight: 16,
+  },
+  cardTitleContainer: {
+    flex: 1,
+  },
+  cardTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  cardDescription: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 12,
+  },
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  avatarContainer: {
+    position: 'relative',
+    marginBottom: 20,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#00d4ff',
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   avatarText: {
+    fontSize: 48,
     color: '#00d4ff',
-    fontSize: 32,
     fontWeight: 'bold',
   },
+  avatarStatus: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#00ff00',
+    borderWidth: 2,
+    borderColor: '#0a0a0a',
+  },
   userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
     color: '#00d4ff',
+    fontSize: 28,
+    fontWeight: 'bold',
     marginBottom: 8,
-    textAlign: 'center',
   },
   userRole: {
     color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
-    marginBottom: 4,
-    textAlign: 'center',
+    fontSize: 16,
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 255, 0.2)',
   },
-  userId: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  
-  // Информация пользователя
   infoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -116,141 +156,168 @@ export const ProfileStyles = StyleSheet.create({
   },
   infoItem: {
     width: '48%',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   infoLabel: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 12,
     marginBottom: 4,
   },
   infoValue: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '600',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  statusValue: {
-    color: '#00d4ff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  
-  // Статистика
   statsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: 'rgba(0, 212, 255, 0.05)',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 212, 255, 0.1)',
+    justifyContent: 'space-between',
+    marginBottom: 20,
   },
   statItem: {
     alignItems: 'center',
+    flex: 1,
   },
   statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
     color: '#00d4ff',
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 4,
   },
   statLabel: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 12,
   },
-  
-  // Заголовки секций
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  activityContainer: {
     marginBottom: 20,
   },
-  sectionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  sectionTitle: {
-    color: '#00d4ff',
+  activityTitle: {
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 16,
   },
-  sectionSubtitle: {
+  activityList: {
+    gap: 12,
+  },
+  activityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  activityIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 255, 0.2)',
+  },
+  activityContent: {
+    flex: 1,
+  },
+  activityText: {
+    color: '#ffffff',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  activityTime: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
   },
-  
-  // Настройки
+  settingsContainer: {
+    marginBottom: 20,
+  },
   settingItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    justifyContent: 'space-between',
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  settingLeft: {
+  settingLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   settingIcon: {
     marginRight: 12,
   },
-  settingText: {
+  settingLabel: {
     color: '#ffffff',
+    fontSize: 16,
+    flex: 1,
+  },
+  settingValue: {
+    color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 14,
   },
-  settingArrow: {
-    color: 'rgba(255, 255, 255, 0.5)',
-  },
-  
-  // Кнопки действий
-  actionButtonsContainer: {
+  buttonGroup: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 20,
   },
-  editButton: {
+  actionButton: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  logoutButton: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 42, 109, 0.1)',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 255, 0.2)',
   },
   actionButtonText: {
-    fontSize: 12,
-    marginTop: 4,
-  },
-  editButtonText: {
     color: '#00d4ff',
+    fontWeight: '600',
+    fontSize: 14,
+    marginLeft: 8,
   },
-  logoutButtonText: {
-    color: '#ff2a6d',
-  },
-  
-  // Модальное окно
-  modalOverlay: {
+  dangerButton: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 42, 109, 0.1)',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 42, 109, 0.2)',
+  },
+  dangerButtonText: {
+    color: '#ff2a6d',
+    fontWeight: '600',
+    fontSize: 14,
+    marginLeft: 8,
+  },
+  modalContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   modalContent: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    width: '90%',
+    maxWidth: 400,
+    backgroundColor: 'rgba(20, 20, 20, 0.95)',
     borderRadius: 20,
     padding: 24,
-    width: '100%',
     borderWidth: 1,
     borderColor: 'rgba(0, 212, 255, 0.2)',
   },
@@ -258,58 +325,44 @@ export const ProfileStyles = StyleSheet.create({
     color: '#00d4ff',
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 16,
-  },
-  modalMessage: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
     textAlign: 'center',
+  },
+  modalText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 16,
+    lineHeight: 24,
     marginBottom: 24,
-    lineHeight: 20,
+    textAlign: 'center',
   },
   modalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 12,
   },
-  cancelButton: {
+  modalButton: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  confirmLogoutButton: {
-    flex: 1,
+  modalButtonPrimary: {
+    backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 255, 0.2)',
+  },
+  modalButtonDanger: {
     backgroundColor: 'rgba(255, 42, 109, 0.1)',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.3)',
+    borderColor: 'rgba(255, 42, 109, 0.2)',
   },
-  cancelButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-  },
-  confirmLogoutButtonText: {
-    color: '#ff2a6d',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  
-  // Состояние загрузки
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
+  modalButtonText: {
     color: '#00d4ff',
-    marginTop: 20,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  modalButtonTextDanger: {
+    color: '#ff2a6d',
+    fontWeight: '600',
+    fontSize: 14,
   },
 });

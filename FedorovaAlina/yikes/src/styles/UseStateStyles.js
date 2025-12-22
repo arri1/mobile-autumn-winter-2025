@@ -1,84 +1,86 @@
-import { StyleSheet, Dimensions } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { StyleSheet, StatusBar } from 'react-native';
 
 export const UseStateStyles = StyleSheet.create({
-  // Контейнеры
   container: {
     flex: 1,
     backgroundColor: '#0a0a0a',
   },
   safeArea: {
     flex: 1,
+    paddingTop: StatusBar.currentHeight || 40,
   },
-  
-  // Заголовок
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 16,
-    backgroundColor: '#0a0a0a',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  backButtonText: {
+    color: '#00d4ff',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
   },
   headerCenter: {
     alignItems: 'center',
   },
   titleBadge: {
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 212, 255, 0.3)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   titleBadgeText: {
     color: '#00d4ff',
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: 'bold',
-    letterSpacing: 1,
   },
   headerSubtitle: {
-    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
-    marginTop: 8,
-    letterSpacing: 2,
+    color: 'rgba(255, 255, 255, 0.5)',
   },
-  
-  // Разделительная линия
+  headerPlaceholder: {
+    width: 70,
+  },
   cyberLine: {
     height: 1,
-    backgroundColor: 'rgba(0, 212, 255, 0.2)',
-    marginHorizontal: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginHorizontal: 20,
     marginVertical: 20,
   },
-  
-  // Карточки
   cardWrapper: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     marginBottom: 20,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 8,
+    padding: 24,
     borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
-  
-  // Заголовок карточки
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   cardIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    alignItems: 'center',
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
-    marginRight: 12,
+    alignItems: 'center',
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   cardTitleContainer: {
     flex: 1,
@@ -86,185 +88,129 @@ export const UseStateStyles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 4,
   },
   cardDescription: {
-    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.5)',
   },
-  
-  // Счетчик
   counterDisplay: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
+    paddingVertical: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   counterValue: {
-    fontSize: 48,
+    fontSize: 64,
     fontWeight: 'bold',
     color: '#00d4ff',
   },
   counterLabel: {
+    fontSize: 12,
     color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 14,
+    marginTop: 8,
   },
-  
-  // Группа кнопок
   buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 12,
   },
-  
-  // Кнопки действий
   actionButton: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    paddingVertical: 12,
-    borderRadius: 8,
+    flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 4,
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 8,
+    gap: 12,
+    borderWidth: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   actionButtonText: {
-    color: '#00d4ff',
-    fontSize: 12,
-    marginTop: 4,
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
-  
-  // Текстовый дисплей
   textDisplay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    padding: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 24,
     alignItems: 'center',
-    marginBottom: 20,
   },
   textValue: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#ff2a6d',
-    textAlign: 'center',
+    color: '#ffffff',
+    marginBottom: 12,
   },
-  
-  // Toggle кнопка
   toggleButton: {
-    backgroundColor: 'rgba(255, 42, 109, 0.1)',
-    paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   toggleButtonInner: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 12,
   },
   toggleButtonText: {
-    color: '#ff2a6d',
-    fontSize: 12,
-    marginLeft: 8,
-  },
-  
-  // Состояние системы
-  statusContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  statusIndicator: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-  },
-  statusText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 12,
-  },
-  
-  // Text Input
-  inputContainer: {
-    marginBottom: 16,
-  },
-  inputLabel: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textInput: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.2)',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    color: '#ffffff',
-    marginRight: 8,
-  },
-  setButton: {
-    backgroundColor: 'rgba(255, 42, 109, 0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.3)',
-  },
-  setButtonText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  
-  // Text State Card
-  textCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.2)',
-  },
-  textDisplayContainer: {
-    backgroundColor: 'rgba(255, 42, 109, 0.1)',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 42, 109, 0.3)',
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  textStateLabel: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 12,
-    marginTop: 8,
-  },
-  
-  // Boolean State Card
-  booleanCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 212, 255, 0.2)',
-  },
-  booleanIndicator: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-  },
-  booleanButton: {
-    backgroundColor: 'rgba(0, 212, 255, 0.1)',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  booleanButtonText: {
     color: '#00d4ff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
+  },
+  statusContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+    paddingVertical: 20,
+  },
+  statusIndicator: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  statusText: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  terminalOutput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 20,
+    padding: 20,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  terminalLine: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  terminalPrompt: {
+    color: '#00d4ff',
+    fontSize: 14,
+    marginRight: 10,
+  },
+  terminalText: {
+    color: '#ffffff',
+    fontSize: 14,
+    flex: 1,
   },
 });

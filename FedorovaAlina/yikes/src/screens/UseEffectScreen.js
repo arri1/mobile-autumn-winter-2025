@@ -13,6 +13,7 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAppStore } from '../store/AppStore';
 import { useAuthStore } from '../store/authStore';
 import { UseEffectStyles } from '../styles/UseEffectStyles';
 import { AppStyles } from '../styles/AppStyles';
@@ -20,9 +21,9 @@ import { AppStyles } from '../styles/AppStyles';
 const { width, height } = Dimensions.get('window');
 
 export default function UseEffectScreen() {
-  const { setActiveScreen, activeScreen } = useAuthStore();
+  const { activeScreen } = useAppStore();
+  const { setActiveScreen } = useAuthStore();
   
-  // 1. useEffect для получения данных пользователя
   const [userId, setUserId] = useState(1);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -80,7 +81,6 @@ export default function UseEffectScreen() {
     };
   }, [userId]);
 
-  // 2. useEffect для таймера
   const [seconds, setSeconds] = useState(0);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -100,7 +100,6 @@ export default function UseEffectScreen() {
     return () => clearInterval(id);
   }, [autoRefresh]);
 
-  // 3. useEffect для динамического приветствия
   const [name, setName] = useState('');
   const [greeting, setGreeting] = useState('SYSTEM_GUEST_MODE');
   
@@ -108,7 +107,6 @@ export default function UseEffectScreen() {
     setGreeting(name ? `USER: ${name.toUpperCase()}` : 'SYSTEM_GUEST_MODE');
   }, [name]);
 
-  // 4. useEffect для условной загрузки данных
   const [clickCount, setClickCount] = useState(0);
   const [usersList, setUsersList] = useState([]);
 
@@ -253,13 +251,13 @@ export default function UseEffectScreen() {
 
           {/* Timer Card */}
           <View style={UseEffectStyles.cardWrapper}>
-            <View style={[UseEffectStyles.card, { borderColor: 'rgba(255, 42, 109, 0.2)' }]}>
+            <View style={UseEffectStyles.card}>
               <View style={UseEffectStyles.cardHeader}>
-                <View style={[UseEffectStyles.cardIcon, { backgroundColor: 'rgba(255, 42, 109, 0.1)' }]}>
+                <View style={UseEffectStyles.cardIcon}>
                   <Ionicons name="timer" size={24} color="#ff2a6d" />
                 </View>
                 <View style={UseEffectStyles.cardTitleContainer}>
-                  <Text style={[UseEffectStyles.cardTitle, { color: '#ff2a6d' }]}>TIMER SYSTEM</Text>
+                  <Text style={UseEffectStyles.cardTitle}>TIMER SYSTEM</Text>
                   <Text style={UseEffectStyles.cardDescription}>setInterval with cleanup</Text>
                 </View>
               </View>
@@ -349,13 +347,13 @@ export default function UseEffectScreen() {
 
           {/* Greeting Card */}
           <View style={UseEffectStyles.cardWrapper}>
-            <View style={[UseEffectStyles.card, { borderColor: 'rgba(255, 42, 109, 0.2)' }]}>
+            <View style={UseEffectStyles.card}>
               <View style={UseEffectStyles.cardHeader}>
-                <View style={[UseEffectStyles.cardIcon, { backgroundColor: 'rgba(255, 42, 109, 0.1)' }]}>
+                <View style={UseEffectStyles.cardIcon}>
                   <Ionicons name="chatbubble" size={24} color="#ff2a6d" />
                 </View>
                 <View style={UseEffectStyles.cardTitleContainer}>
-                  <Text style={[UseEffectStyles.cardTitle, { color: '#ff2a6d' }]}>DYNAMIC GREETING</Text>
+                  <Text style={UseEffectStyles.cardTitle}>DYNAMIC GREETING</Text>
                   <Text style={UseEffectStyles.cardDescription}>Effect on state change</Text>
                 </View>
               </View>
@@ -397,6 +395,7 @@ export default function UseEffectScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useState экран */}
@@ -413,6 +412,7 @@ export default function UseEffectScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useEffect экран */}
@@ -429,6 +429,7 @@ export default function UseEffectScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useMemo экран */}
@@ -445,6 +446,7 @@ export default function UseEffectScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* Profile экран */}

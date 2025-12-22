@@ -44,7 +44,7 @@ export default function LoginScreen() {
 
     try {
       if (isLoginMode) {
-        // Логин через authStore
+        // ТОЛЬКО реальный логин через API
         const result = await login(username, password);
         
         if (result.success) {
@@ -53,14 +53,14 @@ export default function LoginScreen() {
           setPassword('');
           clearError();
         } else {
-          // Показываем ошибку
+          // Показываем ошибку от API
           Alert.alert(
             'Login Failed',
             result.error || 'Invalid email/username or password'
           );
         }
       } else {
-        // Регистрация через authStore
+        // Регистрация через API
         const email = username.includes('@') ? username : `${username}@cybersystem.com`;
         const result = await register(username, password, email);
         
@@ -81,7 +81,8 @@ export default function LoginScreen() {
   // Функция проверки статуса API
   const checkApiStatus = async () => {
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users/1', {
+      setLoadingStatus(true);
+      const response = await fetch('https://cloud.kit-imi.info/api/health', {
         timeout: 5000
       });
       
@@ -92,6 +93,8 @@ export default function LoginScreen() {
       }
     } catch (error) {
       Alert.alert('API Status', '❌ Cannot connect to API. Please check the server.');
+    } finally {
+      setLoadingStatus(false);
     }
   };
 
@@ -285,8 +288,8 @@ export default function LoginScreen() {
                 <Text style={LoginStyles.terminalPrompt}>#</Text>
                 <Text style={LoginStyles.terminalText}>
                   {isLoginMode 
-                    ? 'Authenticating via auth system...'
-                    : 'Creating account via auth system...'
+                    ? 'Authenticating via API server...'
+                    : 'Creating account via API server...'
                   }
                 </Text>
               </View>

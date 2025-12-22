@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const API_BASE_URL = 'https://cloud.kit-imi.info/api';
+
 export const useAuthStore = create((set, get) => ({
   // Состояние
   user: null,
@@ -9,7 +11,7 @@ export const useAuthStore = create((set, get) => ({
   error: null,
   accessToken: null,
   refreshToken: null,
-  activeScreen: 'home', // Добавляем активный экран
+  activeScreen: 'home',
   
   // Инициализация при запуске приложения
   initialize: async () => {
@@ -25,6 +27,9 @@ export const useAuthStore = create((set, get) => ({
           isAuthenticated: true,
           activeScreen: storedScreen,
         });
+        
+        // Проверяем актуальность токена
+        await get().checkAuth();
       }
     } catch (error) {
       console.error('Ошибка инициализации:', error);
@@ -36,40 +41,47 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Имитация API запроса
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Тестовый пользователь
-      const mockUser = {
-        id: Date.now(),
-        username,
-        email,
-        name: username,
-        role: 'user',
-        createdAt: new Date().toISOString(),
-      };
-      
-      // Сохраняем данные
-      const mockToken = 'mock_jwt_token_' + Date.now();
-      await AsyncStorage.setItem('accessToken', mockToken);
-      await AsyncStorage.setItem('refreshToken', 'mock_refresh_token_' + Date.now());
-      await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-      await AsyncStorage.setItem('activeScreen', 'home');
-      
-      set({
-        user: mockUser,
-        accessToken: mockToken,
-        refreshToken: 'mock_refresh_token_' + Date.now(),
-        isAuthenticated: true,
-        activeScreen: 'home',
-        isLoading: false,
-        error: null,
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          email,
+          name: username,
+        }),
       });
       
-      return { success: true, data: mockUser };
+      const data = await response.json();
+      
+      if (response.status === 201 || response.status === 200) {
+        // Сохраняем данные
+        await AsyncStorage.setItem('accessToken', data.data.accessToken);
+        await AsyncStorage.setItem('refreshToken', data.data.refreshToken);
+        await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
+        
+        set({
+          user: data.data.user,
+          accessToken: data.data.accessToken,
+          refreshToken: data.data.refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+        
+        return { success: true, data: data.data };
+      } else {
+        set({
+          error: data.message || 'Ошибка регистрации',
+          isLoading: false,
+        });
+        return { success: false, error: data.message };
+      }
     } catch (error) {
       set({
-        error: error.message || 'Ошибка регистрации',
+        error: error.message || 'Ошибка сети',
         isLoading: false,
       });
       return { success: false, error: error.message };
@@ -81,58 +93,86 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Имитация API запроса
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Определяем поле для логина (email или username)
+      const loginField = username.includes('@') ? 'email' : 'username';
       
-      // Тестовый пользователь
-      const mockUser = {
-        id: 1,
-        username,
-        email: username.includes('@') ? username : `${username}@cybersystem.com`,
-        name: username.includes('@') ? username.split('@')[0] : username,
-        role: username === 'admin' ? 'admin' : 'user',
-        createdAt: new Date().toISOString(),
-      };
-      
-      // Сохраняем данные
-      const mockToken = 'mock_jwt_token_' + Date.now();
-      await AsyncStorage.setItem('accessToken', mockToken);
-      await AsyncStorage.setItem('refreshToken', 'mock_refresh_token_' + Date.now());
-      await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-      await AsyncStorage.setItem('activeScreen', 'home');
-      
-      set({
-        user: mockUser,
-        accessToken: mockToken,
-        refreshToken: 'mock_refresh_token_' + Date.now(),
-        isAuthenticated: true,
-        activeScreen: 'home',
-        isLoading: false,
-        error: null,
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          [loginField]: username,
+          password,
+        }),
       });
       
-      return { success: true, data: mockUser };
+      const data = await response.json();
+      
+      if (response.status === 200) {
+        await AsyncStorage.setItem('accessToken', data.data.accessToken);
+        await AsyncStorage.setItem('refreshToken', data.data.refreshToken);
+        await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
+        
+        set({
+          user: data.data.user,
+          accessToken: data.data.accessToken,
+          refreshToken: data.data.refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        });
+        
+        return { success: true, data: data.data };
+      } else {
+        set({
+          error: data.message || 'Неверные учетные данные',
+          isLoading: false,
+        });
+        return { success: false, error: data.message };
+      }
     } catch (error) {
       set({
-        error: 'Неверные учетные данные',
+        error: error.message || 'Ошибка сети',
         isLoading: false,
       });
-      return { success: false, error: 'Неверные учетные данные' };
+      return { success: false, error: error.message };
     }
   },
   
   // Обновление токенов
   refreshTokens: async () => {
+    const { refreshToken } = get();
+    
+    if (!refreshToken) {
+      return false;
+    }
+    
     try {
-      const refreshTokenValue = await AsyncStorage.getItem('refreshToken');
-      if (!refreshTokenValue) return false;
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
       
-      // Имитация обновления токена
-      const newToken = 'mock_jwt_token_refreshed_' + Date.now();
-      await AsyncStorage.setItem('accessToken', newToken);
+      const data = await response.json();
       
-      set({ accessToken: newToken });
-      return true;
+      if (response.status === 200) {
+        await AsyncStorage.setItem('accessToken', data.data.accessToken);
+        await AsyncStorage.setItem('refreshToken', data.data.refreshToken);
+        
+        set({
+          accessToken: data.data.accessToken,
+          refreshToken: data.data.refreshToken,
+        });
+        
+        return true;
+      } else {
+        get().logout();
+        return false;
+      }
     } catch (error) {
       console.error('Ошибка обновления токенов:', error);
       return false;
@@ -141,20 +181,33 @@ export const useAuthStore = create((set, get) => ({
   
   // Выход
   logout: async () => {
+    const { refreshToken } = get();
+    
     try {
-      // Очищаем локальное хранилище
-      await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user', 'activeScreen']);
+      // Отправляем запрос на сервер для выхода
+      if (refreshToken) {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
+        });
+      }
     } catch (error) {
       console.error('Ошибка при выходе:', error);
     }
+    
+    // Очищаем локальное хранилище
+    await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
     
     set({
       user: null,
       isAuthenticated: false,
       accessToken: null,
       refreshToken: null,
-      activeScreen: 'home',
       error: null,
+      activeScreen: 'home',
     });
   },
   
@@ -167,14 +220,28 @@ export const useAuthStore = create((set, get) => ({
     }
     
     try {
-      // Имитация запроса профиля
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
       
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        set({ user });
-        return user;
+      if (response.status === 401) {
+        const refreshed = await get().refreshTokens();
+        if (refreshed) {
+          return get().getProfile();
+        }
+        return null;
+      }
+      
+      const data = await response.json();
+      
+      if (response.status === 200) {
+        await AsyncStorage.setItem('user', JSON.stringify(data.data.user));
+        set({ user: data.data.user });
+        return data.data.user;
       }
       
       return null;
@@ -184,18 +251,45 @@ export const useAuthStore = create((set, get) => ({
     }
   },
   
-  // Навигация
-  setActiveScreen: (screen) => {
-    set({ activeScreen: screen });
-    AsyncStorage.setItem('activeScreen', screen);
-  },
-  
   // Проверка авторизации
   checkAuth: async () => {
     const user = await get().getProfile();
     if (!user) {
       get().logout();
     }
+  },
+  
+  // Универсальный fetch с авторизацией
+  authFetch: async (url, options = {}) => {
+    const { accessToken } = get();
+    
+    const headers = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+    
+    let response = await fetch(url, { ...options, headers });
+    
+    if (response.status === 401) {
+      const refreshed = await get().refreshTokens();
+      if (refreshed) {
+        const { accessToken: newToken } = get();
+        headers.Authorization = `Bearer ${newToken}`;
+        response = await fetch(url, { ...options, headers });
+      } else {
+        get().logout();
+        throw new Error('Требуется авторизация');
+      }
+    }
+    
+    return response;
+  },
+  
+  // Навигация
+  setActiveScreen: (screen) => {
+    set({ activeScreen: screen });
+    AsyncStorage.setItem('activeScreen', screen);
   },
   
   // Очистка ошибок

@@ -10,6 +10,7 @@ import {
   Dimensions
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { useAppStore } from '../store/AppStore';
 import { useAuthStore } from '../store/authStore';
 import { UseMemoStyles } from '../styles/UseMemoStyles';
 import { AppStyles } from '../styles/AppStyles';
@@ -17,7 +18,9 @@ import { AppStyles } from '../styles/AppStyles';
 const { width, height } = Dimensions.get('window');
 
 export default function UseMemoScreen() {
-  const { setActiveScreen, activeScreen } = useAuthStore();
+  const { activeScreen } = useAppStore();
+  const { setActiveScreen } = useAuthStore();
+  
   const [sortingLoading, setSortingLoading] = useState(false);
   const [usersCount, setUsersCount] = useState(50);
   const [tempUsersCount, setTempUsersCount] = useState(usersCount);
@@ -55,7 +58,7 @@ export default function UseMemoScreen() {
     return users;
   };
 
-  // Медленная сортировка (искусственно замедленная)
+  // Медленная сортировка
   const slowSort = (arr, left = 0, right = arr.length - 1) => {
     if (left >= right) return;
     const mid = Math.floor((left + right) / 2);
@@ -355,7 +358,6 @@ export default function UseMemoScreen() {
               </View>
             </View>
           )}
-
           {/* Пробел для нижней навигации */}
           <View style={AppStyles.bottomSpacer}></View>
         </ScrollView>
@@ -378,6 +380,7 @@ export default function UseMemoScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useState экран */}
@@ -394,6 +397,7 @@ export default function UseMemoScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useEffect экран */}
@@ -410,6 +414,7 @@ export default function UseMemoScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useMemo экран */}
@@ -426,6 +431,7 @@ export default function UseMemoScreen() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* Profile экран */}

@@ -6,10 +6,12 @@ import {
   StatusBar, 
   SafeAreaView,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from './src/store/authStore';
+import { useAppStore } from './src/store/AppStore';
 import UseStateScreen from './src/screens/UseStateScreen';
 import UseEffectScreen from './src/screens/UseEffectScreen';
 import UseMemoScreen from './src/screens/UseMemoScreen';
@@ -25,20 +27,29 @@ export default function App() {
     isAuthenticated, 
     activeScreen,
     setActiveScreen,
-    initialize
+    initialize,
+    logout
   } = useAuthStore();
+  
+  const { setActiveScreen: setUIScreen } = useAppStore();
 
   // Проверка авторизации при загрузке
   useEffect(() => {
     initialize();
   }, []);
 
+  // Синхронизируем экраны между хранилищами
+  useEffect(() => {
+    if (activeScreen) {
+      setUIScreen(activeScreen);
+    }
+  }, [activeScreen]);
+
   // Если пользователь не авторизован, показываем экран логина
   if (!isAuthenticated) {
     return <LoginScreen />;
   }
 
-  // Функция рендеринга экрана
   const renderScreen = () => {
     switch (activeScreen) {
       case 'usestate':
@@ -48,7 +59,7 @@ export default function App() {
       case 'usememo':
         return <UseMemoScreen />;
       case 'profile':
-        return <ProfileScreen />;
+        return <ProfileScreen onLogout={logout} />;
       default:
         return renderHome();
     }
@@ -206,6 +217,7 @@ export default function App() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useState экран */}
@@ -222,6 +234,7 @@ export default function App() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useEffect экран */}
@@ -238,6 +251,7 @@ export default function App() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* useMemo экран */}
@@ -254,6 +268,7 @@ export default function App() {
             </Text>
           </TouchableOpacity>
 
+          {/* Разделитель */}
           <View style={AppStyles.dockDivider}></View>
 
           {/* Profile экран */}
