@@ -97,10 +97,18 @@ const PostDetailScreen = ({ route, navigation }) => {
 
         <Text style={styles.contentText}>{currentPost.content}</Text>
 
-        {/* Кнопки действий (только для владельца) */}
         {isOwner && (
           <View style={styles.actions}>
-            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.editButton]} 
+              onPress={handleEdit}
+            >
+              <Text style={styles.actionText}>✏️ Изменить</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.deleteButton]} 
+              onPress={handleDelete}
+            >
               <Text style={styles.actionText}>🗑 Удалить</Text>
             </TouchableOpacity>
           </View>

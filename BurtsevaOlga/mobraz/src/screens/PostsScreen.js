@@ -6,9 +6,7 @@ import { styles } from '../styles/PostsStyles';
 const PostsScreen = ({ navigation }) => {
   const { posts, isLoading, error, fetchPosts, clearError } = usePostsStore();
 
-  useEffect(() => {
-    loadPosts();
-  }, []);
+ 
 
   const loadPosts = async () => {
     await fetchPosts();
