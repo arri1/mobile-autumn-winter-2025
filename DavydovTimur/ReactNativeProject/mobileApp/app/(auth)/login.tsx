@@ -1,6 +1,7 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { setTokens, clearTokens } from '../api/authStore';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -31,6 +32,11 @@ export default function Login() {
       });
       const data = await response.json();
       if (response.ok) {
+        if (data?.data?.accessToken && data?.data?.refreshToken) {
+          setTokens(data.data.accessToken, data.data.refreshToken);
+        } else {
+          clearTokens();
+        }
         setLoading(false);
         router.replace('/(tabs)/catalog');
       } else {
@@ -67,6 +73,11 @@ export default function Login() {
       });
       const data = await response.json();
       if (response.ok) {
+        if (data?.data?.accessToken && data?.data?.refreshToken) {
+          setTokens(data.data.accessToken, data.data.refreshToken);
+        } else {
+          clearTokens();
+        }
         setLoading(false);
         router.replace('/(tabs)/catalog');
       } else {
