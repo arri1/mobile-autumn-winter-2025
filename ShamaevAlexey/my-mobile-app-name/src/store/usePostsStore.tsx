@@ -25,6 +25,7 @@ interface PostsState {
   fetchMyPosts: () => Promise<void>;
   createPost: (title: string, content: string) => Promise<boolean>;
   deletePost: (id: string) => Promise<boolean>;
+  updatePost: (id: string, title: string, content: string) => Promise<boolean>;
 }
 
 export const usePostsStore = create<PostsState>((set, get) => ({
@@ -173,6 +174,47 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       return false;
     } catch (e) {
       console.error('deletePost error:', e);
+      return false;
+    }
+  },
+
+  updatePost: async (id, title, content) => {
+    try {
+      const token = await AsyncStorage.getItem('@accessToken');
+      if (!token) return false;
+
+      let res = await fetch(`${API_URL}/posts/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ title: title.trim(), content: content.trim() }),
+      });
+
+      if (res.status === 401) {
+        const refreshed = await useAuthStore.getState().refreshToken();
+        if (!refreshed) {
+          useAuthStore.getState().logout();
+          return false;
+        }
+        const newToken = await AsyncStorage.getItem('@accessToken');
+        res = await fetch(`${API_URL}/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${newToken}` },
+          body: JSON.stringify({ title: title.trim(), content: content.trim() }),
+        });
+      }
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const updatedPost = data.data.post || data.data;
+        set((state) => ({
+          posts: state.posts.map((p) => (p.id === id ? updatedPost : p)),
+          myPosts: state.myPosts.map((p) => (p.id === id ? updatedPost : p)),
+        }));
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.error('updatePost error:', e);
       return false;
     }
   },

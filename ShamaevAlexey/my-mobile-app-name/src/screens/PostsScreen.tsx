@@ -8,13 +8,14 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { usePostsStore, Post } from '../store/usePostsStore';
 import { useAuthStore } from '../store/useAuthStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PostsScreen() {
-  const { posts, myPosts, isLoading, fetchPosts, fetchMyPosts, createPost, deletePost } = usePostsStore();
+  const { posts, myPosts, isLoading, fetchPosts, fetchMyPosts, createPost, deletePost, updatePost } = usePostsStore();
   const { currentUser } = useAuthStore();
 
   const [title, setTitle] = useState('');
@@ -22,8 +23,10 @@ export default function PostsScreen() {
   const [filterMode, setFilterMode] = useState<'all' | 'my'>('all');
   const [selectedPostIds, setSelectedPostIds] = useState<string[]>([]);
   const [searchId, setSearchId] = useState('');
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   useEffect(() => {
+    setEditingPost(null);
     if (filterMode === 'all') {
       fetchPosts();
     } else {
@@ -41,6 +44,7 @@ export default function PostsScreen() {
       Alert.alert('Успех', 'Пост создан');
       setTitle('');
       setContent('');
+      setEditingPost(null);
     } else {
       Alert.alert('Ошибка', 'Не удалось создать пост');
     }
@@ -170,6 +174,55 @@ export default function PostsScreen() {
         />
       </View>
 
+      {editingPost && (
+        <View style={[styles.card, { backgroundColor: '#fff8e1', borderColor: '#ffca28' }]}>
+          <Text style={styles.h2}>Редактирование поста</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Заголовок"
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            style={[styles.input, { height: 100 }]}
+            placeholder="Текст"
+            multiline
+            value={content}
+            onChangeText={setContent}
+          />
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+            <Button
+              title="Сохранить"
+              onPress={async () => {
+                if (!title.trim() || !content.trim()) {
+                  Alert.alert('Внимание', 'Заполните заголовок и текст');
+                  return;
+                }
+                const ok = await updatePost(editingPost.id, title, content);
+                if (ok) {
+                  Alert.alert('Успех', 'Пост обновлён');
+                  setEditingPost(null);
+                  setTitle('');
+                  setContent('');
+                } else {
+                  Alert.alert('Ошибка', 'Не удалось обновить пост');
+                }
+              }}
+              color="#388e3c"
+            />
+            <Button
+              title="Отмена"
+              onPress={() => {
+                setEditingPost(null);
+                setTitle('');
+                setContent('');
+              }}
+              color="#9e9e9e"
+            />
+          </View>
+        </View>
+      )}
+
       {isLoading ? (
         <ActivityIndicator size="large" color="#1976d2" style={{ marginTop: 20 }} />
       ) : currentList.length === 0 ? (
@@ -200,10 +253,24 @@ export default function PostsScreen() {
               <Text style={{ fontSize: 12, color: '#999' }}>ID: {post.id}</Text>
               <Text style={{ fontWeight: '600', fontSize: 16, marginVertical: 4 }}>{post.title}</Text>
               <Text style={{ color: '#444', marginBottom: 8 }}>{post.content}</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 {post.author && <Text style={{ fontSize: 13 }}>{post.author.name || post.author.email}</Text>}
                 <Text style={{ fontSize: 13, color: '#999' }}>{formatDate(post.createdAt)}</Text>
               </View>
+
+              {isOwn && (
+                <TouchableOpacity
+                  style={{ position: 'absolute', top: 8, right: 8, padding: 6 }}
+                  onPress={() => {
+                    setEditingPost(post);
+                    setTitle(post.title);
+                    setContent(post.content);
+                  }}
+                >
+                  <Text style={{ fontSize: 18, color: '#ffa000' }}>✏️</Text>
+                </TouchableOpacity>
+              )}
             </View>
           );
         })
