@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    padding: 16,
   },
   container: {
     flex: 1,
@@ -40,7 +39,6 @@ export const styles = StyleSheet.create({
   imageContainer: {
     minHeight: 300,
     marginBottom: 16,
-    borderRadius: 12,
     overflow: 'hidden',
   },
   loadingContainer: {
@@ -79,7 +77,7 @@ export const styles = StyleSheet.create({
   },
   catImage: {
     width: '100%',
-    height: 300,
+    height: 500,
     borderRadius: 12,
   },
   imageInfo: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Svg, { Path } from 'react-native-svg';
 import { styles } from "./_styles";
@@ -27,7 +27,8 @@ export default function DrawingApp() {
   const [brushSize, setBrushSize] = useState(5);
   const [isDrawing, setIsDrawing] = useState(false);
 
-  const canvasHeight = 250;
+  const { height } = Dimensions.get('window');
+  const canvasHeight = height * 0.45;
 
   const handleTouchStart = (x: number, y: number) => {
     setIsDrawing(true);
@@ -72,6 +73,8 @@ export default function DrawingApp() {
   };
 
   const pan = Gesture.Pan()
+    .minDistance(1) // Добавляем, чтобы реагировало даже на мелкие движения
+    .runOnJS(true) // <--- ЭТО САМОЕ ВАЖНОЕ! Переключает обработку обратно в JS поток
     .onStart((event) => {
       handleTouchStart(event.x, event.y);
     })
@@ -84,6 +87,9 @@ export default function DrawingApp() {
 
   return (
     <ThemedView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        
+      </ScrollView>
       <ThemedView style={styles.header}>
         <ThemedText style={styles.title}>Рисование пальцем</ThemedText>
         <ThemedText style={styles.subtitle}>useState для хранения линий</ThemedText>
@@ -174,24 +180,15 @@ export default function DrawingApp() {
           style={[styles.button, styles.undoButton]}
           onPress={undoLast}
           disabled={paths.length === 0}>
-          <ThemedText style={styles.buttonText}>↶ Отменить</ThemedText>
+          <ThemedText style={styles.buttonText}>↶  Отменить</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.clearButton]}
           onPress={clearCanvas}>
-          <ThemedText style={styles.buttonText}>🗑️ Очистить</ThemedText>
+          <ThemedText style={styles.buttonText}>🗑️  Очистить</ThemedText>
         </TouchableOpacity>
       </ThemedView>
 
-      {/* Stats */}
-      <ThemedView style={styles.stats}>
-        <ThemedText style={styles.statsText}>
-          Линий нарисовано: {paths.length}
-        </ThemedText>
-        <ThemedText style={styles.statsText}>
-          Точек в текущей линии: {currentPath.length}
-        </ThemedText>
-      </ThemedView>
     </ThemedView>
   );
 }

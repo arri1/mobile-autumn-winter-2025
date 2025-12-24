@@ -17,11 +17,11 @@ export const styles = StyleSheet.create({
 		fontSize: 14,
 	},
     title: {
-        marginBottom: 4,
+        marginBottom: 12,
 		fontSize: 24,
     },
 	mainTitle: {
-		fontSize: 32,
+		fontSize: 24,
 		marginBottom: 12,
 	},
     card: {
