@@ -1,109 +1,130 @@
 import React, { useState } from "react";
-import { View, Alert, KeyboardAvoidingView, Platform, TextInput, Button } from "react-native";
+import { View, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
+
 import useAuthStore from "@/store/authStore";
 import { styles } from "./_styles";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
 import { MyAlert } from "@/components/GlobalAlert";
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function LoginScreen() {
-	const router = useRouter();
-	const { login, isLoading } = useAuthStore();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+    // Цвета темы
+    const router = useRouter();
+    const { login, isLoading } = useAuthStore();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
-	const handleLogin = async () => {
-		if (!email.trim()) {
-			MyAlert.show("Ошибка", "Введите email");
-			return;
-		}
-		if (!password.trim()) {
-			MyAlert.show("Ошибка", "Введите пароль");
-			return;
-		}
-		if (!email.includes("@")) {
-			MyAlert.show("Ошибка", "Введите корректный email");
-			return;
-		}
-		if (password.length < 6) {
-			MyAlert.show("Ошибка", "Пароль должен содержать минимум 6 символов");
-			return;
-		}
+    // Цвета
+    const primaryColor = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
+    const inputBg = useThemeColor({ light: '#F2F2F7', dark: '#2C2C2E' }, 'input');
+    const textColor = useThemeColor({ light: '#000', dark: '#FFF' }, 'text');
+    const placeholderColor = '#999';
 
-		try {
-			await login({ email, password });
-			
-			MyAlert.show("Успех", "Вы успешно вошли в систему!");
-		} catch (error) {
-			MyAlert.show(
-				"Ошибка",
-				error instanceof Error ? error.message : "Не удалось войти"
-			);
-		}
-	};
+    const handleLogin = async () => {
+        if (!email.trim() || !password.trim()) {
+            MyAlert.show("Ошибка", "Заполните все поля");
+            return;
+        }
+        try {
+            await login({ email, password });
+            // Редирект сработает автоматически в _layout
+        } catch (error) {
+            MyAlert.show("Ошибка", error instanceof Error ? error.message : "Не удалось войти");
+        }
+    };
 
-	const handleDemoLogin = () => {
-		setEmail("demo@example.com");
-		setPassword("demo123");
-		MyAlert.show("Демо", 'Данные заполнены! Нажмите "Войти"');
-	};
+    const handleDemoLogin = () => {
+        setEmail("demo@example.com");
+        setPassword("demo123");
+    };
 
-	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={{ flex: 1 }}
-		>
-			<ThemedView style={styles.container}>
+    return (
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            style={{ flex: 1 }}
+        >
+            <ThemedView style={styles.container}>
+                <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                    
+                    {/* Header with Icon */}
+                    <View style={styles.headerContainer}>
+                        <View style={[styles.logoContainer, { backgroundColor: primaryColor }]}>
+                            <Ionicons name="log-in-outline" size={40} color="#FFF" />
+                        </View>
+                        <ThemedText type="title" style={styles.headerTitle}>С возвращением!</ThemedText>
+                        <ThemedText style={styles.headerSubtitle}>Войдите, чтобы продолжить</ThemedText>
+                    </View>
 
-				<ThemedView style={styles.card}>
-					<ThemedText style={styles.mainTitle}>Авторизация</ThemedText>
-                    <ThemedText style={styles.label}>Email</ThemedText>
-					<TextInput
-                        style={styles.input}
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholderTextColor="#999"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        editable={!isLoading}
-                    />
+                    {/* Form Card */}
+                    <View style={styles.formContainer}>
+                        
+                        {/* Email Input */}
+                        <View style={[styles.inputContainer, { backgroundColor: inputBg }]}>
+                            <Ionicons name="mail-outline" size={20} color={placeholderColor} style={styles.inputIcon} />
+                            <TextInput
+                                style={[styles.input, { color: textColor }]}
+                                value={email}
+                                onChangeText={setEmail}
+                                placeholder="Email"
+                                placeholderTextColor={placeholderColor}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        </View>
 
-					<TextInput
-                        style={styles.input}
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholderTextColor="#999"
-                        secureTextEntry
-                        editable={!isLoading}
-                    />
+                        {/* Password Input */}
+                        <View style={[styles.inputContainer, { backgroundColor: inputBg }]}>
+                            <Ionicons name="lock-closed-outline" size={20} color={placeholderColor} style={styles.inputIcon} />
+                            <TextInput
+                                style={[styles.input, { color: textColor }]}
+                                value={password}
+                                onChangeText={setPassword}
+                                placeholder="Пароль"
+                                placeholderTextColor={placeholderColor}
+                                secureTextEntry={!showPassword}
+                            />
+                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={20} color={placeholderColor} />
+                            </TouchableOpacity>
+                        </View>
 
-					<ThemedView style={styles.buttonStack}>
-						<Button
-							title={isLoading ? "Вход..." : "Войти"}
-							onPress={handleLogin}
-							disabled={isLoading}
-						/>
+                        {/* Login Button */}
+                        <TouchableOpacity 
+                            style={[styles.primaryButton, { backgroundColor: primaryColor, opacity: isLoading ? 0.7 : 1 }]}
+                            onPress={handleLogin}
+                            disabled={isLoading}
+                        >
+                            <ThemedText style={styles.primaryButtonText}>
+                                {isLoading ? "Вход..." : "Войти"}
+                            </ThemedText>
+                        </TouchableOpacity>
 
-						<Button
-							title="Заполнить демо данные"
-							onPress={handleDemoLogin}
-							disabled={isLoading}
-						/>
-					</ThemedView>
-				</ThemedView>
+                        {/* Demo Button */}
+                        <TouchableOpacity 
+                            style={styles.secondaryButton}
+                            onPress={handleDemoLogin}
+                            disabled={isLoading}
+                        >
+                            <ThemedText style={[styles.secondaryButtonText, { color: primaryColor }]}>
+                                Заполнить демо данные
+                            </ThemedText>
+                        </TouchableOpacity>
+                    </View>
 
-				<ThemedView style={styles.card}>
-					<View style={styles.footer}>
-						<ThemedText style={styles.cardTitle}>Нет аккаунта?</ThemedText>
-						<Button
-							title="Зарегистрироваться"
-							onPress={() => router.push("/(auth)/register")}
-							disabled={isLoading}
-						/>
-					</View>
-				</ThemedView>
-			</ThemedView>
-		</KeyboardAvoidingView>
-	);
+                    {/* Footer */}
+                    <View style={styles.footerContainer}>
+                        <ThemedText style={styles.footerText}>Нет аккаунта?</ThemedText>
+                        <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
+                            <ThemedText style={[styles.linkText, { color: primaryColor }]}>Зарегистрироваться</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+
+                </ScrollView>
+            </ThemedView>
+        </KeyboardAvoidingView>
+    );
 }
