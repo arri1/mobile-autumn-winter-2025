@@ -49,18 +49,34 @@ client.interceptors.response.use(
     return response.data;
   },
   async (error) => {
-    if (error.response?.status === 401) {
-      // Token expired, try to refresh
+    const originalRequest = error.config;
+
+    // Проверяем, что ошибка 401
+    // И проверяем, что это НЕ запрос логина или регистрации
+    if (
+      error.response?.status === 401 && 
+      !originalRequest._retry && 
+      !originalRequest.url.includes('/auth/login') && // <--- ВАЖНО: Не обновляем токен при логине
+      !originalRequest.url.includes('/auth/register') // <--- И при регистрации
+    ) {
+      originalRequest._retry = true; // Помечаем, что мы уже пробовали обновить
+
       try {
         await refreshToken();
-        // Retry the original request
-        return client.request(error.config);
+        // Если токен обновился, повторяем оригинальный запрос с новым токеном
+        // Важно: нужно заново получить токен из хранилища для заголовка
+        const newToken = await AsyncStorage.getItem('accessToken');
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        
+        return client.request(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+        // Если обновить не удалось — выкидываем на логин
+        await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'userData']);
         throw refreshError;
       }
     }
+    
+    // Если это была ошибка логина (401), она просто пролетит сюда
     return Promise.reject(error);
   }
 );
