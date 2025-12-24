@@ -1,125 +1,139 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
-// Общие стили для всех auth экранов
 export const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
+        flex: 1,
+    },
+    centerContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    scrollContent: {
         padding: 20,
-        alignItems: "center",
+        paddingBottom: 40,
     },
-	header: {
-		marginTop: 24,
-		marginBottom: 32,
-		gap: 8,
-	},
-	subtitle: {
-		opacity: 0.7,
-		fontSize: 14,
-	},
-    title: {
-        marginBottom: 12,
-		fontSize: 24,
+    
+    // --- Header Section ---
+    profileHeader: {
+        alignItems: 'center',
+        marginTop: 20,
+        marginBottom: 30,
     },
-	mainTitle: {
-		fontSize: 24,
-		marginBottom: 12,
-	},
+    avatarContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: '#007AFF', // Или использовать useThemeColor
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 16,
+        shadowColor: "#007AFF",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    avatarText: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+    },
+    userName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    roleBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        backgroundColor: 'rgba(0, 122, 255, 0.1)', // Легкий синий фон
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 122, 255, 0.2)',
+    },
+    roleText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#007AFF',
+        textTransform: 'uppercase',
+    },
+
+    // --- Cards & Sections ---
+    sectionHeader: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#8E8E93',
+        marginBottom: 8,
+        marginLeft: 4,
+        textTransform: 'uppercase',
+    },
     card: {
         borderRadius: 16,
-        padding: 20,
-        marginBottom: 30,
-        width: "90%",
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 3,
+        marginBottom: 24,
+        overflow: 'hidden',
+        // Тени только для iOS/Android, на вебе можно проще
+        ...Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+            },
+            android: {
+                elevation: 2,
+            },
+        }),
     },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: "600",
-        marginBottom: 12,
+    
+    // --- Rows inside Cards ---
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        minHeight: 56,
     },
-	themeButton: {
-		marginTop: 16,
-		paddingVertical: 12,
-		paddingHorizontal: 24,
-		borderRadius: 25,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	themeButtonText: {
-		color: '#FFFFFF',
-		fontSize: 16,
-		fontWeight: '600',
-	},
-    label: {
-        fontSize: 14,
-        marginBottom: 6,
-        fontWeight: "600",
-        alignSelf: "flex-start",
+    rowIcon: {
+        width: 32,
+        alignItems: 'flex-start',
     },
-    input: {
-        color: "#8e7b7bff",
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
-        padding: 10,
-        width: "100%",
-        marginBottom: 10,
+    rowContent: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    rowLabel: {
         fontSize: 16,
+        fontWeight: '500',
     },
-	cardTitle: {
-		marginBottom: 24,
-	},
-	buttonStack: {
-		gap: 12,
-		marginTop: 8,
-	},
-	footer: {
-		gap: 16,
-		alignItems: "center",
-	},
-	loadingContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		gap: 12,
-	},
-	loadingText: {
-		marginBottom: 0,
-	},
-	infoSection: {
-		gap: 0,
-	},
-	infoRow: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		paddingVertical: 12,
-	},
-	divider: {
-		height: 1,
-		backgroundColor: "#E5E5E5",
-	},
-	roleBadge: {
-		paddingHorizontal: 12,
-		paddingVertical: 4,
-		borderRadius: 4,
-		borderWidth: 1,
-		borderColor: "#E5E5E5",
-	},
-	aboutText: {
-		marginBottom: 20,
-	},
-	techStack: {
-		gap: 12,
-	},
-	techTitle: {
-		marginBottom: 0,
-	},
-	techList: {
-		gap: 6,
-	},
+    rowValue: {
+        fontSize: 14,
+        opacity: 0.6,
+        marginTop: 2,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: 'rgba(150, 150, 150, 0.1)',
+        marginLeft: 48, // Отступ слева чтобы не резать иконку
+    },
+
+    // --- Logout & Footer ---
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
+        borderRadius: 16,
+        backgroundColor: 'rgba(255, 59, 48, 0.1)', // Легкий красный
+        marginTop: 8,
+        gap: 8,
+    },
+    logoutText: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    versionText: {
+        textAlign: 'center',
+        marginTop: 24,
+        fontSize: 12,
+        opacity: 0.4,
+    },
 });

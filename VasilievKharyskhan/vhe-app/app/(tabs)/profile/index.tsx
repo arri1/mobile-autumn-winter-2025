@@ -1,122 +1,148 @@
 import React from "react";
-import { Alert, ActivityIndicator, Button, TouchableOpacity } from "react-native";
+import { Alert, ActivityIndicator, ScrollView, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from '@expo/vector-icons'; // Добавляем иконки
+
 import useAuthStore from "@/store/authStore";
 import { styles } from "./_styles";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
 import { useTheme } from '@/contexts/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
+
 export default function ProfileScreen() {
-	
-	const { actualColorScheme, toggleTheme } = useTheme();
-	const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
-	const router = useRouter();
-	const { user, logout, isLoading } = useAuthStore();
+    const { actualColorScheme, toggleTheme } = useTheme();
+    // Цвета для UI элементов
+    const iconColor = useThemeColor({ light: '#8E8E93', dark: '#9BA1A6' }, 'text');
+    const dangerColor = '#FF3B30';
+    const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
 
-	const handleLogout = async () => {
-		Alert.alert("Выход", "Вы уверены, что хотите выйти?", [
-			{
-				text: "Отмена",
-				style: "cancel",
-			},
-			{
-				text: "Выйти",
-				style: "destructive",
-				onPress: async () => {
-					try {
-						await logout();
-						Alert.alert("Информация", "Вы вышли из системы");
-						router.replace("/(tabs)");
-					} catch (error) {
-						Alert.alert("Ошибка", "Не удалось выйти");
-					}
-				},
-			},
-		]);
-	};
+    const router = useRouter();
+    const { user, logout, isLoading } = useAuthStore();
 
-	if (isLoading) {
-		return (
-			<ThemedView style={styles.container}>
-				<ThemedView style={styles.loadingContainer}>
-					<ActivityIndicator size="large" color="#000000" />
-					<ThemedText style={styles.loadingText}>
-						Загрузка...
-					</ThemedText>
-				</ThemedView>
-			</ThemedView>
-		);
-	}
+    // Функция для получения инициалов
+    const getInitials = (name) => {
+        if (!name) return "U";
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    };
 
-	return (
-		
-		<ThemedView style={styles.container}>
-			<ThemedView style={styles.header}>
-				<ThemedText style={styles.mainTitle}>
-				О приложении
-				</ThemedText>
-				<ThemedView style={styles.divider} />
-	
-				{/* Theme Toggle Button */}
-				<TouchableOpacity
-				style={[styles.themeButton, { backgroundColor: buttonBg }]}
-				onPress={toggleTheme}
-				activeOpacity={0.7}>
-				<ThemedText style={styles.themeButtonText}>
-					{actualColorScheme === 'dark' ? '☀️' : '🌙'}
-					{' '}
-					{actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
-				</ThemedText>
-				</TouchableOpacity>
-			</ThemedView>
-			<ThemedView style={styles.header}>
-				<ThemedText style={styles.mainTitle}>Профиль</ThemedText>
-				<ThemedText style={styles.cardTitle}>Информация о пользователе</ThemedText>
-			</ThemedView>
+    const handleLogout = async () => {
+        Alert.alert("Выход", "Вы уверены, что хотите выйти из аккаунта?", [
+            { text: "Отмена", style: "cancel" },
+            {
+                text: "Выйти",
+                style: "destructive",
+                onPress: async () => {
+                    try {
+                        await logout();
+                        router.replace("/(tabs)");
+                    } catch (error) {
+                        Alert.alert("Ошибка", "Не удалось выйти");
+                    }
+                },
+            },
+        ]);
+    };
 
-			<ThemedView style={styles.card}>
-				<ThemedText style={styles.cardTitle}>Данные пользователя</ThemedText>
+    if (isLoading) {
+        return (
+            <ThemedView style={[styles.container, styles.centerContent]}>
+                <ActivityIndicator size="large" color="#007AFF" />
+            </ThemedView>
+        );
+    }
 
-				<ThemedView style={styles.infoSection}>
-					<ThemedView style={styles.infoRow}>
-						<ThemedText>Имя</ThemedText>
-						<ThemedText>{user?.name || "N/A"}</ThemedText>
-					</ThemedView>
+    return (
+        <ThemedView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                
+                {/* 1. Шапка профиля (Аватар + Имя) */}
+                <View style={styles.profileHeader}>
+                    <View style={styles.avatarContainer}>
+                        <ThemedText style={styles.avatarText}>
+                            {getInitials(user?.name)}
+                        </ThemedText>
+                    </View>
+                    <ThemedText style={styles.userName}>{user?.name || "Пользователь"}</ThemedText>
+                    <View style={styles.roleBadge}>
+                        <ThemedText style={styles.roleText}>{user?.role || "GUEST"}</ThemedText>
+                    </View>
+                </View>
 
-					<ThemedView style={styles.divider} />
+                {/* 2. Секция информации */}
+                <ThemedText style={styles.sectionHeader}>Личные данные</ThemedText>
+                <View style={[styles.card, { backgroundColor: cardBg }]}>
+                    
+                    {/* Email Row */}
+                    <View style={styles.row}>
+                        <View style={styles.rowIcon}>
+                            <Ionicons name="mail-outline" size={20} color={iconColor} />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>Email</ThemedText>
+                            <ThemedText style={styles.rowValue}>{user?.email || "Не указан"}</ThemedText>
+                        </View>
+                    </View>
 
-					<ThemedView style={styles.infoRow}>
-						<ThemedText>Email</ThemedText>
-						<ThemedText>{user?.email || "N/A"}</ThemedText>
-					</ThemedView>
+                    <View style={styles.divider} />
 
-					<ThemedView style={styles.divider} />
+                    {/* ID Row */}
+                    <View style={styles.row}>
+                        <View style={styles.rowIcon}>
+                            <Ionicons name="finger-print-outline" size={20} color={iconColor} />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>ID пользователя</ThemedText>
+                            <ThemedText style={styles.rowValue} numberOfLines={1} ellipsizeMode="middle">
+                                {user?.id || "N/A"}
+                            </ThemedText>
+                        </View>
+                        <TouchableOpacity onPress={() => Alert.alert("ID", user?.id)}>
+                             <Ionicons name="copy-outline" size={18} color={iconColor} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
-					<ThemedView style={styles.infoRow}>
-						<ThemedText>Роль    </ThemedText>
-						<ThemedView style={styles.roleBadge}>
-							<ThemedText>{user?.role || "N/A"}</ThemedText>
-						</ThemedView>
-					</ThemedView>
+                {/* 3. Настройки приложения */}
+                <ThemedText style={styles.sectionHeader}>Настройки</ThemedText>
+                <View style={[styles.card, { backgroundColor: cardBg }]}>
+                    <TouchableOpacity 
+                        style={styles.row} 
+                        onPress={toggleTheme}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.rowIcon}>
+                            <Ionicons 
+                                name={actualColorScheme === 'dark' ? "moon" : "sunny"} 
+                                size={22} 
+                                color={actualColorScheme === 'dark' ? "#FFD700" : "#FDB813"} 
+                            />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>Тема оформления</ThemedText>
+                            <ThemedText style={styles.rowValue}>
+                                {actualColorScheme === 'dark' ? 'Темная' : 'Светлая'}
+                            </ThemedText>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color={iconColor} style={{opacity: 0.5}} />
+                    </TouchableOpacity>
+                </View>
 
-					<ThemedView style={styles.divider} />
+                {/* 4. Кнопка выхода */}
+                <TouchableOpacity 
+                    style={[styles.logoutButton]} 
+                    onPress={handleLogout}
+                    activeOpacity={0.8}
+                >
+                    <Ionicons name="log-out-outline" size={20} color={dangerColor} />
+                    <ThemedText style={[styles.logoutText, { color: dangerColor }]}>
+                        Выйти из аккаунта
+                    </ThemedText>
+                </TouchableOpacity>
 
-					<ThemedView style={styles.infoRow}>
-						<ThemedText>ID</ThemedText>
-						<ThemedText>{user?.id || "N/A"}</ThemedText>
-					</ThemedView>
-				</ThemedView>
-			</ThemedView>
+                <ThemedText style={styles.versionText}>Версия приложения 0.0.0.0.0.0.0.0.0.2</ThemedText>
 
-			{/* Карточка с действиями */}
-			<ThemedView style={styles.card}>
-				<Button
-					title="Выйти из аккаунта"
-					onPress={handleLogout}
-					disabled={isLoading}
-				/>
-			</ThemedView>
-		</ThemedView>
-	);
+            </ScrollView>
+        </ThemedView>
+    );
 }
