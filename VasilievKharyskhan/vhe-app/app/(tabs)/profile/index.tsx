@@ -1,11 +1,16 @@
 import React from "react";
-import { Alert, ActivityIndicator, Button } from "react-native";
+import { Alert, ActivityIndicator, Button, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import useAuthStore from "@/store/authStore";
 import { styles } from "./_styles";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { useTheme } from '@/contexts/theme-context';
+import { useThemeColor } from '@/hooks/use-theme-color';
 export default function ProfileScreen() {
+	
+	const { actualColorScheme, toggleTheme } = useTheme();
+	const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
 	const router = useRouter();
 	const { user, logout, isLoading } = useAuthStore();
 
@@ -45,7 +50,26 @@ export default function ProfileScreen() {
 	}
 
 	return (
+		
 		<ThemedView style={styles.container}>
+			<ThemedView style={styles.header}>
+				<ThemedText style={styles.mainTitle}>
+				О приложении
+				</ThemedText>
+				<ThemedView style={styles.divider} />
+	
+				{/* Theme Toggle Button */}
+				<TouchableOpacity
+				style={[styles.themeButton, { backgroundColor: buttonBg }]}
+				onPress={toggleTheme}
+				activeOpacity={0.7}>
+				<ThemedText style={styles.themeButtonText}>
+					{actualColorScheme === 'dark' ? '☀️' : '🌙'}
+					{' '}
+					{actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
+				</ThemedText>
+				</TouchableOpacity>
+			</ThemedView>
 			<ThemedView style={styles.header}>
 				<ThemedText style={styles.mainTitle}>Профиль</ThemedText>
 				<ThemedText style={styles.cardTitle}>Информация о пользователе</ThemedText>

@@ -34,7 +34,6 @@ export default function LoginScreen() {
 			await login({ email, password });
 			
 			Alert.alert("Успех", "Вы успешно вошли в систему!");
-			router.back();
 		} catch (error) {
 			Alert.alert(
 				"Ошибка",
@@ -98,7 +97,7 @@ export default function LoginScreen() {
 						<ThemedText style={styles.cardTitle}>Нет аккаунта?</ThemedText>
 						<Button
 							title="Зарегистрироваться"
-							onPress={() => router.push("/authorization/register")}
+							onPress={() => router.push("/(auth)/register")}
 							disabled={isLoading}
 						/>
 					</View>
