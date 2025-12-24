@@ -12,7 +12,7 @@ import {
   RefreshControl
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTodoStore } from './todoStore';
+import { useTodoStore } from './TodoStore';
 
 export default function StoreLineScreen() {
   const {

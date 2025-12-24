@@ -11,7 +11,7 @@ import {
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native';
-import { useTodoStore } from '../storline/todoStore';
+import { useTodoStore } from '../StorLine/TodoStore';
 
 export default function UseStateScreen() {
 

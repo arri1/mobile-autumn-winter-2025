@@ -1,13 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TouchableOpacity, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import UseStateScreen from '../site/usestate/usestatescreen';
-import UseEffectScreen from '../site/useeffect/useeffectscreen';
-import UseMemoScreen from '../site/usememo/usememoscreen';
-import UseEffectNetScreen from '../site/useeffectnet/useeffectnetscreen';
-import StoreLineScreen from '../site/storline/storelinescreen';
-import PostsScreen from '../site/postscreen/PostsScreen';
-import UsersListScreen from '../site/userlist/userlistscreen';
+import UseStateScreen from '../site/UseState/UseStateScreen';
+import UseEffectScreen from '../site/UseEffect/UseEffectScreen';
+import UseMemoScreen from '../site/UseMemo/UseMemoScreen';
+import UseEffectNetScreen from '../site/UseEffectNet/UseEffectNetScreen';
+import StoreLineScreen from '../site/StorLine/StoreLineScreen';
+import PostsScreen from '../site/Posts/PostsScreen';
+import UsersListScreen from '../site/UserList/UserListScreen';
 import useAuthStore from '../auth/auth';
 
 const Tab = createBottomTabNavigator();
@@ -18,11 +18,11 @@ export default function RootTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerStyle: { backgroundColor: '#0D0F14' },
+        headerStyle: { backgroundColor: '#222222ff' },
         headerTintColor: '#E6E9EF',
         tabBarStyle: { 
-          backgroundColor: '#0D0F14', 
-          borderTopColor: '#1C2230',
+          backgroundColor:  '#222222ff' , 
+          borderTopColor:  '#222222ff' ,
           paddingBottom: 5,
           height: 60,
         },
@@ -81,7 +81,7 @@ export default function RootTabs() {
               style={{ 
                 paddingHorizontal: 12,
                 paddingVertical: 6,
-                backgroundColor: '#1C2230',
+                backgroundColor: '#ff0000ff',
                 borderRadius: 6
               }}
             >
