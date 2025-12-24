@@ -207,7 +207,7 @@ const getPosts = async (params = {}) => {
 };
 
 // Get my posts
-const getMyPosts = async (params = {}) => {
+const getMyPosts = async (token, params = {}) => {
   const queryParams = new URLSearchParams();
   
   if (params.page) queryParams.append('page', params.page);
@@ -218,6 +218,9 @@ const getMyPosts = async (params = {}) => {
   
   return request(endpoint, {
     method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
@@ -229,25 +232,34 @@ const getPostById = async (id) => {
 };
 
 // Create post
-const createPost = async (postData) => {
+const createPost = async (token, postData) => {
   return request(API_CONFIG.endpoints.posts, {
     method: 'POST',
     data: postData,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
 // Update post
-const updatePost = async (id, postData) => {
+const updatePost = async (token, id, postData) => {
   return request(`${API_CONFIG.endpoints.posts}/${id}`, {
     method: 'PUT',
     data: postData,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
 // Delete post
-const deletePost = async (id) => {
+const deletePost = async (token, id) => {
   return request(`${API_CONFIG.endpoints.posts}/${id}`, {
     method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
