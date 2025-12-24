@@ -5,7 +5,7 @@ import {
   Platform, SafeAreaView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'; 
 import usePostStore from '@/store/postStore';
 import useAuthStore from '@/store/authStore';
 import { styles } from "./_styles";
@@ -121,7 +121,7 @@ export default function PostsScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Лента</Text>
         <TouchableOpacity onPress={openCreateModal}>
-          <Ionicons name="add-circle" size={32} color="#007AFF" />
+          <MaterialIcons name="post-add" size={32} color="#007AFF" />
         </TouchableOpacity>
       </View>
 
