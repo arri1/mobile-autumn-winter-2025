@@ -5,7 +5,7 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native'; // Добавили для лоадера
-
+import { GlobalAlertComponent } from '@/components/GlobalAlert';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemeProvider } from '@/contexts/theme-context';
 import useAuthStore from '@/store/authStore';
@@ -68,6 +68,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <RootLayoutNav />
+      <GlobalAlertComponent />
     </ThemeProvider>
   );
 }

@@ -9,6 +9,7 @@ import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
 import { useTheme } from '@/contexts/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { MyAlert } from "@/components/GlobalAlert";
 
 export default function ProfileScreen() {
     const { actualColorScheme, toggleTheme } = useTheme();
@@ -27,7 +28,7 @@ export default function ProfileScreen() {
     };
 
     const handleLogout = async () => {
-        Alert.alert("Выход", "Вы уверены, что хотите выйти из аккаунта?", [
+        MyAlert.show("Выход", "Вы уверены, что хотите выйти из аккаунта?", [
             { text: "Отмена", style: "cancel" },
             {
                 text: "Выйти",
@@ -37,7 +38,7 @@ export default function ProfileScreen() {
                         await logout();
                         router.replace("/(tabs)");
                     } catch (error) {
-                        Alert.alert("Ошибка", "Не удалось выйти");
+                        MyAlert.show("Ошибка", "Не удалось выйти");
                     }
                 },
             },
@@ -97,7 +98,7 @@ export default function ProfileScreen() {
                                 {user?.id || "N/A"}
                             </ThemedText>
                         </View>
-                        <TouchableOpacity onPress={() => Alert.alert("ID", user?.id)}>
+                        <TouchableOpacity onPress={() => MyAlert.show("ID", user?.id)}>
                              <Ionicons name="copy-outline" size={18} color={iconColor} />
                         </TouchableOpacity>
                     </View>

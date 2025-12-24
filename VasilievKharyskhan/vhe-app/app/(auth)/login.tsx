@@ -5,6 +5,7 @@ import useAuthStore from "@/store/authStore";
 import { styles } from "./_styles";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { MyAlert } from "@/components/GlobalAlert";
 
 export default function LoginScreen() {
 	const router = useRouter();
@@ -14,28 +15,28 @@ export default function LoginScreen() {
 
 	const handleLogin = async () => {
 		if (!email.trim()) {
-			Alert.alert("Ошибка", "Введите email");
+			MyAlert.show("Ошибка", "Введите email");
 			return;
 		}
 		if (!password.trim()) {
-			Alert.alert("Ошибка", "Введите пароль");
+			MyAlert.show("Ошибка", "Введите пароль");
 			return;
 		}
 		if (!email.includes("@")) {
-			Alert.alert("Ошибка", "Введите корректный email");
+			MyAlert.show("Ошибка", "Введите корректный email");
 			return;
 		}
 		if (password.length < 6) {
-			Alert.alert("Ошибка", "Пароль должен содержать минимум 6 символов");
+			MyAlert.show("Ошибка", "Пароль должен содержать минимум 6 символов");
 			return;
 		}
 
 		try {
 			await login({ email, password });
 			
-			Alert.alert("Успех", "Вы успешно вошли в систему!");
+			MyAlert.show("Успех", "Вы успешно вошли в систему!");
 		} catch (error) {
-			Alert.alert(
+			MyAlert.show(
 				"Ошибка",
 				error instanceof Error ? error.message : "Не удалось войти"
 			);
@@ -45,7 +46,7 @@ export default function LoginScreen() {
 	const handleDemoLogin = () => {
 		setEmail("demo@example.com");
 		setPassword("demo123");
-		Alert.alert("Демо", 'Данные заполнены! Нажмите "Войти"');
+		MyAlert.show("Демо", 'Данные заполнены! Нажмите "Войти"');
 	};
 
 	return (

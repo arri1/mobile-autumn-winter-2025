@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Alert, KeyboardAvoidingView, Platform, TextInput, Button } from "react-native";
+import { View,  KeyboardAvoidingView, Platform, TextInput, Button } from "react-native";
 import { useRouter } from "expo-router";
 import { styles } from "./_styles";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
 import useAuthStore from '@/store/authStore';
+import { MyAlert } from '@/components/GlobalAlert';
 export default function RegisterScreen() {
 	const router = useRouter();
 	const { login, register, isLoading } = useAuthStore();
@@ -15,27 +16,27 @@ export default function RegisterScreen() {
 
 	const handleRegister = async () => {
 		if (!name.trim()) {
-			Alert.alert("Ошибка", "Введите имя");
+			MyAlert.show("Ошибка", "Введите имя");
 			return;
 		}
 		if (!email.trim()) {
-			Alert.alert("Ошибка", "Введите email");
+			MyAlert.show("Ошибка", "Введите email");
 			return;
 		}
 		if (!email.includes("@")) {
-			Alert.alert("Ошибка", "Введите корректный email");
+			MyAlert.show("Ошибка", "Введите корректный email");
 			return;
 		}
 		if (!password.trim()) {
-			Alert.alert("Ошибка", "Введите пароль");
+			MyAlert.show("Ошибка", "Введите пароль");
 			return;
 		}
 		if (password.length < 6) {
-			Alert.alert("Ошибка", "Пароль должен содержать минимум 6 символов");
+			MyAlert.show("Ошибка", "Пароль должен содержать минимум 6 символов");
 			return;
 		}
 		if (password !== confirmPassword) {
-			Alert.alert("Ошибка", "Пароли не совпадают");
+			MyAlert.show("Ошибка", "Пароли не совпадают");
 			return;
 		}
 
@@ -46,10 +47,9 @@ export default function RegisterScreen() {
 			// Затем автоматически входим
 			await login({ email, password });
 			
-			Alert.alert('Успех', 'Регистрация прошла успешно!');
-			router.back();
+			MyAlert.show('Успех', 'Регистрация прошла успешно!');
 		} catch (error) {
-			Alert.alert("Ошибка",  error.message || 'Не удалось зарегистрироваться');
+			MyAlert.show("Ошибка",  error.message || 'Не удалось зарегистрироваться');
 		}
 	};
 	const handleDemoFill = () => {
@@ -57,7 +57,7 @@ export default function RegisterScreen() {
 		setEmail('demo@example.com');
 		setPassword('demo123');
 		setConfirmPassword('demo123');
-		Alert.alert('Демо', 'Данные заполнены! Нажмите "Зарегистрироваться"');
+		MyAlert.show('Демо', 'Данные заполнены! Нажмите "Зарегистрироваться"');
 	};
 	return (
 		<KeyboardAvoidingView

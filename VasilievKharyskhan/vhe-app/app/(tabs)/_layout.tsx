@@ -20,7 +20,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="profile/index" // Это имя файла без расширения (profile.tsx)
+        name="index" // Это имя файла без расширения (profile.tsx)
         options={{
           title: 'Профиль',
           headerShown: false, // Обычно в профиле свой кастомный хедер

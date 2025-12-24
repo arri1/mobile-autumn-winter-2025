@@ -108,15 +108,6 @@ export default function UseEffectExample() {
               </TouchableOpacity>
             ) : null}
           </ThemedView>
-
-          <ThemedView style={styles.stats}>
-            <ThemedText style={styles.statsText}>
-              Статистика:{'\n'}
-              Состояние: {loading ? 'Загрузка' : 'Готово'}{'\n'}
-              Ошибок: {error ? '1' : '0'}{'\n'}
-              Всего загрузок: {fetchCount}
-            </ThemedText>
-          </ThemedView>
         </ThemedView>
       </ScrollView>
     </ThemedView>
