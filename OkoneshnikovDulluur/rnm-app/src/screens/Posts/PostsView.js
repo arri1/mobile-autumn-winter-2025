@@ -16,6 +16,7 @@ export default function PostsView({
   pagination,
   page,
   isLoading,
+  isMutating,
   error,
 
   searchDraft,
@@ -35,6 +36,24 @@ export default function PostsView({
   canCreate,
 
   onReload,
+
+  onlyMy,
+  onToggleOnlyMy,
+  isAuthed,
+
+  currentUserId,
+
+  editingId,
+  editTitle,
+  editContent,
+  editPublished,
+  onChangeEditTitle,
+  onChangeEditContent,
+  onToggleEditPublished,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onDelete,
 }) {
   return (
     <>
@@ -44,6 +63,22 @@ export default function PostsView({
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.container}>
+        <Card style={styles.card}>
+          <Card.Title title="Режим" />
+          <Card.Content>
+            {!isAuthed ? (
+              <Text style={styles.note}>
+                «Только мои» доступно после входа в аккаунт.
+              </Text>
+            ) : null}
+
+            <View style={styles.row}>
+              <Text>Только мои</Text>
+              <Switch value={onlyMy} onValueChange={onToggleOnlyMy} disabled={!isAuthed} />
+            </View>
+          </Card.Content>
+        </Card>
+
         <Card style={styles.card}>
           <Card.Title title="Поиск" />
           <Card.Content>
@@ -63,9 +98,7 @@ export default function PostsView({
           <Card.Title title="Создать пост" />
           <Card.Content>
             {!canCreate ? (
-              <Text style={styles.note}>
-                Для создания поста требуется авторизация.
-              </Text>
+              <Text style={styles.note}>Для создания поста требуется авторизация.</Text>
             ) : null}
 
             <TextInput
@@ -93,7 +126,8 @@ export default function PostsView({
               mode="contained"
               style={styles.mt}
               onPress={onCreate}
-              disabled={!canCreate}
+              disabled={!canCreate || isMutating}
+              loading={isMutating}
             >
               Создать
             </Button>
@@ -112,17 +146,76 @@ export default function PostsView({
 
             {!isLoading &&
               !error &&
-              posts.map((p) => (
-                <View key={p.id} style={styles.post}>
-                  <Text style={styles.postTitle}>{p.title}</Text>
-                  <Text style={styles.postMeta}>
-                    {p.published ? "published" : "draft"} • {p.author?.name || "-"}
-                  </Text>
-                  <Text style={styles.postContent} numberOfLines={3}>
-                    {p.content}
-                  </Text>
-                </View>
-              ))}
+              posts.map((p) => {
+                const isOwn = Boolean(currentUserId && p.authorId === currentUserId);
+                const isEditing = editingId === p.id;
+
+                return (
+                  <View key={p.id} style={styles.post}>
+                    <Text style={styles.postTitle}>{p.title}</Text>
+                    <Text style={styles.postMeta}>
+                      {p.published ? "published" : "draft"} • {p.author?.name || "-"}
+                    </Text>
+
+                    {!isEditing ? (
+                      <Text style={styles.postContent} numberOfLines={3}>
+                        {p.content}
+                      </Text>
+                    ) : (
+                      <View style={styles.editBox}>
+                        <TextInput
+                          mode="outlined"
+                          label="Title"
+                          value={editTitle}
+                          onChangeText={onChangeEditTitle}
+                        />
+                        <TextInput
+                          mode="outlined"
+                          label="Content"
+                          value={editContent}
+                          onChangeText={onChangeEditContent}
+                          multiline
+                          style={styles.mtSmall}
+                        />
+                        <View style={styles.row}>
+                          <Text>Опубликован</Text>
+                          <Switch value={editPublished} onValueChange={onToggleEditPublished} />
+                        </View>
+
+                        <View style={styles.actionsRow}>
+                          <Button
+                            mode="contained"
+                            onPress={onSaveEdit}
+                            disabled={isMutating}
+                            loading={isMutating}
+                          >
+                            Сохранить
+                          </Button>
+                          <Button mode="outlined" onPress={onCancelEdit} disabled={isMutating}>
+                            Отмена
+                          </Button>
+                        </View>
+                      </View>
+                    )}
+
+                    {/* КНОПКИ ТОЛЬКО ДЛЯ МОИХ ПОСТОВ */}
+                    {isOwn && !isEditing ? (
+                      <View style={styles.actionsRow}>
+                        <Button mode="outlined" onPress={() => onStartEdit(p)} disabled={isMutating}>
+                          Редактировать
+                        </Button>
+                        <Button
+                          mode="contained"
+                          onPress={() => onDelete(p)}
+                          disabled={isMutating}
+                        >
+                          Удалить
+                        </Button>
+                      </View>
+                    ) : null}
+                  </View>
+                );
+              })}
 
             <View style={styles.row}>
               <Button mode="outlined" onPress={onPrev} disabled={!pagination?.hasPrev}>

@@ -11,19 +11,43 @@ function toQuery(params = {}) {
 }
 
 export const postsApi = {
-  // GET /posts (публичный, но с токеном может показывать больше)
+  // GET /posts (публичный)
   list: ({ page = 1, limit = 10, search = "" } = {}, accessToken) => {
     return http(`/posts${toQuery({ page, limit, search })}`, {
       token: accessToken || undefined,
     });
   },
 
-  // POST /posts (только авторизованным)
+  // GET /posts/my (только авторизованные)
+  my: ({ page = 1, limit = 10, published } = {}, accessToken) => {
+    return http(`/posts/my${toQuery({ page, limit, published })}`, {
+      token: accessToken,
+    });
+  },
+
+  // POST /posts
   create: ({ title, content, published }, accessToken) => {
     return http("/posts", {
       method: "POST",
       token: accessToken,
       body: { title, content, published },
+    });
+  },
+
+  // PUT /posts/:id
+  update: (id, { title, content, published }, accessToken) => {
+    return http(`/posts/${id}`, {
+      method: "PUT",
+      token: accessToken,
+      body: { title, content, published },
+    });
+  },
+
+  // DELETE /posts/:id
+  remove: (id, accessToken) => {
+    return http(`/posts/${id}`, {
+      method: "DELETE",
+      token: accessToken,
     });
   },
 };

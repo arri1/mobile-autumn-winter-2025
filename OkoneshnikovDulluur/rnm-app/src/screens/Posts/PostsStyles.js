@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   mt: {
     marginTop: 12
-    },
+  },
   mtSmall: {
     marginTop: 8
   },
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#ddd"
+    borderTopColor: "#ddd",
   },
   postTitle: {
     fontWeight: "700",
@@ -46,6 +46,18 @@ export const styles = StyleSheet.create({
     marginBottom: 6
   },
   postContent: {
-    opacity: 0.9 
+    opacity: 0.9
+  },
+
+  editBox: {
+    marginTop: 8
+  },
+
+  actionsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 12,
+    justifyContent: "flex-start",
   },
 });
+
