@@ -1,8 +1,8 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import { Image } from "expo-image";
 
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
@@ -22,7 +22,10 @@ export default function TabLayout() {
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="house.fill" color={color} />
+						<Image
+							source={require('@/assets/images/Home.svg')}
+							style={{ width: 28, height: 28, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -31,7 +34,10 @@ export default function TabLayout() {
 				options={{
 					title: "Register",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.badge.plus" color={color} />
+						<Image
+							source={require('@/assets/images/R.svg')}
+							style={{ width: 28, height: 28, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -40,7 +46,10 @@ export default function TabLayout() {
 				options={{
 					title: "Login",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.fill" color={color} />
+						<Image
+							source={require('@/assets/images/L.svg')}
+							style={{ width: 28, height: 28, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -49,7 +58,10 @@ export default function TabLayout() {
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.circle" color={color} />
+						<Image
+							source={require('@/assets/images/User.svg')}
+							style={{ width: 28, height: 28, tintColor: color }}
+						/>
 					),
 				}}
 			/>
