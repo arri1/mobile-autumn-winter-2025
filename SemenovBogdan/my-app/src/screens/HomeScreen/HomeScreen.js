@@ -3,7 +3,6 @@ import {
     View,
     Text,
     FlatList,
-    StyleSheet,
     ActivityIndicator,
     TouchableOpacity,
     Alert,
@@ -12,7 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
-import { styles } from './styles'
+import { styles } from './styles';
 
 export default function HomeScreen() {
     const { accessToken, user } = useAuth();
@@ -22,6 +21,7 @@ export default function HomeScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [editingPost, setEditingPost] = useState(null);
 
     const loadPosts = async () => {
         try {
@@ -36,9 +36,7 @@ export default function HomeScreen() {
             if (user && accessToken) {
                 const myRes = await fetch(
                     `https://cloud.kit-imi.info/api/posts?authorId=${user.id}`,
-                    {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    }
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
                 const myJson = await myRes.json();
                 if (!myRes.ok) throw new Error(myJson.message);
@@ -77,9 +75,35 @@ export default function HomeScreen() {
             const json = await res.json();
             if (!res.ok) throw new Error(json.message);
 
-            setTitle('');
-            setContent('');
-            setModalVisible(false);
+            closeModal();
+            loadPosts();
+        } catch (e) {
+            Alert.alert('Ошибка', e.message);
+        }
+    };
+
+    const updatePost = async () => {
+        try {
+            const res = await fetch(
+                `https://cloud.kit-imi.info/api/posts/${editingPost.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        published: editingPost.published,
+                    }),
+                }
+            );
+
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.message);
+
+            closeModal();
             loadPosts();
         } catch (e) {
             Alert.alert('Ошибка', e.message);
@@ -88,34 +112,24 @@ export default function HomeScreen() {
 
     const publishPost = async (post) => {
         try {
-            const createRes = await fetch('https://cloud.kit-imi.info/api/posts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({
-                    title: post.title,
-                    content: post.content,
-                    published: true,
-                }),
-            });
-
-            const createJson = await createRes.json();
-            if (!createRes.ok) throw new Error(createJson.message);
-
-            const deleteRes = await fetch(
+            const res = await fetch(
                 `https://cloud.kit-imi.info/api/posts/${post.id}`,
                 {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: {
+                        'Content-Type': 'application/json',
                         Authorization: `Bearer ${accessToken}`,
                     },
+                    body: JSON.stringify({
+                        title: post.title,
+                        content: post.content,
+                        published: true,
+                    }),
                 }
             );
 
-            const deleteJson = await deleteRes.json();
-            if (!deleteRes.ok) throw new Error(deleteJson.message);
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.message);
 
             loadPosts();
         } catch (e) {
@@ -141,6 +155,27 @@ export default function HomeScreen() {
         }
     };
 
+    const openCreate = () => {
+        setEditingPost(null);
+        setTitle('');
+        setContent('');
+        setModalVisible(true);
+    };
+
+    const openEdit = (post) => {
+        setEditingPost(post);
+        setTitle(post.title);
+        setContent(post.content);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+        setEditingPost(null);
+        setTitle('');
+        setContent('');
+    };
+
     useEffect(() => {
         loadPosts();
     }, []);
@@ -151,7 +186,7 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+            <TouchableOpacity style={styles.addButton} onPress={openCreate}>
                 <Ionicons name="add" size={28} color="#fff" />
             </TouchableOpacity>
 
@@ -173,7 +208,6 @@ export default function HomeScreen() {
                         {item.authorId === user?.id && !item.published && (
                             <Text style={styles.draft}>Черновик</Text>
                         )}
-
                         {item.authorId === user?.id && item.published && (
                             <Text style={styles.published}>Опубликовано</Text>
                         )}
@@ -183,6 +217,13 @@ export default function HomeScreen() {
 
                         {item.authorId === user?.id && (
                             <View style={styles.actions}>
+                                <TouchableOpacity
+                                    style={styles.publishButton}
+                                    onPress={() => openEdit(item)}
+                                >
+                                    <Ionicons name="create" size={16} color="#fff" />
+                                </TouchableOpacity>
+
                                 {!item.published && (
                                     <TouchableOpacity
                                         style={styles.publishButton}
@@ -221,12 +262,17 @@ export default function HomeScreen() {
                             multiline
                         />
                         <View style={styles.modalButtons}>
-                            <TouchableOpacity style={styles.modalButton} onPress={createPost}>
-                                <Text style={styles.modalButtonText}>Создать</Text>
+                            <TouchableOpacity
+                                style={styles.modalButton}
+                                onPress={editingPost ? updatePost : createPost}
+                            >
+                                <Text style={styles.modalButtonText}>
+                                    {editingPost ? 'Сохранить' : 'Создать'}
+                                </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.modalButton, { backgroundColor: '#ccc' }]}
-                                onPress={() => setModalVisible(false)}
+                                onPress={closeModal}
                             >
                                 <Text style={styles.modalButtonText}>Отмена</Text>
                             </TouchableOpacity>
