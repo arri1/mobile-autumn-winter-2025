@@ -92,8 +92,7 @@ export default function UseMemoScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
-        paddingHorizontal: 15,
+        backgroundColor: '#f8f9fa'
     },
     numbersCounterName: {
         alignSelf: 'center',
