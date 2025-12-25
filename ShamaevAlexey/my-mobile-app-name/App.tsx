@@ -3,12 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
-
 import { useAuthStore } from './src/store/useAuthStore';
-
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
-
 import ProfileScreen from './src/screens/ProfileScreen';
 import UseStateScreen from './src/screens/useState';
 import UseEffectScreen from './src/screens/useEffect';
@@ -18,7 +15,6 @@ import PostsScreen from './src/screens/PostsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -69,7 +65,6 @@ function MainTabs() {
           tabBarIcon: ({ color, size }) => <Text style={{ color, fontSize: size }}>👥</Text>,
         }}
       />
-    
       <Tab.Screen
         name="Posts"
         component={PostsScreen}
@@ -81,14 +76,11 @@ function MainTabs() {
     </Tab.Navigator>
   );
 }
-
 export default function App() {
   const { checkAuth, isAuthenticated, isLoading } = useAuthStore();
-
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
