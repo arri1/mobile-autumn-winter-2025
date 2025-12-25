@@ -1,39 +1,83 @@
 import { postsApi } from "@/api/posts/postsApi";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 import PostsView from "./PostsView";
 
 export default function PostsContainer() {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const currentUserId = useAuthStore((s) => s.user?.id) || ""; 
+
+  const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken);
+  const logout = useAuthStore((s) => s.logout);
 
   const [posts, setPosts] = useState([]);
   const [pagination, setPagination] = useState(null);
 
   const [page, setPage] = useState(1);
+
   const [search, setSearch] = useState("");
   const [searchDraft, setSearchDraft] = useState("");
 
+  const [onlyMy, setOnlyMy] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState("");
 
+  // создание
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [published, setPublished] = useState(false);
 
-  const refreshAccessToken = useAuthStore((s) => s.refreshAccessToken);
-  const logout = useAuthStore((s) => s.logout);
+  // редактирование
+  const [editingId, setEditingId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editPublished, setEditPublished] = useState(false);
 
-  const load = async (p = page, s = search) => {
+  const withAuthRetry = async (fn) => {
+    if (!accessToken) {
+      const e = new Error("Нет авторизации");
+      e.status = 401;
+      throw e;
+    }
+    try {
+      return await fn(accessToken);
+    } catch (e) {
+      if (e.status === 401) {
+        const newAccess = await refreshAccessToken();
+        return await fn(newAccess);
+      }
+      throw e;
+    }
+  };
+
+  const load = async () => {
     try {
       setIsLoading(true);
       setError("");
 
-      const res = await postsApi.list({ page: p, limit: 10, search: s });
+      let res;
+
+      if (onlyMy) {
+        res = await withAuthRetry((token) =>
+          postsApi.my({ page, limit: 10 }, token)
+        );
+      } else {
+        // публичный список: чтобы не ловить Token expired, токен не передаём
+        res = await postsApi.list({ page, limit: 10, search });
+      }
 
       setPosts(res?.data?.posts || []);
       setPagination(res?.data?.pagination || null);
     } catch (e) {
-      setError(e.message || "Ошибка загрузки");
+      if (e.status === 401) {
+        await logout();
+        setError("Сессия истекла. Войдите снова.");
+      } else {
+        setError(e.message || "Ошибка загрузки");
+      }
       setPosts([]);
       setPagination(null);
     } finally {
@@ -42,8 +86,9 @@ export default function PostsContainer() {
   };
 
   useEffect(() => {
-    load(page, search);
-  }, [page, search, accessToken]);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, search, onlyMy, accessToken]);
 
   const onApplySearch = () => {
     setPage(1);
@@ -53,7 +98,6 @@ export default function PostsContainer() {
   const onCreate = async () => {
     try {
       setError("");
-
       if (!accessToken) {
         setError("Для создания поста нужно войти в аккаунт.");
         return;
@@ -63,37 +107,118 @@ export default function PostsContainer() {
         return;
       }
 
-      try {
-        await postsApi.create(
+      setIsMutating(true);
+      await withAuthRetry((token) =>
+        postsApi.create(
           { title: title.trim(), content: content.trim(), published },
-          accessToken
-        );
-      } catch (e) {
-        if (e.status === 401) {
-          const newAccess = await refreshAccessToken();
-          await postsApi.create(
-            { title: title.trim(), content: content.trim(), published },
-            newAccess
-          );
-        } else {
-          throw e;
-        }
-      }
+          token
+        )
+      );
 
       setTitle("");
       setContent("");
       setPublished(false);
 
       setPage(1);
-      await load(1, search);
+      await load();
     } catch (e) {
       if (e.status === 401) {
         await logout();
         setError("Сессия истекла. Войдите снова.");
+      } else {
+        setError(e.message || "Ошибка создания поста");
+      }
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
+  const onStartEdit = (post) => {
+    setEditingId(post.id);
+    setEditTitle(post.title || "");
+    setEditContent(post.content || "");
+    setEditPublished(Boolean(post.published));
+  };
+
+  const onCancelEdit = () => {
+    setEditingId("");
+    setEditTitle("");
+    setEditContent("");
+    setEditPublished(false);
+  };
+
+  const onSaveEdit = async () => {
+    try {
+      setError("");
+
+      if (!editingId) return;
+      if (!editTitle.trim() || !editContent.trim()) {
+        setError("Заполните title и content.");
         return;
       }
-      setError(e.message || "Ошибка создания поста");
+
+      setIsMutating(true);
+
+      await withAuthRetry((token) =>
+        postsApi.update(
+          editingId,
+          {
+            title: editTitle.trim(),
+            content: editContent.trim(),
+            published: editPublished,
+          },
+          token
+        )
+      );
+
+      onCancelEdit();
+      await load();
+    } catch (e) {
+      if (e.status === 401) {
+        await logout();
+        setError("Сессия истекла. Войдите снова.");
+      } else {
+        setError(e.message || "Ошибка обновления поста");
+      }
+    } finally {
+      setIsMutating(false);
     }
+  };
+
+  const onDelete = (post) => {
+    Alert.alert(
+      "Удалить пост?",
+      "Действие необратимо.",
+      [
+        { text: "Отмена", style: "cancel" },
+        {
+          text: "Удалить",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              setError("");
+              setIsMutating(true);
+
+              await withAuthRetry((token) => postsApi.remove(post.id, token));
+
+              // если редактировали удалённый пост — сбросить режим
+              if (editingId === post.id) onCancelEdit();
+
+              await load();
+            } catch (e) {
+              if (e.status === 401) {
+                await logout();
+                setError("Сессия истекла. Войдите снова.");
+              } else {
+                setError(e.message || "Ошибка удаления поста");
+              }
+            } finally {
+              setIsMutating(false);
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -102,6 +227,7 @@ export default function PostsContainer() {
       pagination={pagination}
       page={page}
       isLoading={isLoading}
+      isMutating={isMutating}
       error={error}
       searchDraft={searchDraft}
       onChangeSearchDraft={setSearchDraft}
@@ -116,7 +242,25 @@ export default function PostsContainer() {
       onTogglePublished={setPublished}
       onCreate={onCreate}
       canCreate={Boolean(accessToken)}
-      onReload={() => load(page, search)}
+      onReload={load}
+      onlyMy={onlyMy}
+      onToggleOnlyMy={(v) => {
+        setPage(1);
+        setOnlyMy(v);
+      }}
+      isAuthed={Boolean(accessToken)}
+      currentUserId={currentUserId}
+      editingId={editingId}
+      editTitle={editTitle}
+      editContent={editContent}
+      editPublished={editPublished}
+      onChangeEditTitle={setEditTitle}
+      onChangeEditContent={setEditContent}
+      onToggleEditPublished={setEditPublished}
+      onStartEdit={onStartEdit}
+      onCancelEdit={onCancelEdit}
+      onSaveEdit={onSaveEdit}
+      onDelete={onDelete}
     />
   );
 }
