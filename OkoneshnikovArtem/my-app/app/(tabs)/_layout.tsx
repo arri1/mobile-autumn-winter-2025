@@ -1,11 +1,11 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import { Image } from "expo-image";
 
-import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-
+import Feather from '@expo/vector-icons/Feather';
+import { HapticTab } from "@/components/haptic-tab";
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
 
@@ -22,7 +22,10 @@ export default function TabLayout() {
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="house.fill" color={color} />
+						<Image
+							source={require('@/assets/images/Home.svg')}
+							style={{ width: 16, height: 16, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -31,7 +34,10 @@ export default function TabLayout() {
 				options={{
 					title: "Register",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.badge.plus" color={color} />
+						<Image
+							source={require('@/assets/images/R.svg')}
+							style={{ width: 10, height: 17, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -40,7 +46,10 @@ export default function TabLayout() {
 				options={{
 					title: "Login",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.fill" color={color} />
+						<Image
+							source={require('@/assets/images/L.svg')}
+							style={{ width: 10, height: 17, tintColor: color }}
+						/>
 					),
 				}}
 			/>
@@ -49,32 +58,46 @@ export default function TabLayout() {
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="person.circle" color={color} />
+						<Image
+							source={require('@/assets/images/User.svg')}
+							style={{ width: 16, height: 16, tintColor: color }}
+						/>
 					),
 				}}
 			/>
 			<Tabs.Screen
-				name="UseEffect"
+				name="UseEffect/useEffect"
 				options={{
-					href: null,
+					title: "UseEffect",
+					tabBarIcon: ({ color }) =>
+						<Feather name="folder" size={24} color={color} />
 				}}
 			/>
 			<Tabs.Screen
-				name="UseMemo"
+				name="UseMemo/useMemo"
 				options={{
-					href: null,
+					title: "UseMemo",
+					tabBarIcon: ({ color }) => (
+						<Feather name="folder" size={24} color={color} />
+					),
 				}}
 			/>
 			<Tabs.Screen
-				name="UseState"
+				name="UseState/useState"
 				options={{
-					href: null,
+					title: "UseState",
+					tabBarIcon: ({ color }) => (
+						<Feather name="folder" size={24} color={color} />
+					),
 				}}
 			/>
 			<Tabs.Screen
-				name="Zustand"
+				name="Zustand/zustand"
 				options={{
-					href: null,
+					title: "Zustand",
+					tabBarIcon: ({ color }) => (
+						<Feather name="folder" size={24} color={color} />
+					),
 				}}
 			/>
 		</Tabs>
