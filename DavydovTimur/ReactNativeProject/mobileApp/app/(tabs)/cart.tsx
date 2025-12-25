@@ -143,6 +143,13 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     tintColor: '#fff',
   },
+  postsIconImg: {
+    width: 55,
+    height: 28,
+    resizeMode: 'contain',
+    tintColor: '#fff',
+    marginHorizontal: 4,
+  },
   addressButton: {
     flex: 1,
     flexDirection: 'row',

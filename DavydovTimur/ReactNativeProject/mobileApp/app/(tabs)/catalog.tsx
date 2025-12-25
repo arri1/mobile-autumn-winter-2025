@@ -98,6 +98,9 @@ export default function Catalog() {
         <TouchableOpacity onPress={() => {router.replace('/(tabs)/cart')}}>
           <Image source={require('../../assets/images/cart.png')} style={styles.iconImg} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => { router.replace('/posts' as any); }}>
+          <Image source={require('../../assets/images/message.png')} style={styles.postsIconImg} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => { router.replace('/(auth)/login'); }}>
           <Image source={require('../../assets/images/user.png')} style={styles.iconImg} />
         </TouchableOpacity>
@@ -273,6 +276,13 @@ const styles = StyleSheet.create({
     height: 28,
     resizeMode: 'contain',
     tintColor: '#fff',
+  },
+  postsIconImg: {
+    width: 55,
+    height: 28,
+    resizeMode: 'contain',
+    tintColor: '#fff',
+    marginHorizontal: 4,
   },
   list: {
     paddingBottom: 24,
