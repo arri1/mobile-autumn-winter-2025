@@ -62,7 +62,7 @@ export default function UseMemoLab() {
 	// =====================================================
 
 	return (
-		<Container scrollable padding="md">
+		<Container scrollable padding="md" style={{marginTop: 34}}>
 			<H1 weight="bold" style={styles.pageTitle}>
 				useMemo Hook
 			</H1>

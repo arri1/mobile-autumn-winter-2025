@@ -90,7 +90,7 @@ export default function UseEffectLab() {
 	}, [running]);
 
 	return (
-		<Container scrollable padding="md">
+		<Container scrollable padding="md" style={{marginTop: 34}}>
 			<H1 weight="bold" style={styles.pageTitle}>
 				useEffect Hook
 			</H1>
