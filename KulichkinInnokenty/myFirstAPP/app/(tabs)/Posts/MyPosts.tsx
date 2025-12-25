@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { View, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Container, Button, Card, H2, H3, Body, Caption } from '@/components/ui';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import usePostStore from '@/store/postStore';
 import useAuthStore from '@/store/authStore';
 import useThemeStore from '@/store/themeStore';
 import { Post } from '@/types';
-import { H1 } from "../../../components/ui"
+import { H1 } from "../../../components/ui";
+import { styles } from './MyPosts.styles';
 
 export default function MyPostsScreen() {
   const { colors } = useThemeStore();
@@ -220,53 +221,3 @@ export default function MyPostsScreen() {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 34,
-    paddingBottom: 16,
-    marginBottom: 16,
-    borderBottomWidth: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  createForm: {
-    marginBottom: 24,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  postsContainer: {
-    gap: 16,
-  },
-  postCard: {
-    marginBottom: 16,
-  },
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  postActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  formButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 16,
-  },
-});
