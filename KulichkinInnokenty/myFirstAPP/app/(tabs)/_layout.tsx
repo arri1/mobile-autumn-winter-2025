@@ -37,6 +37,24 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="Posts/MyPosts"
+				options={{
+					title: "MY POSTS",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="person.text.rectangle.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="Posts/AllPosts"
+				options={{
+					title: "POSTS",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="doc.text.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
 				name="UseState/index"
 				options={{
 					title: "USE STATE",

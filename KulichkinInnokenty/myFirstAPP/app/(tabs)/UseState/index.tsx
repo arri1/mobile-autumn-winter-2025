@@ -61,7 +61,7 @@ export default function UseStateLab() {
 	};
 
 	return (
-		<Container scrollable padding="md">
+		<Container scrollable padding="md" style={{marginTop: 34}}>
 			<H1 weight="bold" style={styles.pageTitle}>
 				useState Hook
 			</H1>

@@ -46,7 +46,7 @@ export default function ZustandLab() {
 	};
 
 	return (
-		<Container scrollable padding="md">
+		<Container scrollable padding="md" style={{marginTop: 34}}>
 			<H1 weight="bold" style={styles.pageTitle}>
 				Zustand Authentication
 			</H1>
