@@ -49,18 +49,34 @@ client.interceptors.response.use(
     return response.data;
   },
   async (error) => {
-    if (error.response?.status === 401) {
-      // Token expired, try to refresh
+    const originalRequest = error.config;
+
+    // Проверяем, что ошибка 401
+    // И проверяем, что это НЕ запрос логина или регистрации
+    if (
+      error.response?.status === 401 && 
+      !originalRequest._retry && 
+      !originalRequest.url.includes('/auth/login') && // <--- ВАЖНО: Не обновляем токен при логине
+      !originalRequest.url.includes('/auth/register') // <--- И при регистрации
+    ) {
+      originalRequest._retry = true; // Помечаем, что мы уже пробовали обновить
+
       try {
         await refreshToken();
-        // Retry the original request
-        return client.request(error.config);
+        // Если токен обновился, повторяем оригинальный запрос с новым токеном
+        // Важно: нужно заново получить токен из хранилища для заголовка
+        const newToken = await AsyncStorage.getItem('accessToken');
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        
+        return client.request(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+        // Если обновить не удалось — выкидываем на логин
+        await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'userData']);
         throw refreshError;
       }
     }
+    
+    // Если это была ошибка логина (401), она просто пролетит сюда
     return Promise.reject(error);
   }
 );
@@ -207,7 +223,7 @@ const getPosts = async (params = {}) => {
 };
 
 // Get my posts
-const getMyPosts = async (params = {}) => {
+const getMyPosts = async (token, params = {}) => {
   const queryParams = new URLSearchParams();
   
   if (params.page) queryParams.append('page', params.page);
@@ -218,6 +234,9 @@ const getMyPosts = async (params = {}) => {
   
   return request(endpoint, {
     method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
@@ -229,25 +248,34 @@ const getPostById = async (id) => {
 };
 
 // Create post
-const createPost = async (postData) => {
+const createPost = async (token, postData) => {
   return request(API_CONFIG.endpoints.posts, {
     method: 'POST',
     data: postData,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
 // Update post
-const updatePost = async (id, postData) => {
+const updatePost = async (token, id, postData) => {
   return request(`${API_CONFIG.endpoints.posts}/${id}`, {
     method: 'PUT',
     data: postData,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 
 // Delete post
-const deletePost = async (id) => {
+const deletePost = async (token, id) => {
   return request(`${API_CONFIG.endpoints.posts}/${id}`, {
     method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 };
 

@@ -1,160 +1,139 @@
-import { StyleSheet } from "react-native";
-
+import { StyleSheet, Platform } from "react-native";
 
 export const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  sectionTitle: {
-        fontSize: 20,
-        fontWeight: "600",
-        marginBottom: 12,
+    container: {
+        flex: 1,
     },
-  header: {
-    alignItems: 'center',
-    marginBottom: 24,
-    paddingTop: 20,
-  },
-  mainTitle: {
-    fontSize: 32,
-    marginBottom: 12,
-  },
-  divider: {
-    width: 60,
-    height: 4,
-    backgroundColor: '#007AFF',
-    borderRadius: 2,
-  },
-  themeButton: {
-    marginTop: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  themeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  profileSection: {
-    alignItems: 'center',
-    marginBottom: 24,
-    padding: 20,
-    borderRadius: 16,
-  },
-  photoContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 4,
-    borderColor: '#E5E5EA',
-  },
-  profilePhoto: {
-    width: 112,
-    height: 112,
-    borderRadius: 56,
-  },
-  name: {
-    fontSize: 24,
-    marginBottom: 4,
-  },
-  info: {
-    fontSize: 16,
-    opacity: 0.7,
-  },
-  card: {
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  cardTitle: {
-    fontSize: 20,
-    marginBottom: 12,
-  },
-  cardText: {
-    fontSize: 16,
-    lineHeight: 24,
-    opacity: 0.8,
-  },
-  featuresList: {
-    gap: 16,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'flex-start',
-  },
-  featureIcon: {
-    fontSize: 32,
-  },
-  featureTextContainer: {
-    flex: 1,
-  },
-  featureTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  featureDescription: {
-    fontSize: 14,
-    opacity: 0.7,
-    lineHeight: 20,
-  },
-  techGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  techBadge: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  techText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  contactItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  contactLabel: {
-    fontSize: 16,
-    opacity: 0.6,
-  },
-  contactValue: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  footer: {
-    alignItems: 'center',
-    paddingVertical: 32,
-    marginTop: 16,
-  },
-  footerText: {
-    fontSize: 14,
-    opacity: 0.6,
-    marginBottom: 4,
-  },
-  footerSubtext: {
-    fontSize: 14,
-    opacity: 0.6,
-  },
+    centerContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    scrollContent: {
+        padding: 20,
+        paddingBottom: 40,
+    },
+    
+    // --- Header Section ---
+    profileHeader: {
+        alignItems: 'center',
+        marginTop: 20,
+        marginBottom: 30,
+    },
+    avatarContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: '#007AFF', // Или использовать useThemeColor
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 16,
+        shadowColor: "#007AFF",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    avatarText: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+    },
+    userName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    roleBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        backgroundColor: 'rgba(0, 122, 255, 0.1)', // Легкий синий фон
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 122, 255, 0.2)',
+    },
+    roleText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#007AFF',
+        textTransform: 'uppercase',
+    },
+
+    // --- Cards & Sections ---
+    sectionHeader: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#8E8E93',
+        marginBottom: 8,
+        marginLeft: 4,
+        textTransform: 'uppercase',
+    },
+    card: {
+        borderRadius: 16,
+        marginBottom: 24,
+        overflow: 'hidden',
+        // Тени только для iOS/Android, на вебе можно проще
+        ...Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+            },
+            android: {
+                elevation: 2,
+            },
+        }),
+    },
+    
+    // --- Rows inside Cards ---
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        minHeight: 56,
+    },
+    rowIcon: {
+        width: 32,
+        alignItems: 'flex-start',
+    },
+    rowContent: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    rowLabel: {
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    rowValue: {
+        fontSize: 14,
+        opacity: 0.6,
+        marginTop: 2,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: 'rgba(150, 150, 150, 0.1)',
+        marginLeft: 48, // Отступ слева чтобы не резать иконку
+    },
+
+    // --- Logout & Footer ---
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
+        borderRadius: 16,
+        backgroundColor: 'rgba(255, 59, 48, 0.1)', // Легкий красный
+        marginTop: 8,
+        gap: 8,
+    },
+    logoutText: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    versionText: {
+        textAlign: 'center',
+        marginTop: 24,
+        fontSize: 12,
+        opacity: 0.4,
+    },
 });

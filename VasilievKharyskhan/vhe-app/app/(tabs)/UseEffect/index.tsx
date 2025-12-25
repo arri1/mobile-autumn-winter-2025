@@ -18,9 +18,9 @@ export default function UseEffectExample() {
   const [fetchCount, setFetchCount] = useState(0);
 
   const imageBg = useThemeColor({ light: '#f0f0f0', dark: '#2C2C2E' }, 'background');
+  const imageHeight =Dimensions.get('window').height *0.7;
+  const screenWidth =  Dimensions.get('window').width - 32;
 
-  const screenWidth = Dimensions.get('window').width - 32;
-  const imageHeight = (screenWidth / 16) * 9;
 
   const fetchCatImage = async () => {
     setLoading(true);
@@ -58,65 +58,58 @@ export default function UseEffectExample() {
   };
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
-          <ThemedText style={styles.title}>Пример useEffect: тапалка котейек</ThemedText>
-          <ThemedText style={styles.subtitle}>Загрузка данных из API</ThemedText>
-        </ThemedView>
+    <ThemedView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <ThemedView style={styles.container}>
+          <ThemedView style={styles.header}>
+            <ThemedText style={styles.title}>Пример useEffect: тапалка котейек</ThemedText>
+            <ThemedText style={styles.subtitle}>Загрузка данных из API</ThemedText>
+          </ThemedView>
 
-        <ThemedView style={styles.infoBox}>
-          <ThemedText style={styles.infoTitle}>Что происходит:</ThemedText>
-          <ThemedText style={styles.infoText}>
-            • useEffect загружает фото при открытии вкладки{'\n'}
-            • useState хранит данные и состояние загрузки{'\n'}
-            • API: thecatapi.com{'\n'}
-            • Загружено фотографий: {fetchCount}
-          </ThemedText>
-        </ThemedView>
+          <ThemedView style={styles.infoBox}>
+            <ThemedText style={styles.infoTitle}>Что происходит:</ThemedText>
+            <ThemedText style={styles.infoText}>
+              • useEffect загружает фото при открытии вкладки{'\n'}
+              • useState хранит данные и состояние загрузки{'\n'}
+              • API: thecatapi.com{'\n'}
+              • Загружено фотографий: {fetchCount}
+            </ThemedText>
+          </ThemedView>
 
-        <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
-          {loading ? (
-            <ThemedView style={[styles.loadingContainer, { height: imageHeight }]}>
-              <ActivityIndicator size="large" color="#007AFF" />
-              <ThemedText style={styles.loadingText}>Загрузка котика...</ThemedText>
-            </ThemedView>
-          ) : error ? (
-            <ThemedView style={[styles.errorContainer, { height: imageHeight }]}>
-              <ThemedText style={styles.errorText}>❌ {error}</ThemedText>
-              <TouchableOpacity style={styles.retryButton} onPress={handleLoadNewCat}>
-                <ThemedText style={styles.buttonText}>Попробовать снова</ThemedText>
-              </TouchableOpacity>
-            </ThemedView>
-          ) : catImage ? (
-            <TouchableOpacity
-              style={styles.catImageWrapper}
-              onPress={handleLoadNewCat}
-              activeOpacity={0.8}>
-              <RNImage
-                source={{ uri: catImage.url }}
-                style={[styles.catImage, { width: screenWidth, height: imageHeight }]}
-                resizeMode="contain"
-              />
-              <ThemedText style={styles.imageInfo}>
-                ID: {catImage.id.substring(0, 8)}... • Формат 16:9
-              </ThemedText>
-              <ThemedView style={styles.tapHint}>
-                <ThemedText style={styles.tapHintText}>👆 Нажми для новой кошки</ThemedText>
+          <ThemedView style={[styles.imageContainer, { height: imageHeight, backgroundColor: imageBg }]}>
+            {loading ? (
+              <ThemedView style={[styles.loadingContainer, { height: imageHeight }]}>
+                <ActivityIndicator size="large" color="#007AFF" />
+                <ThemedText style={styles.loadingText}>Загрузка котика...</ThemedText>
               </ThemedView>
-            </TouchableOpacity>
-          ) : null}
+            ) : error ? (
+              <ThemedView style={[styles.errorContainer, { height: imageHeight }]}>
+                <ThemedText style={styles.errorText}>❌ {error}</ThemedText>
+                <TouchableOpacity style={styles.retryButton} onPress={handleLoadNewCat}>
+                  <ThemedText style={styles.buttonText}>Попробовать снова</ThemedText>
+                </TouchableOpacity>
+              </ThemedView>
+            ) : catImage ? (
+              <TouchableOpacity
+                style={styles.catImageWrapper}
+                onPress={handleLoadNewCat}
+                activeOpacity={0.8}>
+                <RNImage
+                  source={{ uri: catImage.url }}
+                  style={[styles.catImage, { width: screenWidth, height: imageHeight }]}
+                  resizeMode="contain"
+                />
+                <ThemedText style={styles.imageInfo}>
+                  ID: {catImage.id.substring(0, 8)}... • Формат 16:9
+                </ThemedText>
+                <ThemedView style={styles.tapHint}>
+                  <ThemedText style={styles.tapHintText}>👆 Нажми для новой кошки</ThemedText>
+                </ThemedView>
+              </TouchableOpacity>
+            ) : null}
+          </ThemedView>
         </ThemedView>
-
-        <ThemedView style={styles.stats}>
-          <ThemedText style={styles.statsText}>
-            Статистика:{'\n'}
-            Состояние: {loading ? 'Загрузка' : 'Готово'}{'\n'}
-            Ошибок: {error ? '1' : '0'}{'\n'}
-            Всего загрузок: {fetchCount}
-          </ThemedText>
-        </ThemedView>
-      </ThemedView>
-    </ScrollView>
+      </ScrollView>
+    </ThemedView>
   );
 }

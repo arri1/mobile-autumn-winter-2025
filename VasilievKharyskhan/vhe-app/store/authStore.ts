@@ -10,7 +10,7 @@ const useAuthStore = create((set, get) => ({
   isLoading: false,
   error: null,
   isAuthenticated: false,
-
+  isInitialized: false,
   // Actions
   setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
@@ -35,6 +35,8 @@ const useAuthStore = create((set, get) => ({
       }
     } catch (error) {
       console.error('Error initializing auth:', error);
+    } finally {
+      set({ isInitialized: true }); 
     }
   },
 

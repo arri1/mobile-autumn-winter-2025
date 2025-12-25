@@ -5,6 +5,7 @@ import { styles } from "./_styles";
 import useAuthZustandStore from "../../../store/authStoreforZustandScreen";
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from "@/components/themed-view";
+import { MyAlert } from "@/components/GlobalAlert";
 
 export default function ZustandLab() {
 	const { user, isAuthenticated, login, logout, isLoading, error, clearError } = useAuthZustandStore();
@@ -14,15 +15,15 @@ export default function ZustandLab() {
 	const handleLogin = async () => {
 		try {
 			await login({ email, password });
-			Alert.alert("Успех", "Вы успешно вошли в систему!");
+			MyAlert.show("Успех", "Вы успешно вошли в систему!");
 		} catch (error) {
-			Alert.alert("Ошибка", error instanceof Error ? error.message : "Неизвестная ошибка");
+			MyAlert.show("Ошибка", error instanceof Error ? error.message : "Неизвестная ошибка");
 		}
 	};
 
 	const handleLogout = () => {
 		logout();
-		Alert.alert("Информация", "Вы вышли из системы");
+		MyAlert.show("Информация", "Вы вышли из системы");
 	};
 	return (
 		<ScrollView contentContainerStyle={styles.container}>

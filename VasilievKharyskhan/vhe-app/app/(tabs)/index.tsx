@@ -1,170 +1,149 @@
-import React from 'react';
-import { StyleSheet, ScrollView, Image, TouchableOpacity,  } from 'react-native';
+import React from "react";
+import { Alert, ActivityIndicator, ScrollView, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from '@expo/vector-icons'; // Добавляем иконки
+
+import useAuthStore from "@/store/authStore";
+import { styles } from "./_styles";
+import { ThemedView } from "@/components/themed-view";
+import { ThemedText } from "@/components/themed-text";
 import { useTheme } from '@/contexts/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { styles } from "./_styles";
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
+import { MyAlert } from "@/components/GlobalAlert";
 
-export default function AboutScreen() {
-  const { actualColorScheme, toggleTheme } = useTheme();
-  const buttonBg = useThemeColor({ light: '#007AFF', dark: '#0A84FF' }, 'tint');
-  return (
-    <ScrollView style={styles.scrollView}>
-      <ThemedView style={styles.container}>
-        {/* Header */}
-        <ThemedView style={styles.header}>
-          <ThemedText style={styles.mainTitle}>
-            О приложении
-          </ThemedText>
-          <ThemedView style={styles.divider} />
+export default function ProfileScreen() {
+    const { actualColorScheme, toggleTheme } = useTheme();
+    // Цвета для UI элементов
+    const iconColor = useThemeColor({ light: '#8E8E93', dark: '#9BA1A6' }, 'text');
+    const dangerColor = '#FF3B30';
+    const cardBg = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
 
-          {/* Theme Toggle Button */}
-          <TouchableOpacity
-            style={[styles.themeButton, { backgroundColor: buttonBg }]}
-            onPress={toggleTheme}
-            activeOpacity={0.7}>
-            <ThemedText style={styles.themeButtonText}>
-              {actualColorScheme === 'dark' ? '☀️' : '🌙'}
-              {' '}
-              {actualColorScheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
-            </ThemedText>
-          </TouchableOpacity>
+    const router = useRouter();
+    const { user, logout, isLoading } = useAuthStore();
+
+    // Функция для получения инициалов
+    const getInitials = (name) => {
+        if (!name) return "U";
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    };
+
+    const handleLogout = async () => {
+        MyAlert.show("Выход", "Вы уверены, что хотите выйти из аккаунта?", [
+            { text: "Отмена", style: "cancel" },
+            {
+                text: "Выйти",
+                style: "destructive",
+                onPress: async () => {
+                    try {
+                        await logout();
+                        router.replace("/(tabs)");
+                    } catch (error) {
+                        MyAlert.show("Ошибка", "Не удалось выйти");
+                    }
+                },
+            },
+        ]);
+    };
+
+    if (isLoading) {
+        return (
+            <ThemedView style={[styles.container, styles.centerContent]}>
+                <ActivityIndicator size="large" color="#007AFF" />
+            </ThemedView>
+        );
+    }
+
+    return (
+        <ThemedView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                
+                {/* 1. Шапка профиля (Аватар + Имя) */}
+                <View style={styles.profileHeader}>
+                    <View style={styles.avatarContainer}>
+                        <ThemedText style={styles.avatarText}>
+                            {getInitials(user?.name)}
+                        </ThemedText>
+                    </View>
+                    <ThemedText style={styles.userName}>{user?.name || "Пользователь"}</ThemedText>
+                    <View style={styles.roleBadge}>
+                        <ThemedText style={styles.roleText}>{user?.role || "GUEST"}</ThemedText>
+                    </View>
+                </View>
+
+                {/* 2. Секция информации */}
+                <ThemedText style={styles.sectionHeader}>Личные данные</ThemedText>
+                <View style={[styles.card, { backgroundColor: cardBg }]}>
+                    
+                    {/* Email Row */}
+                    <View style={styles.row}>
+                        <View style={styles.rowIcon}>
+                            <Ionicons name="mail-outline" size={20} color={iconColor} />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>Email</ThemedText>
+                            <ThemedText style={styles.rowValue}>{user?.email || "Не указан"}</ThemedText>
+                        </View>
+                    </View>
+
+                    <View style={styles.divider} />
+
+                    {/* ID Row */}
+                    <View style={styles.row}>
+                        <View style={styles.rowIcon}>
+                            <Ionicons name="finger-print-outline" size={20} color={iconColor} />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>ID пользователя</ThemedText>
+                            <ThemedText style={styles.rowValue} numberOfLines={1} ellipsizeMode="middle">
+                                {user?.id || "N/A"}
+                            </ThemedText>
+                        </View>
+                        <TouchableOpacity onPress={() => MyAlert.show("ID", user?.id)}>
+                             <Ionicons name="copy-outline" size={18} color={iconColor} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* 3. Настройки приложения */}
+                <ThemedText style={styles.sectionHeader}>Настройки</ThemedText>
+                <View style={[styles.card, { backgroundColor: cardBg }]}>
+                    <TouchableOpacity 
+                        style={styles.row} 
+                        onPress={toggleTheme}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.rowIcon}>
+                            <Ionicons 
+                                name={actualColorScheme === 'dark' ? "moon" : "sunny"} 
+                                size={22} 
+                                color={actualColorScheme === 'dark' ? "#FFD700" : "#FDB813"} 
+                            />
+                        </View>
+                        <View style={styles.rowContent}>
+                            <ThemedText style={styles.rowLabel}>Тема оформления</ThemedText>
+                            <ThemedText style={styles.rowValue}>
+                                {actualColorScheme === 'dark' ? 'Темная' : 'Светлая'}
+                            </ThemedText>
+                        </View>
+                        <Ionicons name="chevron-forward" size={20} color={iconColor} style={{opacity: 0.5}} />
+                    </TouchableOpacity>
+                </View>
+
+                {/* 4. Кнопка выхода */}
+                <TouchableOpacity 
+                    style={[styles.logoutButton]} 
+                    onPress={handleLogout}
+                    activeOpacity={0.8}
+                >
+                    <Ionicons name="log-out-outline" size={20} color={dangerColor} />
+                    <ThemedText style={[styles.logoutText, { color: dangerColor }]}>
+                        Выйти из аккаунта
+                    </ThemedText>
+                </TouchableOpacity>
+
+                <ThemedText style={styles.versionText}>Версия приложения 0.0.0.0.0.0.0.0.0.2</ThemedText>
+
+            </ScrollView>
         </ThemedView>
-
-        {/* Profile Section */}
-        <ThemedView style={styles.profileSection}>
-          <ThemedView style={styles.photoContainer}>
-            <Image
-              source={require('@/assets/images/profile.jpg')}
-              style={styles.profilePhoto}
-            />
-          </ThemedView>
-
-          <ThemedText style={styles.name}>
-            Васильев Харысхан
-          </ThemedText>
-
-          <ThemedText style={styles.info}>
-            ФИИТ-22
-          </ThemedText>
-        </ThemedView>
-
-        {/* Project Info */}
-        <ThemedView style={styles.card}>
-          <ThemedText style={styles.cardTitle}>
-            О проекте
-          </ThemedText>
-          <ThemedText style={styles.cardText}>
-            Данное приложение разработано в рамках изучения дисциплины
-            "Разработка мобильных приложений" в Северо-Восточном федеральном
-            университете имени М.К. Аммосова.
-          </ThemedText>
-        </ThemedView>
-
-        {/* Features */}
-        <ThemedView style={styles.card}>
-          <ThemedText style={styles.cardTitle}>
-            Функционал
-          </ThemedText>
-          <ThemedView style={styles.featuresList}>
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>🎨</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useState</ThemedText>
-                <ThemedText style={styles.featureDescription}>
-                  Интерактивное рисование пальцем с выбором цвета и размера кисти
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
-
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>🐱</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useEffect</ThemedText>
-                <ThemedText style={styles.featureDescription}>
-                  Загрузка случайных фотографий кошек из API в формате 16:9
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
-
-            <ThemedView style={styles.featureItem}>
-              <ThemedText style={styles.featureIcon}>📊</ThemedText>
-              <ThemedView style={styles.featureTextContainer}>
-                <ThemedText style={styles.featureTitle}>useMemo</ThemedText>
-                <ThemedText style={styles.featureDescription}>
-                  Оптимизация производительности с фильтрацией и сортировкой 500 товаров
-                </ThemedText>
-              </ThemedView>
-            </ThemedView>
-
-          </ThemedView>
-        </ThemedView>
-
-        {/* Technologies */}
-        <ThemedView style={styles.card}>
-          <ThemedText style={styles.cardTitle}>
-            Технологии
-          </ThemedText>
-          <ThemedView style={styles.techGrid}>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>React Native</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>TypeScript</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>Expo</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>React Hooks</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>SVG</ThemedText>
-            </ThemedView>
-            <ThemedView style={styles.techBadge}>
-              <ThemedText style={styles.techText}>Gestures</ThemedText>
-            </ThemedView>
-          </ThemedView>
-        </ThemedView>
-
-        {/* Contact */}
-        <ThemedView style={styles.card}>
-          <ThemedText style={styles.cardTitle}>
-            Контакты
-          </ThemedText>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Университет:</ThemedText>
-            <ThemedText style={styles.contactValue}>СВФУ им. М.К. Аммосова</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Факультет:</ThemedText>
-            <ThemedText style={styles.contactValue}>ФИИиТ</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Группа:</ThemedText>
-            <ThemedText style={styles.contactValue}>ФИИТ-22</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>Телеграм:</ThemedText>
-            <ThemedText style={styles.contactValue}>https://t.me/DartGrid</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.contactItem}>
-            <ThemedText style={styles.contactLabel}>GitHub:</ThemedText>
-            <ThemedText style={styles.contactValue}>Dartgrid</ThemedText>
-          </ThemedView>
-        </ThemedView>
-
-        {/* Footer */}
-        <ThemedView style={styles.footer}>
-          <ThemedText style={styles.footerText}>
-            © 2025 • Разработка мобильных приложений
-          </ThemedText>
-          <ThemedText style={styles.footerSubtext}>
-            Сделано в Якутске
-          </ThemedText>
-        </ThemedView>
-      </ThemedView>
-    </ScrollView>
-  );
+    );
 }
