@@ -64,12 +64,13 @@ export default function Login() {
   }}/>
 
       {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
-
+      <View style={{gap: 10}}>
       <Button title="Войти" onPress={onLogin} />
       <Button title="Регистрация" onPress={() => {
         const { router } = require("expo-router");
         router.push("/register");
       }} />
+      </View>
     </View>
   );
 }
