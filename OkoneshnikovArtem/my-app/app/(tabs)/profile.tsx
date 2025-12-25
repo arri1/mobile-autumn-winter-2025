@@ -49,7 +49,7 @@ export default function ProfileScreen() {
         <Text style={styles.notAuthTitle}>Вы не авторизованы</Text>
         <Text style={styles.notAuthText}>Войдите в систему, чтобы увидеть профиль</Text>
         <View style={styles.buttonGroup}>
-          <Button title="Войти" onPress={() => router.push('/auth/login')} />
+          <Button title="Войти" onPress={() => router.push('/(tabs)/login')} />
         </View>
         <View style={styles.buttonGroup}>
           <Button title="На главную" onPress={() => router.push('/(tabs)')} color="#666" />
@@ -145,14 +145,14 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#1a1a1a',
     alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#1a1a1a',
   },
   loadingText: {
     marginTop: 16,
@@ -163,18 +163,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#1a1a1a',
     padding: 20,
   },
   notAuthTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 16,
   },
   notAuthText: {
     fontSize: 16,
-    color: '#666',
+    color: '#999',
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -186,31 +186,31 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#999',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: '#2d2d2d',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
     width: '90%',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 16,
-    color: '#333',
+    color: '#fff',
     textAlign: 'center',
   },
   infoRow: {
@@ -224,11 +224,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#555',
+    color: '#aaa',
   },
   value: {
     fontSize: 16,
-    color: '#333',
+    color: '#fff',
   },
   roleText: {
     color: '#007AFF',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
-    color: '#444',
+    color: '#ccc',
     marginBottom: 8,
   },
 });

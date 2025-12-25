@@ -56,7 +56,7 @@ export default function RegisterScreen() {
     try {
       await register({ name, email, password });
       Alert.alert('Успех', 'Регистрация прошла успешно!', [
-        { text: 'OK', onPress: () => router.push('/auth/profile') }
+        { text: 'OK', onPress: () => router.push('/(tabs)/profile') }
       ]);
     } catch (error) {
       Alert.alert('Ошибка', error instanceof Error ? error.message : 'Не удалось зарегистрироваться');
@@ -89,7 +89,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Введите имя"
-            placeholderTextColor="#999"
+            placeholderTextColor="#666"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
@@ -101,7 +101,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Введите email"
-            placeholderTextColor="#999"
+            placeholderTextColor="#666"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -114,7 +114,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Введите пароль"
-            placeholderTextColor="#999"
+            placeholderTextColor="#666"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -125,7 +125,7 @@ export default function RegisterScreen() {
           <TextInput
             style={styles.input}
             placeholder="Повторите пароль"
-            placeholderTextColor="#999"
+            placeholderTextColor="#666"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
@@ -159,7 +159,7 @@ export default function RegisterScreen() {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Уже есть аккаунт?</Text>
-          <TouchableOpacity onPress={() => router.back()} disabled={isLoading}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/login')} disabled={isLoading}>
             <Text style={styles.linkText}>Войти</Text>
           </TouchableOpacity>
         </View>
@@ -171,7 +171,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#1a1a1a',
   },
   scrollContent: {
     flexGrow: 1,
@@ -186,48 +186,49 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#999',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: '#2d2d2d',
     borderRadius: 16,
     padding: 20,
     marginBottom: 30,
     width: '90%',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
     marginBottom: 16,
-    color: '#333',
+    color: '#fff',
     textAlign: 'center',
   },
   label: {
     fontSize: 14,
     marginBottom: 6,
     fontWeight: '600',
-    color: '#555',
+    color: '#aaa',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#555',
     borderRadius: 8,
     padding: 12,
     width: '100%',
     marginBottom: 16,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
+    color: '#fff',
   },
   buttonGroup: {
     marginBottom: 12,
@@ -248,12 +249,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   footerText: {
-    color: '#666',
+    color: '#999',
     fontSize: 16,
     marginBottom: 8,
   },
   linkText: {
-    color: '#007AFF',
+    color: '#0a84ff',
     fontSize: 16,
     fontWeight: '600',
     textDecorationLine: 'underline',
