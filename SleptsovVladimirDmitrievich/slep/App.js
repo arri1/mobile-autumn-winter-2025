@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
-import LoginScreen from './src/site/user/loginscreen';
-import RegisterScreen from './src/site/user/registerscreen';
+import LoginScreen from './src/site/User/LoginScreen';
+import RegisterScreen from './src/site/User/RegisterScreen';
 import RootTabs from './src/nav/root';
 import useAuthStore from './src/auth/auth';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
@@ -14,7 +14,7 @@ function AuthTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#0D0F14' },
+        headerStyle: { backgroundColor: '#222222ff'  },
         headerTintColor: '#E6E9EF',
         tabBarStyle: { display: 'none' },
         tabBarActiveTintColor: '#00ff00ff',
@@ -42,7 +42,6 @@ export default function App() {
     initializeAuth 
   } = useAuthStore();
 
-  // Инициализация аутентификации при запуске приложения
   useEffect(() => {
     initializeAuth();
   }, []);
@@ -60,10 +59,8 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" backgroundColor="#1a1a1a" />
       {isAuthenticated ? (
-        // Если аутентифицирован - показываем RootTabs
         <RootTabs />
       ) : (
-        // Если не аутентифицирован - показываем AuthTabs
         <AuthTabs />
       )}
     </NavigationContainer>
@@ -75,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0D0F14',
+    backgroundColor: '#1a1a1a',
   },
   loadingText: {
     color: '#E6E9EF',
