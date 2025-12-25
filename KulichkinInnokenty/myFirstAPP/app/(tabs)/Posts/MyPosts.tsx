@@ -6,6 +6,7 @@ import usePostStore from '@/store/postStore';
 import useAuthStore from '@/store/authStore';
 import useThemeStore from '@/store/themeStore';
 import { Post } from '@/types';
+import { H1 } from "../../../components/ui"
 
 export default function MyPostsScreen() {
   const { colors } = useThemeStore();
@@ -104,7 +105,7 @@ export default function MyPostsScreen() {
   return (
     <Container scrollable>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <H2 style={{ color: colors.textPrimary }}>Мои посты</H2>
+        <H1 weight="bold" style={{ color: colors.textPrimary}}>My posts</H1>
         <Button
           variant="primary"
           title={showCreateForm ? 'Отмена' : 'Создать пост'}
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 34,
     paddingBottom: 16,
     marginBottom: 16,
     borderBottomWidth: 1,

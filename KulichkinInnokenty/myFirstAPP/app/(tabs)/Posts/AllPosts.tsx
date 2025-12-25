@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Container, Card, H2, H3, Body, Caption } from '@/components/ui';
 import usePostStore from '@/store/postStore';
 import useThemeStore from '@/store/themeStore';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { H1 } from '../../../components/ui'
 
 export default function AllPostsScreen() {
   const { colors } = useThemeStore();
@@ -16,7 +17,7 @@ export default function AllPostsScreen() {
   return (
     <Container scrollable>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <H2 style={{ color: colors.textPrimary }}>Все посты</H2>
+        <H1 weight="bold" style={{ color: colors.textPrimary }}>Posts</H1>
       </View>
 
       <View
@@ -37,12 +38,13 @@ export default function AllPostsScreen() {
           onChangeText={setSearchQuery}
         />
         {searchQuery.length > 0 && (
-          <IconSymbol
-            name="xmark.circle.fill"
-            size={20}
-            color={colors.textTertiary}
-            onPress={() => setSearchQuery('')}
-          />
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <IconSymbol
+              name="xmark.circle.fill"
+              size={20}
+              color={colors.textTertiary}
+            />
+          </TouchableOpacity>
         )}
       </View>
 
@@ -80,6 +82,7 @@ export default function AllPostsScreen() {
 
 const styles = StyleSheet.create({
   header: {
+    paddingTop: 34,
     paddingBottom: 16,
     marginBottom: 16,
     borderBottomWidth: 1,
