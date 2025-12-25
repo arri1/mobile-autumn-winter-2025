@@ -6,12 +6,14 @@ import Case from './nav_case'
 import Counter from '../useState/counter'
 import Switcher from '../useEffect/switcher'
 import Sorter from '../useMemo/sorter'
+import Post from '../post/post'
 
 export type RootStackParamList = {
   Case: undefined;
   Counter: undefined;
   Switcher: undefined;
   Sorter: undefined;
+  Post: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -24,6 +26,7 @@ export default function Navigation() {
         <Stack.Screen name="Counter" component={Counter} />
         <Stack.Screen name="Switcher" component={Switcher} />
         <Stack.Screen name="Sorter" component={Sorter} />
+        <Stack.Screen name="Post" component={Post}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
