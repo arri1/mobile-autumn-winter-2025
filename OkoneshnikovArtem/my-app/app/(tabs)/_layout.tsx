@@ -24,7 +24,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/Home.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
 				}}
@@ -36,7 +36,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/R.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 10, height: 17, tintColor: color }}
 						/>
 					),
 				}}
@@ -48,7 +48,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/L.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 10, height: 17, tintColor: color }}
 						/>
 					),
 				}}
@@ -60,7 +60,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/User.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
 				}}
@@ -68,49 +68,49 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="UseEffect"
 				options={{
+					title: "UseEffect",
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/folder.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
-					href: null,
 				}}
 			/>
 			<Tabs.Screen
 				name="UseMemo"
 				options={{
+					title: "UseMemo",
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/folder.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
-					href: null,
 				}}
 			/>
 			<Tabs.Screen
 				name="UseState"
 				options={{
+					title: "UseState",
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/folder.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
-					href: null,
 				}}
 			/>
 			<Tabs.Screen
 				name="Zustand"
 				options={{
+					title: "Zustand",
 					tabBarIcon: ({ color }) => (
 						<Image
 							source={require('@/assets/images/folder.svg')}
-							style={{ width: 24, height: 24, tintColor: color }}
+							style={{ width: 16, height: 16, tintColor: color }}
 						/>
 					),
-					href: null,
 				}}
 			/>
 		</Tabs>
