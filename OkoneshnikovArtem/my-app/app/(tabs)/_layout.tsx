@@ -2,10 +2,10 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Image } from "expo-image";
 
-import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-
+import Feather from '@expo/vector-icons/Feather';
+import { HapticTab } from "@/components/haptic-tab";
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
 
@@ -66,50 +66,37 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="UseEffect"
+				name="UseEffect/useEffect"
 				options={{
 					title: "UseEffect",
-					tabBarIcon: ({ color }) => (
-						<Image
-							source={require('@/assets/images/folder.svg')}
-							style={{ width: 16, height: 16, tintColor: color }}
-						/>
-					),
+					tabBarIcon: ({ color }) =>
+						<Feather name="folder" size={24} color={color} />
 				}}
 			/>
 			<Tabs.Screen
-				name="UseMemo"
+				name="UseMemo/useMemo"
 				options={{
 					title: "UseMemo",
 					tabBarIcon: ({ color }) => (
-						<Image
-							source={require('@/assets/images/folder.svg')}
-							style={{ width: 16, height: 16, tintColor: color }}
-						/>
+						<Feather name="folder" size={24} color={color} />
 					),
 				}}
 			/>
 			<Tabs.Screen
-				name="UseState"
+				name="UseState/useState"
 				options={{
 					title: "UseState",
 					tabBarIcon: ({ color }) => (
-						<Image
-							source={require('@/assets/images/folder.svg')}
-							style={{ width: 16, height: 16, tintColor: color }}
-						/>
+						<Feather name="folder" size={24} color={color} />
 					),
 				}}
 			/>
 			<Tabs.Screen
-				name="Zustand"
+				name="Zustand/zustand"
 				options={{
 					title: "Zustand",
 					tabBarIcon: ({ color }) => (
-						<Image
-							source={require('@/assets/images/folder.svg')}
-							style={{ width: 16, height: 16, tintColor: color }}
-						/>
+						<Feather name="folder" size={24} color={color} />
 					),
 				}}
 			/>
