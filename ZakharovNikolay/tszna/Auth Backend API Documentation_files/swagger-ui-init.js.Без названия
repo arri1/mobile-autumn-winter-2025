@@ -1,0 +1,1551 @@
+
+window.onload = function() {
+  // Build a system
+  var url = window.location.search.match(/url=([^&]+)/);
+  if (url && url.length > 1) {
+    url = decodeURIComponent(url[1]);
+  } else {
+    url = window.location.origin;
+  }
+  var options = {
+  "swaggerDoc": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Auth Backend API",
+      "version": "1.0.0",
+      "description": "API документация для Authentication Backend с использованием Prisma, PostgreSQL и Node.js",
+      "contact": {
+        "name": "API Support",
+        "email": "admin@kit-imi.info"
+      },
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "servers": [
+      {
+        "url": "https://cloud.kit-imi.info/api",
+        "description": "Production server"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "description": "ACCESS TOKEN (Токен доступа) - используется для авторизации запросов\n\nЧто это: JWT токен, который выдается при регистрации или входе в систему\nДля чего: Авторизация запросов к защищенным эндпоинтам (создание поста, получение профиля и т.д.)\nКак использовать: Введите токен в формате: Bearer {ваш_accessToken}\nСрок действия: 15 минут\nЧто делать при истечении: Используйте refresh token для получения нового через /auth/refresh\n\nГде взять токен: Получаете при регистрации (/auth/register) или входе (/auth/login) в поле data.accessToken"
+        }
+      },
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Уникальный идентификатор пользователя"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email пользователя"
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "description": "Имя пользователя"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "USER",
+                "ADMIN"
+              ],
+              "description": "Роль пользователя"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Дата создания"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Дата обновления"
+            }
+          }
+        },
+        "RegisterRequest": {
+          "type": "object",
+          "required": [
+            "email",
+            "password"
+          ],
+          "description": "Данные для регистрации нового пользователя. После успешной регистрации возвращаются JWT токены (access и refresh).",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email пользователя. Должен быть валидным и уникальным в системе.",
+              "example": "user@example.com",
+              "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+            },
+            "password": {
+              "type": "string",
+              "format": "password",
+              "minLength": 6,
+              "description": "Пароль пользователя. Минимум 6 символов. Рекомендуется использовать сложный пароль с буквами, цифрами и специальными символами.",
+              "example": "password123",
+              "pattern": "^.{6,}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 50,
+              "description": "Имя пользователя (опционально). Должно быть от 2 до 50 символов, если указано.",
+              "example": "John Doe"
+            }
+          },
+          "example": {
+            "email": "user@example.com",
+            "password": "password123",
+            "name": "John Doe"
+          }
+        },
+        "LoginRequest": {
+          "type": "object",
+          "required": [
+            "email",
+            "password"
+          ],
+          "description": "Данные для входа в систему. При успешной аутентификации возвращаются JWT токены. Старые refresh токены автоматически удаляются.",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email зарегистрированного пользователя. Должен существовать в системе.",
+              "example": "user@example.com",
+              "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+            },
+            "password": {
+              "type": "string",
+              "format": "password",
+              "description": "Пароль пользователя. Проверяется сравнением хеша с сохраненным в базе данных.",
+              "example": "password123"
+            }
+          },
+          "example": {
+            "email": "user@example.com",
+            "password": "password123"
+          }
+        },
+        "RefreshTokenRequest": {
+          "type": "object",
+          "required": [
+            "refreshToken"
+          ],
+          "description": "Запрос на обновление access token с использованием refresh token.\n\nREFRESH TOKEN - что это и для чего:\n• Это долгоживущий токен (7 дней), полученный при регистрации или входе\n• Используется для получения нового access token без повторного ввода пароля\n• Хранится в базе данных и может быть отозван\n\nКак работает:\n1. Отправляете refresh token в теле запроса\n2. Старый refresh token удаляется из базы данных\n3. Выдается новая пара токенов (новый access + новый refresh)\n4. Сохраните новый refresh token - старый больше недействителен!",
+          "properties": {
+            "refreshToken": {
+              "type": "string",
+              "description": "REFRESH TOKEN - токен для обновления access token\n\nОткуда взять: Получаете при регистрации (/auth/register) или входе (/auth/login) в поле data.refreshToken\nСрок действия: 7 дней\nЧто происходит: Старый refresh token удаляется, выдается новая пара токенов\nВажно: Сохраните новый refresh token после обновления!",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+            }
+          },
+          "example": {
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+          }
+        },
+        "LogoutRequest": {
+          "type": "object",
+          "properties": {
+            "refreshToken": {
+              "type": "string",
+              "description": "Refresh токен для удаления (опционально)",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        },
+        "AuthResponse": {
+          "type": "object",
+          "description": "Ответ при успешной регистрации или входе в систему. Содержит данные пользователя и JWT токены для авторизации.",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "description": "Флаг успешности операции",
+              "example": true
+            },
+            "message": {
+              "type": "string",
+              "description": "Сообщение о результате операции",
+              "example": "Login successful"
+            },
+            "data": {
+              "type": "object",
+              "description": "Данные ответа, содержащие информацию о пользователе и токены",
+              "properties": {
+                "user": {
+                  "$ref": "#/components/schemas/User",
+                  "description": "Данные пользователя (без пароля)"
+                },
+                "accessToken": {
+                  "type": "string",
+                  "description": "ACCESS TOKEN (Токен доступа) - используйте для авторизации запросов к API\n\nЧто это: JWT токен, подтверждающий вашу личность\nДля чего: Авторизация запросов к защищенным эндпоинтам (создание поста, получение профиля и т.д.)\nКак использовать: Добавьте в заголовок запроса: Authorization: Bearer {ваш_accessToken}\nСрок действия: 15 минут\nЧто делать при истечении: Используйте refresh token для получения нового через /auth/refresh",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjgxMDB9.signature"
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "description": "REFRESH TOKEN (Токен обновления) - используйте для получения нового access token\n\nЧто это: Долгоживущий токен для обновления access token без повторного входа\nДля чего: Получение нового access token при его истечении (через 15 минут)\nКак использовать: Отправьте на POST /auth/refresh в теле запроса: {\"refreshToken\": \"ваш_refreshToken\"}\nСрок действия: 7 дней\nВажно: При использовании старый refresh token удаляется, выдается новая пара токенов\nПри выходе (logout) refresh token удаляется из базы данных",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+                }
+              }
+            }
+          },
+          "example": {
+            "success": true,
+            "message": "Login successful",
+            "data": {
+              "user": {
+                "id": "clx1234567890",
+                "email": "user@example.com",
+                "name": "John Doe",
+                "role": "USER",
+                "createdAt": "2024-01-01T00:00:00.000Z",
+                "updatedAt": "2024-01-01T00:00:00.000Z"
+              },
+              "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjgxMDB9.signature",
+              "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+            }
+          }
+        },
+        "RefreshTokenResponse": {
+          "type": "object",
+          "description": "Ответ при успешном обновлении токенов. Возвращает новую пару токенов (access + refresh). Старый refresh token удаляется.",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "example": true
+            },
+            "message": {
+              "type": "string",
+              "example": "Tokens refreshed successfully"
+            },
+            "data": {
+              "type": "object",
+              "description": "Новая пара токенов для авторизации",
+              "properties": {
+                "accessToken": {
+                  "type": "string",
+                  "description": "НОВЫЙ ACCESS TOKEN - используйте для авторизации запросов\n\nСрок действия: 15 минут\nИспользование: Добавьте в заголовок: Authorization: Bearer {новый_accessToken}\nВажно: Замените старый access token на новый во всех последующих запросах",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjgxMDB9.signature"
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "description": "НОВЫЙ REFRESH TOKEN - используйте для следующего обновления токенов\n\nСрок действия: 7 дней\nИспользование: Отправьте на POST /auth/refresh при истечении access token\nВАЖНО: Сохраните новый refresh token - старый больше недействителен!\nИспользуйте этот токен для следующего обновления access token",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+                }
+              }
+            }
+          },
+          "example": {
+            "success": true,
+            "message": "Tokens refreshed successfully",
+            "data": {
+              "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjgxMDB9.signature",
+              "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+            }
+          }
+        },
+        "UsersResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "example": true
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                },
+                "pagination": {
+                  "type": "object",
+                  "properties": {
+                    "currentPage": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "example": 50
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "hasNext": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "hasPrev": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ErrorResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "example": false
+            },
+            "message": {
+              "type": "string",
+              "example": "Error message"
+            }
+          }
+        },
+        "HealthResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "example": true
+            },
+            "message": {
+              "type": "string",
+              "example": "Server is running"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2024-01-01T00:00:00.000Z"
+            }
+          }
+        },
+        "Post": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Уникальный идентификатор поста"
+            },
+            "title": {
+              "type": "string",
+              "description": "Заголовок поста",
+              "example": "My First Post"
+            },
+            "content": {
+              "type": "string",
+              "description": "Содержимое поста",
+              "example": "This is the content of my post..."
+            },
+            "published": {
+              "type": "boolean",
+              "description": "Опубликован ли пост",
+              "example": true
+            },
+            "authorId": {
+              "type": "string",
+              "description": "ID автора поста"
+            },
+            "author": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Дата создания"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Дата обновления"
+            }
+          }
+        },
+        "CreatePostRequest": {
+          "type": "object",
+          "required": [
+            "title",
+            "content"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "description": "Заголовок поста",
+              "example": "My First Post"
+            },
+            "content": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Содержимое поста",
+              "example": "This is the content of my post..."
+            },
+            "published": {
+              "type": "boolean",
+              "default": false,
+              "description": "Опубликовать ли пост сразу",
+              "example": false
+            }
+          }
+        },
+        "UpdatePostRequest": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "description": "Заголовок поста",
+              "example": "Updated Post Title"
+            },
+            "content": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Содержимое поста",
+              "example": "Updated content..."
+            },
+            "published": {
+              "type": "boolean",
+              "description": "Статус публикации",
+              "example": true
+            }
+          }
+        },
+        "PostsResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "example": true
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "posts": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  }
+                },
+                "pagination": {
+                  "type": "object",
+                  "properties": {
+                    "currentPage": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "example": 50
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "hasNext": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "hasPrev": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tags": [
+      {
+        "name": "Auth",
+        "description": "Эндпоинты для аутентификации и авторизации"
+      },
+      {
+        "name": "Posts",
+        "description": "Эндпоинты для работы с постами"
+      },
+      {
+        "name": "Health",
+        "description": "Проверка состояния сервера"
+      },
+      {
+        "name": "WebRTC",
+        "description": "WebRTC конфигурация для видеозвонков"
+      }
+    ],
+    "paths": {
+      "/auth/register": {
+        "post": {
+          "summary": "Регистрация нового пользователя",
+          "description": "Создает нового пользователя в системе и возвращает JWT токены для аутентификации.\n\n**Требования к данным:**\n- Email должен быть валидным и уникальным\n- Пароль должен содержать минимум 6 символов\n- Имя пользователя опционально (2-50 символов)\n\n**После успешной регистрации:**\n- Пользователь автоматически получает access и refresh токены\n- Refresh токен сохраняется в базе данных\n- Access токен действителен 15 минут\n- Refresh токен действителен 7 дней\n\n**Роль по умолчанию:** USER\n",
+          "tags": [
+            "Auth"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterRequest"
+                },
+                "examples": {
+                  "with_name": {
+                    "summary": "Регистрация с именем пользователя",
+                    "description": "Полный пример регистрации с указанием имени",
+                    "value": {
+                      "email": "user@example.com",
+                      "password": "password123",
+                      "name": "John Doe"
+                    }
+                  },
+                  "without_name": {
+                    "summary": "Регистрация без имени",
+                    "description": "Минимальный пример регистрации (только email и пароль)",
+                    "value": {
+                      "email": "test@example.com",
+                      "password": "securepass456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Пользователь успешно зарегистрирован.\n\n**Возвращает:**\n- Данные пользователя (без пароля)\n- Access токен (JWT) для авторизации запросов\n- Refresh токен для обновления access токена\n",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthResponse"
+                  },
+                  "examples": {
+                    "success": {
+                      "summary": "Успешная регистрация",
+                      "value": {
+                        "success": true,
+                        "message": "User registered successfully",
+                        "data": {
+                          "user": {
+                            "id": "clx1234567890",
+                            "email": "user@example.com",
+                            "name": "John Doe",
+                            "role": "USER",
+                            "createdAt": "2024-01-01T00:00:00.000Z"
+                          },
+                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Ошибка валидации данных или пользователь с таким email уже существует.\n\n**Возможные причины:**\n- Невалидный формат email\n- Пароль короче 6 символов\n- Имя пользователя не соответствует требованиям (если указано)\n- Email уже зарегистрирован в системе\n",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  },
+                  "examples": {
+                    "validation_error": {
+                      "summary": "Ошибка валидации",
+                      "value": {
+                        "success": false,
+                        "message": "Validation failed",
+                        "errors": [
+                          {
+                            "field": "email",
+                            "message": "Please provide a valid email"
+                          }
+                        ]
+                      }
+                    },
+                    "user_exists": {
+                      "summary": "Пользователь уже существует",
+                      "value": {
+                        "success": false,
+                        "message": "User with this email already exists"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Внутренняя ошибка сервера",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "summary": "Вход в систему",
+          "description": "Аутентифицирует пользователя по email и паролю, возвращает JWT токены для доступа к защищенным эндпоинтам.\n\n**Процесс аутентификации:**\n1. Проверяется существование пользователя с указанным email\n2. Проверяется корректность пароля (сравнение хеша)\n3. Удаляются все старые refresh токены пользователя\n4. Генерируются новые access и refresh токены\n5. Refresh токен сохраняется в базе данных\n\n**Безопасность:**\n- Пароли хранятся в захешированном виде (bcrypt)\n- При неверных данных возвращается общая ошибка (без указания, что именно неверно)\n- Старые refresh токены автоматически удаляются при новом входе\n\n**Срок действия токенов:**\n- Access токен: 15 минут\n- Refresh токен: 7 дней\n",
+          "tags": [
+            "Auth"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginRequest"
+                },
+                "examples": {
+                  "regular_user": {
+                    "summary": "Вход обычного пользователя",
+                    "description": "Пример входа пользователя с ролью USER",
+                    "value": {
+                      "email": "user@example.com",
+                      "password": "password123"
+                    }
+                  },
+                  "admin_user": {
+                    "summary": "Вход администратора",
+                    "description": "Пример входа пользователя с ролью ADMIN",
+                    "value": {
+                      "email": "admin@example.com",
+                      "password": "admin123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Успешный вход в систему.\n\n**Возвращает:**\n- Данные пользователя (id, email, name, role, даты создания/обновления)\n- Access токен (JWT) - использовать в заголовке Authorization: Bearer {token}\n- Refresh токен - использовать для обновления access токена через /auth/refresh\n\n**Использование токенов:**\n- Access токен добавляется в заголовок: `Authorization: Bearer {accessToken}`\n- При истечении access токена используйте refresh токен для получения нового\n",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthResponse"
+                  },
+                  "examples": {
+                    "success": {
+                      "summary": "Успешный вход",
+                      "value": {
+                        "success": true,
+                        "message": "Login successful",
+                        "data": {
+                          "user": {
+                            "id": "clx1234567890",
+                            "email": "user@example.com",
+                            "name": "John Doe",
+                            "role": "USER",
+                            "createdAt": "2024-01-01T00:00:00.000Z",
+                            "updatedAt": "2024-01-01T00:00:00.000Z"
+                          },
+                          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQwNjgxMDB9.signature",
+                          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbHgxMjM0NTY3ODkwIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjE3MDQ2NzIwMDB9.signature"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Ошибка валидации входных данных",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  },
+                  "examples": {
+                    "validation_error": {
+                      "summary": "Ошибка валидации",
+                      "value": {
+                        "success": false,
+                        "message": "Validation failed",
+                        "errors": [
+                          {
+                            "field": "email",
+                            "message": "Please provide a valid email"
+                          },
+                          {
+                            "field": "password",
+                            "message": "Password is required"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Ошибка аутентификации - неверный email или пароль.\n\n**Примечание:** Для безопасности не указывается, что именно неверно (email или пароль).\n\n**Возможные причины:**\n- Пользователь с таким email не существует\n- Неверный пароль\n- Учетная запись была удалена\n",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  },
+                  "examples": {
+                    "invalid_credentials": {
+                      "summary": "Неверные учетные данные",
+                      "value": {
+                        "success": false,
+                        "message": "Invalid email or password"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Внутренняя ошибка сервера",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/refresh": {
+        "post": {
+          "summary": "Обновление access токена",
+          "tags": [
+            "Auth"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Токены успешно обновлены",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RefreshTokenResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Неверный или истекший refresh токен",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/logout": {
+        "post": {
+          "summary": "Выход из системы",
+          "tags": [
+            "Auth"
+          ],
+          "requestBody": {
+            "required": false,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Успешный выход",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Logout successful"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/profile": {
+        "get": {
+          "summary": "Получение профиля текущего пользователя",
+          "tags": [
+            "Auth"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Профиль пользователя",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "user": {
+                            "$ref": "#/components/schemas/User"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/users": {
+        "get": {
+          "summary": "Получение списка пользователей (с пагинацией)",
+          "tags": [
+            "Auth"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "page",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              },
+              "description": "Номер страницы"
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              },
+              "description": "Количество элементов на странице"
+            },
+            {
+              "in": "query",
+              "name": "role",
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "USER",
+                  "ADMIN"
+                ]
+              },
+              "description": "Фильтр по роли"
+            },
+            {
+              "in": "query",
+              "name": "search",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Поиск по имени или email"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Список пользователей",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UsersResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/health": {
+        "get": {
+          "summary": "Проверка состояния сервера",
+          "tags": [
+            "Health"
+          ],
+          "responses": {
+            "200": {
+              "description": "Сервер работает",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HealthResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/posts": {
+        "get": {
+          "summary": "Получение списка постов (с пагинацией и фильтрацией)",
+          "description": "Публичный эндпоинт. По умолчанию возвращает только опубликованные посты. Авторизованные пользователи могут видеть свои неопубликованные посты.",
+          "tags": [
+            "Posts"
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "page",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              },
+              "description": "Номер страницы"
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              },
+              "description": "Количество элементов на странице"
+            },
+            {
+              "in": "query",
+              "name": "published",
+              "schema": {
+                "type": "boolean"
+              },
+              "description": "Фильтр по статусу публикации (по умолчанию только опубликованные)"
+            },
+            {
+              "in": "query",
+              "name": "authorId",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Фильтр по ID автора"
+            },
+            {
+              "in": "query",
+              "name": "search",
+              "schema": {
+                "type": "string"
+              },
+              "description": "Поиск по заголовку или содержимому"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Список постов",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostsResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Создание нового поста",
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Пост успешно создан",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Post created successfully"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "post": {
+                            "$ref": "#/components/schemas/Post"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Ошибка валидации",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/posts/my": {
+        "get": {
+          "summary": "Получение постов текущего пользователя",
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "page",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              },
+              "description": "Номер страницы"
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              },
+              "description": "Количество элементов на странице"
+            },
+            {
+              "in": "query",
+              "name": "published",
+              "schema": {
+                "type": "boolean"
+              },
+              "description": "Фильтр по статусу публикации"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Список постов пользователя",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostsResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/posts/{id}": {
+        "get": {
+          "summary": "Получение поста по ID",
+          "description": "Публичный эндпоинт. Неопубликованные посты доступны только автору или админу.",
+          "tags": [
+            "Posts"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID поста"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Пост найден",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "post": {
+                            "$ref": "#/components/schemas/Post"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Доступ запрещен (неопубликованный пост)",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Пост не найден",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "summary": "Обновление поста",
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID поста"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Пост успешно обновлен",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Post updated successfully"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "post": {
+                            "$ref": "#/components/schemas/Post"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Ошибка валидации",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Нет прав на обновление поста",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Пост не найден",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Удаление поста",
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID поста"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Пост успешно удален",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Post deleted successfully"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Нет прав на удаление поста",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Пост не найден",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/webrtc/ice-servers": {
+        "get": {
+          "summary": "Получение конфигурации STUN/TURN серверов для WebRTC",
+          "tags": [
+            "WebRTC"
+          ],
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Конфигурация ICE серверов",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "iceServers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "urls": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "username": {
+                                  "type": "string"
+                                },
+                                "credential": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Не авторизован",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Ошибка сервера",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ErrorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "customOptions": {}
+};
+  url = options.swaggerUrl || url
+  var urls = options.swaggerUrls
+  var customOptions = options.customOptions
+  var spec1 = options.swaggerDoc
+  var swaggerOptions = {
+    spec: spec1,
+    url: url,
+    urls: urls,
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  }
+  for (var attrname in customOptions) {
+    swaggerOptions[attrname] = customOptions[attrname];
+  }
+  var ui = SwaggerUIBundle(swaggerOptions)
+
+  if (customOptions.oauth) {
+    ui.initOAuth(customOptions.oauth)
+  }
+
+  if (customOptions.preauthorizeApiKey) {
+    const key = customOptions.preauthorizeApiKey.authDefinitionKey;
+    const value = customOptions.preauthorizeApiKey.apiKeyValue;
+    if (!!key && !!value) {
+      const pid = setInterval(() => {
+        const authorized = ui.preauthorizeApiKey(key, value);
+        if(!!authorized) clearInterval(pid);
+      }, 500)
+
+    }
+  }
+
+  if (customOptions.authAction) {
+    ui.authActions.authorize(customOptions.authAction)
+  }
+
+  window.ui = ui
+}
