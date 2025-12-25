@@ -1,20 +1,341 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StatusBar, 
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+  Alert
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuthStore } from './src/store/authStore';
+import { useAppStore } from './src/store/AppStore';
+import UseStateScreen from './src/screens/UseStateScreen';
+import UseEffectScreen from './src/screens/UseEffectScreen';
+import UseMemoScreen from './src/screens/UseMemoScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import PostsScreen from './src/screens/PostsScreen';
+import CreatePostScreen from './src/screens/CreatePostScreen';
+import PostDetailScreen from './src/screens/PostDetailScreen';
+import { AppStyles } from './src/styles/AppStyles';
+
+const { width, height } = Dimensions.get('window');
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+  const { 
+    user, 
+    isAuthenticated, 
+    activeScreen,
+    setActiveScreen,
+    initialize,
+    logout
+  } = useAuthStore();
+  
+  const { setActiveScreen: setUIScreen } = useAppStore();
+
+  // Проверка авторизации при загрузке
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  // Синхронизируем экраны между хранилищами
+  useEffect(() => {
+    if (activeScreen) {
+      setUIScreen(activeScreen);
+    }
+  }, [activeScreen]);
+
+  // Если пользователь не авторизован, показываем экран логина
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
+  const renderScreen = () => {
+  switch (activeScreen) {
+    case 'usestate':
+      return <UseStateScreen />;
+    case 'useeffect':
+      return <UseEffectScreen />;
+    case 'usememo':
+      return <UseMemoScreen />;
+    case 'profile':
+      return <ProfileScreen onLogout={logout} />;
+    case 'posts':
+      return <PostsScreen />;
+    case 'createPost':
+      return <CreatePostScreen />;
+    case 'postDetail':
+      return <PostDetailScreen />;
+    case 'editPost':
+      return <CreatePostScreen />;
+    default:
+      return renderHome();
+  }
+};
+
+  const renderHome = () => (
+    <View style={AppStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
+      <SafeAreaView style={AppStyles.safeArea}>
+        <ScrollView showsVerticalScrollIndicator={false} style={AppStyles.scrollView}>
+          {/* Хедер с информацией о пользователе */}
+          <View style={AppStyles.header}>
+            <View style={AppStyles.systemInfo}>
+              <Text style={AppStyles.systemTitle}>REACT NATIVE HOOKS</Text>
+              <Text style={AppStyles.systemSubtitle}>v2.0.5 | {user?.name || user?.username || 'User'}</Text>
+            </View>
+            <TouchableOpacity 
+              style={[AppStyles.systemStatus, { flexDirection: 'row', alignItems: 'center' }]}
+              onPress={() => setActiveScreen('profile')}
+              activeOpacity={0.7}
+            >
+              <View style={AppStyles.statusDot}></View>
+              <Text style={AppStyles.statusText}>{user?.role?.toUpperCase() || 'USER'}</Text>
+              <Ionicons name="person" size={16} color="#00d4ff" style={{ marginLeft: 8 }} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Приветствие */}
+          <View style={{ paddingHorizontal: 24, marginTop: 20 }}>
+            <View style={{ 
+              backgroundColor: 'rgba(0, 212, 255, 0.05)', 
+              borderRadius: 16, 
+              padding: 20,
+              borderWidth: 1,
+              borderColor: 'rgba(0, 212, 255, 0.1)',
+              marginBottom: 30 
+            }}>
+              <Text style={{ 
+                color: '#00d4ff', 
+                fontSize: 18, 
+                fontWeight: 'bold',
+                marginBottom: 8 
+              }}>
+                Welcome, {user?.name || user?.username}!
+              </Text>
+              <Text style={{ 
+                color: 'rgba(255, 255, 255, 0.7)', 
+                fontSize: 14, 
+                lineHeight: 20 
+              }}>
+                React Native Hooks — киберпанк-интерфейс для изучения React Hooks. Выберите хук для изучения:
+              </Text>
+            </View>
+          </View>
+
+          {/* Список хуков */}
+          <View style={{ paddingHorizontal: 24 }}>
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('usestate')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="git-branch" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>useState</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Управление состоянием компонентов</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('useeffect')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="infinite" size={32} color="#ff2a6d" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#ff2a6d', fontSize: 20, fontWeight: 'bold' }}>useEffect</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Побочные эффекты и жизненный цикл</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('usememo')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="flash" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>useMemo</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Оптимизация вычислений и кэширование</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+
+            {/* Посты */}
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginBottom: 16
+              }]}
+              onPress={() => setActiveScreen('posts')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="document-text" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>Посты</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Блог платформы и публикации</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+
+            {/* Профиль пользователя */}
+            <TouchableOpacity 
+              style={[AppStyles.dockIcon, { 
+                width: '100%', 
+                height: 80, 
+                flexDirection: 'row', 
+                paddingHorizontal: 20,
+                marginTop: 20
+              }]}
+              onPress={() => setActiveScreen('profile')}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person" size={32} color="#00d4ff" />
+              <View style={{ marginLeft: 20, flex: 1 }}>
+                <Text style={{ color: '#00d4ff', fontSize: 20, fontWeight: 'bold' }}>Profile</Text>
+                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, marginTop: 4 }}>Управление аккаунтом и настройки</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color="rgba(255, 255, 255, 0.3)" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Пробел для нижней навигации */}
+          <View style={AppStyles.bottomSpacer}></View>
+        </ScrollView>
+      </SafeAreaView>
+
+      {/* Нижняя док-панель */}
+      <View style={AppStyles.dockContainer}>
+        <View style={AppStyles.dock}>
+          {/* Главный экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('home')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="home" size={24} color={activeScreen === 'home' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'home' && AppStyles.dockTextActive]}>
+              Home
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useState экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('usestate')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="git-branch" size={24} color={activeScreen === 'usestate' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usestate' && AppStyles.dockTextActive]}>
+              useState
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useEffect экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('useeffect')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="infinite" size={24} color={activeScreen === 'useeffect' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'useeffect' && AppStyles.dockTextActive]}>
+              useEffect
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* useMemo экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('usememo')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="flash" size={24} color={activeScreen === 'usememo' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'usememo' && AppStyles.dockTextActive]}>
+              useMemo
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Посты экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('posts')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="document-text" size={24} color={activeScreen === 'posts' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'posts' && AppStyles.dockTextActive]}>
+              Посты
+            </Text>
+          </TouchableOpacity>
+
+          {/* Разделитель */}
+          <View style={AppStyles.dockDivider}></View>
+
+          {/* Profile экран */}
+          <TouchableOpacity 
+            style={AppStyles.dockItem}
+            onPress={() => setActiveScreen('profile')}
+            activeOpacity={0.7}
+          >
+            <View style={AppStyles.dockIcon}>
+              <Ionicons name="person" size={24} color={activeScreen === 'profile' ? '#00d4ff' : '#ffffff'} />
+            </View>
+            <Text style={[AppStyles.dockText, activeScreen === 'profile' && AppStyles.dockTextActive]}>
+              Profile
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  return renderScreen();
+}
