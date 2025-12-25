@@ -1,63 +1,90 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from './store/authStore';
+import AuthProvider from './components/AuthProvider';
 import UseStateLab from './screens/UseState';
 import UseEffectLab from './screens/UseEffect';
 import UseMemoLab from './screens/UseMemo';
 import LoginScreen from './screens/Login';
 import RegisterScreen from './screens/Register';
-import ZustandEditScreen from './screens/ZustandEdit';
-import ZustandViewScreen from './screens/ZustandView';
+import ZustandScreen from './screens/Zustand';
+import PostsScreen from './screens/posts/Posts';
+import PostDetailScreen from './screens/posts/PostDetail';
+import CreatePostScreen from './screens/posts/CreatePost';
+import EditPostScreen from './screens/posts/EditPost';
+import LogoutScreen from './screens/Logout';
+
+// Импорт иконок
+const useStateIcon = require('./images/usestate.png');
+const useEffectIcon = require('./images/useeffect.png');
+const useMemoIcon = require('./images/usememo.png');
+const zustandIcon = require('./images/zustand.png');
+const postsIcon = require('./images/posts.png');
+const exitIcon = require('./images/exit.png');
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const PostsStack = createNativeStackNavigator();
 
-function HomeScreen() {
-  const logout = useAuthStore((state) => state.logout);
-  const user = useAuthStore((state) => state.user);
-
+function PostsNavigator() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Главная страница</Text>
-      {user && (
-        <Text style={styles.userInfo}>Привет, {user.name || user.email}!</Text>
-      )}
-      <Text style={styles.subtitle}>Используйте нижнее меню для навигации</Text>
-      <Button title="Выйти" onPress={logout} />
-      <StatusBar style="auto" />
-    </View>
+    <PostsStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#f5f5f5',
+        },
+      }}
+    >
+      <PostsStack.Screen 
+        name="Posts" 
+        component={PostsScreen}
+        options={{ title: 'Посты' }}
+      />
+      <PostsStack.Screen 
+        name="PostDetail" 
+        component={PostDetailScreen}
+        options={{ title: 'Детали поста' }}
+      />
+      <PostsStack.Screen 
+        name="CreatePost" 
+        component={CreatePostScreen}
+        options={{ title: 'Создать пост' }}
+      />
+      <PostsStack.Screen 
+        name="EditPost" 
+        component={EditPostScreen}
+        options={{ title: 'Редактировать пост' }}
+      />
+    </PostsStack.Navigator>
   );
 }
 
 function MainTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="UseState"
       screenOptions={{
         tabBarActiveTintColor: '#0000ff',
         tabBarInactiveTintColor: '#666',
-        tabBarIcon: () => null,
         headerStyle: {
           backgroundColor: '#f5f5f5',
         },
       }}
     >
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{ 
-          title: 'Главная',
-          tabBarLabel: 'Главная',
-        }}
-      />
-      <Tab.Screen 
         name="UseState" 
         component={UseStateLab}
         options={{ 
           title: 'UseState Lab',
           tabBarLabel: 'UseState',
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={useStateIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
         }}
       />
       <Tab.Screen 
@@ -66,6 +93,12 @@ function MainTabs() {
         options={{ 
           title: 'UseEffect Lab',
           tabBarLabel: 'UseEffect',
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={useEffectIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
         }}
       />
       <Tab.Screen 
@@ -74,22 +107,55 @@ function MainTabs() {
         options={{ 
           title: 'UseMemo Lab',
           tabBarLabel: 'UseMemo',
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={useMemoIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
         }}
       />
       <Tab.Screen 
-        name="ZustandEdit" 
-        component={ZustandEditScreen}
+        name="Zustand" 
+        component={ZustandScreen}
         options={{ 
-          title: 'Zustand Edit',
-          tabBarLabel: 'Zustand Edit',
+          title: 'Zustand',
+          tabBarLabel: 'Zustand',
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={zustandIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
         }}
       />
       <Tab.Screen 
-        name="ZustandView" 
-        component={ZustandViewScreen}
+        name="Posts" 
+        component={PostsNavigator}
         options={{ 
-          title: 'Zustand View',
-          tabBarLabel: 'Zustand View',
+          title: 'Посты',
+          tabBarLabel: 'Посты',
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={postsIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Logout" 
+        component={LogoutScreen}
+        options={{ 
+          title: 'Logout',
+          tabBarLabel: 'Logout',
+          tabBarIcon: ({ color, focused }) => (
+            <Image 
+              source={exitIcon} 
+              style={{ width: 24, height: 24, opacity: focused ? 1 : 0.6 }} 
+            />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -119,7 +185,7 @@ function AuthStack() {
   );
 }
 
-export default function App() {
+function AppContent() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
@@ -129,27 +195,11 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  userInfo: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: '#0000ff',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-});
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+

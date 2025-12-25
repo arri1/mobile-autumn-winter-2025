@@ -61,7 +61,7 @@ export default function RegisterScreen({ navigation }: any) {
         style={styles.link}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text style={styles.linkText}>Уже есть аккаунт? Войти</Text>
+        <Text style={styles.linkText}>Войти</Text>
       </TouchableOpacity>
     </View>
   );

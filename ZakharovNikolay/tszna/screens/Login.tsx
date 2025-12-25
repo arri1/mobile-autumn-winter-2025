@@ -15,6 +15,18 @@ export default function LoginScreen({ navigation }: any) {
 
     const { ok, error } = await login(email, password);
     if (ok) {
+
+      const token = useAuthStore.getState().token;
+      const isAuthenticated = useAuthStore.getState().isAuthenticated;
+      
+      console.log('After login - Token:', token ? 'Exists' : 'Missing');
+      console.log('After login - IsAuthenticated:', isAuthenticated);
+      
+      if (!token || !isAuthenticated) {
+        Alert.alert('Предупреждение', 'Токен не был сохранен. Попробуйте войти снова.');
+        return;
+      }
+      
       Alert.alert('Успех', 'Вы успешно вошли');
     } else {
       Alert.alert('Ошибка', error || 'Не удалось войти');
@@ -48,7 +60,7 @@ export default function LoginScreen({ navigation }: any) {
         style={styles.link}
         onPress={() => navigation.navigate('Register')}
       >
-        <Text style={styles.linkText}>Нет аккаунта? Зарегистрироваться</Text>
+        <Text style={styles.linkText}>Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
   );
