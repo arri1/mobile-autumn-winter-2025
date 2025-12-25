@@ -7,10 +7,7 @@ import { styles } from '../styles/MyPostsStyles';
 const MyPostsScreen = ({ navigation }) => {
   const { myPosts, isLoading, error, fetchMyPosts, clearError } = usePostsStore();
 
-  useEffect(() => {
-  console.log('📥 MyPostsScreen mounted. Current myPosts length:', myPosts.length);
-  loadMyPosts();
-}, []);
+  
 
 const loadMyPosts = async () => {
   console.log('🔁 Запуск fetchMyPosts...');

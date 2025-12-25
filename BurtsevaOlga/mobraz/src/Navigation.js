@@ -15,6 +15,7 @@ import PostsScreen from './screens/PostsScreen';
 import CreatePostScreen from './screens/CreatePostScreen';
 import MyPostsScreen from './screens/MyPostsScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
+import EditPostScreen from './screens/EditPostScreen';
 
 const Stack = createStackNavigator();
 
@@ -80,6 +81,11 @@ const MainStack = () => (
       component={PostDetailScreen}
       options={{ title: 'Пост' }}
     />
+    <Stack.Screen 
+      name="EditPost" 
+      component={EditPostScreen} 
+      options={{ title: 'Редактировать' }} 
+    />
   </Stack.Navigator>
 );
 
@@ -115,6 +121,7 @@ const AuthStack = () => (
       }}
     />
   </Stack.Navigator>
+  
 );
 
 const Navigation = () => {
