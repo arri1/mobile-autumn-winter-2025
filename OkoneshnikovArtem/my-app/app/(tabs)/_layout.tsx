@@ -27,12 +27,54 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="explore"
+				name="register"
 				options={{
-					title: "Explore",
+					title: "Register",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
+						<IconSymbol size={28} name="person.badge.plus" color={color} />
 					),
+				}}
+			/>
+			<Tabs.Screen
+				name="login"
+				options={{
+					title: "Login",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="person.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="profile"
+				options={{
+					title: "Profile",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="person.circle" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="UseEffect"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="UseMemo"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="UseState"
+				options={{
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="Zustand"
+				options={{
+					href: null,
 				}}
 			/>
 		</Tabs>
