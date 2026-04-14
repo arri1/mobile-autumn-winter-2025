@@ -1,5 +1,5 @@
 import React from 'react';
-import UseState from '../components/useState';
+import UseEffect from '@/components/UseEffect';
 export default function App() {
-  return <UseState />;
+  return <UseEffect />;
 }
