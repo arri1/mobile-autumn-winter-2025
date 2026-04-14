@@ -1,5 +1,5 @@
 import React from 'react';
-import UseEffect from '@/components/UseEffect';
+import UseMemo from '@/components/UseMemo';
 export default function App() {
-  return <UseEffect />;
+  return <UseMemo />;
 }
