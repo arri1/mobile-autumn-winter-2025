@@ -1,5 +1,6 @@
 import React from 'react';
-import UseMemo from '@/components/UseMemo';
+import UseState from '@/components/UseState';
+
 export default function App() {
-  return <UseMemo />;
+  return <UseState />;
 }
