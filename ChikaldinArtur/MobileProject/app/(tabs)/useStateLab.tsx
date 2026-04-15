@@ -26,8 +26,10 @@ export default function useStateLab(){
         <View style={{ marginBottom: 40, alignItems: "center" }}>
             <Text style={{ fontSize: 20, marginBottom: 10 }}>Счётчик</Text>
             <Text style={{ fontSize: 24, marginBottom: 10 }}>Счёт: {count}</Text>
+            <View style={{gap: 20}}>
             <Button title="Увеличить" onPress={() => setCount(count + 1)} />
             <Button title='Reset' onPress={() => setCount(0)}/>
+            </View>
         </View>
 
         <View style={{ marginBottom: 40, alignItems: "center" }}>

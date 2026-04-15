@@ -30,7 +30,7 @@ export default function PostDetail() {
       <Text>Автор: {post.author.name || post.author.email}</Text>
       <View style={{ flexDirection: 'row', gap: 8, marginTop: 20 }}>
         <Button title="Редактировать" onPress={() => router.push(`/editPost?id=${id}`)} />
-        <Button title="Удалить" color="red" onPress={handleDelete} />
+        {/* <Button title="Удалить" color="red" onPress={handleDelete} /> */}
       </View>
     </View>
   );
