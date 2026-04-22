@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { Tabs, useRouter } from 'expo-router';
 import useAuthStore, { AuthState } from '@/store/authStore';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Tabs, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
 
 export default function MainLayout() {
   const user = useAuthStore((state: AuthState) => state.user);
@@ -27,9 +28,36 @@ export default function MainLayout() {
         },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'useState', tabBarLabel: 'useState' }} />
-      <Tabs.Screen name="use-effect" options={{ title: 'useEffect', tabBarLabel: 'useEffect' }} />
-      <Tabs.Screen name="use-memo" options={{ title: 'useMemo', tabBarLabel: 'useMemo' }} />
+      <Tabs.Screen 
+        name="index" 
+        options={{ 
+          title: 'useState', 
+          tabBarLabel: 'useState',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="cube-outline" size={size} color={color} />
+          ),
+        }} 
+      />
+      <Tabs.Screen 
+        name="use-effect" 
+        options={{ 
+          title: 'useEffect', 
+          tabBarLabel: 'useEffect',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="sync" size={size} color={color} />
+          ),
+        }} 
+      />
+      <Tabs.Screen 
+        name="use-memo" 
+        options={{ 
+          title: 'useMemo', 
+          tabBarLabel: 'useMemo',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="brain" size={size} color={color} />
+          ),
+        }} 
+      />
     </Tabs>
   );
 }

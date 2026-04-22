@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import UseState from '@/components/UseState';
+import UseState from '@/components/useState';
 import useAuthStore from '@/store/authStore';
 
 export default function MainScreen() {
