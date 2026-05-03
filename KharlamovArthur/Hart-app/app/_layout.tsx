@@ -1,58 +1,71 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { Slot, useRouter, useSegments } from 'expo-router'; // Заменили Stack на Slot
+import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native'; // Добавили для лоадера
 import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
+import useAuthStore from '@/store/authStore';
+import React from 'react';
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+function RootLayoutNav() {
+  
+  const colorScheme = useColorScheme();
+  const segments = useSegments();
+  const router = useRouter();
 
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
+  // Достаем данные из authStore
+  const { isAuthenticated, isInitialized, initializeAuth } = useAuthStore();
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  // 1. Инициализация (проверка токена) при запуске
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    initializeAuth();
+  }, []);
 
+  // 2. Логика защиты (Редиректы)
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    if (!isInitialized) return; // Ждем окончания проверки
+
+    // Проверяем, находимся ли мы сейчас в группе (auth)
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (isAuthenticated && inAuthGroup) {
+      // Пользователь авторизован, но находится на экране входа -> кидаем в приложение
+      router.replace('/(tabs)');
+    } else if (!isAuthenticated && !inAuthGroup) {
+      // Пользователь НЕ авторизован, но пытается зайти в приложение -> кидаем на вход
+      router.replace('/(auth)/login');
     }
-  }, [loaded]);
+  }, [isAuthenticated, segments, isInitialized]);
 
-  if (!loaded) {
-    return null;
+  // 3. Экран загрузки (показываем, пока идет initializeAuth)
+  if (!isInitialized) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
   }
 
-  return <RootLayoutNav />;
+  // 4. Основной рендер
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        {/* Slot отрисует либо группу (tabs), либо (auth), в зависимости от URL */}
+        <Slot /> 
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </GestureHandlerRootView>
+  );
 }
 
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+      <RootLayoutNav />
+    
   );
 }
