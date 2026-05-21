@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "vkr",
+    "slug": "vkr",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "30723d62-a103-46c4-a859-6903ff30337e"
+      }
+    },
+    "android": {
+      "package": "com.gigatech.mobifarm"
+    }
+  }
+}
